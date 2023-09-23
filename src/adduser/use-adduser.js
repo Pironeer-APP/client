@@ -34,7 +34,7 @@ export default function useAdduser() {
   }
 
   //입력데이터 서버에 보내기
-  const saveUserInfo = async (level, name, phone, email) => {
+  const saveUserInfo = async (level, name, phone, email, navigation) => {
     const url = `/auth/addUser`;
     const body = {
       level: level,
@@ -50,6 +50,10 @@ export default function useAdduser() {
       setName(null);
       setPhone(null);
       setEmail(null);
+
+      setTitleNum(0);
+
+      navigation.navigate('AddUserSuccess');
     } catch(error) {
       console.log(error);
     }

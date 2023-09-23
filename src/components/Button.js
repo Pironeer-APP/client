@@ -21,7 +21,7 @@ export const MiniButton = ({outline, children}) => {
 
 export const LoginButton = ({content, onPress}) => {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <FontStyledText></FontStyledText>
     </TouchableOpacity>
   )

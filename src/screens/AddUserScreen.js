@@ -19,23 +19,13 @@ export default function AddUserScreen({ navigation }) {
     onInputEmail,
     saveUserInfo
   } = useAdduser();
-  
-  const saveUserInfoAndNavigate = async () => {
-    try {
-      await saveUserInfo(level, name, phone, email);
-      navigation.navigate('AddUserSuccess');
-      setTitleNum(0);
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   useEffect(() => {
     if(titleNum === 4) {
       Keyboard.dismiss();
     }
     if(titleNum > 4) {
-      saveUserInfoAndNavigate();
+      saveUserInfo(level, name, phone, email, navigation);
     }
   }, [titleNum]);
 
