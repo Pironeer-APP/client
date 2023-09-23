@@ -23,9 +23,9 @@ export default function AddUserScreen({ navigation }) {
   useEffect(() => {
     if(titleNum === 4) {
       Keyboard.dismiss();
-    }
-    if(titleNum > 4) {
-      saveUserInfo(level, name, phone, email, navigation);
+    } else if(titleNum > 4) {
+      saveUserInfo(level, name, phone, email);
+      navigation.navigate('AddUserSuccess');
     }
   }, [titleNum]);
 

@@ -11,9 +11,9 @@ export const MainButton = ({content, onPress}) => {
   )
 }
 
-export const MiniButton = ({outline, children}) => {
+export const MiniButton = ({outline, onPress, children}) => {
   return (
-    <TouchableOpacity style={miniStyles({outline}).miniContainer}>
+    <TouchableOpacity style={miniStyles({outline}).miniContainer} onPress={onPress}>
       <FontStyledText style={miniStyles({outline}).miniText}>{children}</FontStyledText>
     </TouchableOpacity>
   )

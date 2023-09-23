@@ -18,12 +18,12 @@ export default function AddUserSuccessScreen({ navigation }) {
       <Image source={require('../assets/icons/success.png')} style={styles.image} />
       <Text style={styles.desc}>회원 정보 추가 완료</Text>
       <View style={styles.btnContainer}>
-        <TouchableOpacity onPress={onPress} style={styles.touchable}>
-        <MiniButton outline={true}>홈으로</MiniButton>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onPressKeep} style={styles.touchable}>
-        <MiniButton outline={false}>계속 추가</MiniButton>
-        </TouchableOpacity>
+        <View style={styles.touchable}>
+        <MiniButton outline={true} onPress={onPress}>홈으로</MiniButton>
+        </View>
+        <View style={styles.touchable}>
+        <MiniButton outline={false} onPress={onPressKeep}>계속 추가</MiniButton>
+        </View>
       </View>
     </SafeAreaView>
   )
