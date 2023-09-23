@@ -28,7 +28,6 @@ export const fetchPost = async(url, body) => {
     const res = await fetch(SERVER_URL+url, {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(body)
@@ -36,6 +35,8 @@ export const fetchPost = async(url, body) => {
     if(res.ok) {
       const result = await res.json();
       return result;
+    } else {
+      throw new Error(`Request failed with status ${res.status}`);
     }
   } catch(error) {
     return error;
