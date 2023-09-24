@@ -13,6 +13,7 @@ import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import {StyledText} from '../components/Text';
 import {Box} from '../components/Box';
+import {RightArrowBtn} from '../components/Button';
 
 export const StyledContainer = styled.SafeAreaView`
   background-color: black;
