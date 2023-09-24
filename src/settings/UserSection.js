@@ -1,24 +1,11 @@
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native'
-import React, {useState, useEffect} from 'react'
-import styled from 'styled-components/native'
-import { FontStyledText, StyledText } from '../components/Text'
-import { COLORS } from '../assets/Theme'
-import { PaddingBox } from '../components/Box'
-import { getData } from '../utils'
+import React from 'react'
+import { StyledText } from '../components/Text'
 import { RightArrowBtn } from '../components/Button'
 import { Gap } from '../screens/HomeScreen'
 import Section from './Section'
 
-export default function UserSection() {
-  const [userInfo, setUserInfo] = useState({});
-  const getUserInfo = async () => {
-    const storageUserInfo = await getData('user_info');
-    setUserInfo(storageUserInfo);
-  }
-  useEffect(() => {
-    getUserInfo();
-  }, []);
-
+export default function UserSection({userInfo}) {
   return (
     <Section title="회원정보 수정">
       <View style={styles.profile}>
