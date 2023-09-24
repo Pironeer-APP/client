@@ -1,33 +1,21 @@
-import { View, StyleSheet } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
 import { LeftArrowBtn } from './Button.js';
-import { FontStyledText } from './Text.js';
-import { COLORS } from '../assets/Theme.js';
+import { StyledText } from '../components/Text';
+import { RowView } from '../screens/HomeScreen';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Header({onPressBack, title}) {
+export default function HeaderDetail({ title }) {
+  const navigation = useNavigation();
+
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
   return (
-    <View style={styles.headerContainer}>
-      <LeftArrowBtn onPress={onPressBack} />
-      <FontStyledText style={styles.title}>{title}</FontStyledText>
+    <RowView>
+      <LeftArrowBtn onPress={handleGoBack} />
+      <StyledText content={title} fontSize={24} />
       <View />
-    </View>
+    </RowView>
   )
 }
-
-const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems:'center',
-    height: 60,
-    width: '100%',
-    backgroundColor: COLORS.bg_black,
-  },
-  image: {
-    resizeMode: 'contain',
-    height: '100%'
-  },
-  title: {
-    fontSize: 20
-  }
-})

@@ -15,8 +15,14 @@ export default function App() {
         {/* 로그인 여부 확인 후 Login / Drawer / Admin으로 navigation */}
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="DrawerNavigationRoutes" component={DrawerNavigationRoutes} />
-        <Stack.Screen name="AdminNavigationRoutes" component={AdminNavigationRoutes} />
+        <Stack.Screen
+          name="DrawerNavigationRoutes"
+          component={DrawerNavigationRoutes}
+        />
+        <Stack.Screen
+          name="AdminNavigationRoutes"
+          component={AdminNavigationRoutes}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
