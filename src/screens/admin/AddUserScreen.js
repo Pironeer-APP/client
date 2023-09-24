@@ -1,12 +1,12 @@
 import { View, StyleSheet, Keyboard, SafeAreaView, KeyboardAvoidingView } from 'react-native'
 import React, { useEffect } from 'react'
 
-import { COLORS } from '../assets/Theme'
-import { MainButton } from '../components/Button'
-import AddUserContent from '../adduser/AddUserContent'
-import useAdduser from '../adduser/use-adduser'
-import Header from '../components/Header'
-import SafeAreaContainer from '../components/SafeAreaContainer'
+import { COLORS } from '../../assets/Theme'
+import { MainButton } from '../../components/Button'
+import AddUserContent from '../../adduser/AddUserContent'
+import useAdduser from '../../adduser/use-adduser'
+import Header from '../../components/Header'
+import SafeAreaContainer from '../../components/SafeAreaContainer'
 
 export default function AddUserScreen({ navigation }) {
   const {
