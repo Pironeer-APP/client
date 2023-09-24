@@ -1,6 +1,6 @@
 import { View, StyleSheet, Keyboard, SafeAreaView, KeyboardAvoidingView } from 'react-native'
-
 import React, { useEffect } from 'react'
+
 import { COLORS } from '../assets/Theme'
 import { MainButton } from '../components/Button'
 import AddUserHeader from '../adduser/AddUserHeader'
