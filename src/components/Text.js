@@ -18,6 +18,7 @@ export const FontStyledText = ({style, children}) => (
 
 const styles = StyleSheet.create({
   fontStyle: {
+    color: 'white',
     fontFamily: 'Interop-Medium',
   },
 });
