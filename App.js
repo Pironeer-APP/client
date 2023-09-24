@@ -1,9 +1,10 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import AddUserScreen from './src/screens/AddUserScreen';
-import AddUserSuccessScreen from './src/screens/AddUserSuccessScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import DrawerNavigationRoutes from './src/screens/DrawerNavigationRoutes';
+import AdminNavigationRoutes from './src/screens/AdminNavigationRoutes';
+import SplashScreen from './src/screens/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -11,9 +12,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
+        {/* 로그인 여부 확인 후 Login / Drawer / Admin으로 navigation */}
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="AddUserScreen" component={AddUserScreen} />
-        <Stack.Screen name="AddUserSuccess" component={AddUserSuccessScreen} />
+        <Stack.Screen name="DrawerNavigationRoutes" component={DrawerNavigationRoutes} />
+        <Stack.Screen name="AdminNavigationRoutes" component={AdminNavigationRoutes} />
       </Stack.Navigator>
     </NavigationContainer>
   );
