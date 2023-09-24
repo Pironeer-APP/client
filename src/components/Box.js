@@ -6,7 +6,6 @@ import {COLORS} from '../assets/Theme';
 const StyledBox = styled.View`
   background-color: ${COLORS.gray};
   border-radius: 15px;
-  padding: 20px;
 `;
 
 export const Box = ({children}) => <StyledBox>{children}</StyledBox>;
