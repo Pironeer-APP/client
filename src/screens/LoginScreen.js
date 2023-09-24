@@ -1,15 +1,20 @@
-import { View, Text, SafeAreaView, StyleSheet } from 'react-native'
+import { SafeAreaView, StyleSheet, KeyboardAvoidingView } from 'react-native'
 import React from 'react'
 import { COLORS } from '../assets/Theme'
 import HeaderLogo from '../login/HeaderLogo'
 import LoginForm from '../login/LoginForm'
 
-export default function LoginScreen() {
+export default function LoginScreen({navigation}) {
   return (
-    <SafeAreaView style={styles.loginScreen}>
-      <HeaderLogo />
-      <LoginForm />
-    </SafeAreaView>
+    <KeyboardAvoidingView
+      keyboardVerticalOffset={45}
+      behavior={Platform.select({ios: 'padding', android: undefined})}
+      style={{flex: 1}}>
+      <SafeAreaView style={styles.loginScreen}>
+        <HeaderLogo />
+        <LoginForm navigation={navigation} />
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   )
 }
 
