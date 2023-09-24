@@ -155,7 +155,7 @@ const AdminHomeScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
           <View style={styles.middleBox}>
-            <TouchableOpacity style={{ padding: 20 }}>
+            <TouchableOpacity style={{ padding: 20 }} onPress={() => {navigation.push('AdminSessionScreen')}}>
               <StyledText content={'세션일정'} fontSize={24} />
               <Image
                 source={require('../assets/icons/session-timeout.png')}
