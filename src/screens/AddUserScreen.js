@@ -3,9 +3,10 @@ import React, { useEffect } from 'react'
 
 import { COLORS } from '../assets/Theme'
 import { MainButton } from '../components/Button'
-import AddUserHeader from '../adduser/AddUserHeader'
 import AddUserContent from '../adduser/AddUserContent'
 import useAdduser from '../adduser/use-adduser'
+import Header from '../components/Header'
+import SafeAreaContainer from '../components/SafeAreaContainer'
 
 export default function AddUserScreen({ navigation }) {
   const {
@@ -35,8 +36,8 @@ export default function AddUserScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <AddUserHeader onPressBack={onPressBack} />
+    <SafeAreaContainer>
+      <Header onPressBack={onPressBack} />
       <KeyboardAvoidingView
         keyboardVerticalOffset={45}
         behavior={Platform.select({ios: 'padding', android: undefined})}
@@ -56,7 +57,7 @@ export default function AddUserScreen({ navigation }) {
           onPress={onPressNext} />
       </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </SafeAreaContainer>
   )
 }
 
