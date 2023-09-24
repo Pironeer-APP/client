@@ -15,12 +15,7 @@ import { StyledText } from '../../components/Text';
 import { Box } from '../../components/Box';
 import { getData } from '../../utils';
 import { RightArrowBtn } from '../../components/Button';
-
-const StyledContainer = styled.SafeAreaView`
-  background-color: black;
-  flex: 1;
-  padding: ${Platform.OS === 'android' ? '20px' : 0};
-`;
+import StyledContainer from '../../components/StyledContainer'
 
 const Header = () => (
   <View>
@@ -204,7 +199,7 @@ const AdminHomeScreen = ({navigation}) => {
             justifyContent: 'center',
           }}>
           <Box style={{ flexDirection: 'row' }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.push('Settings')}>
               <RowView style={{ padding: 20 }}>
                 <Image
                   source={require('../../assets/icons/settings.png')}

@@ -5,8 +5,8 @@ import { COLORS } from '../../assets/Theme'
 import { MainButton } from '../../components/Button'
 import AddUserContent from '../../adduser/AddUserContent'
 import useAdduser from '../../adduser/use-adduser'
-import SafeAreaContainer from '../../components/SafeAreaContainer'
 import HeaderDetail from '../../components/Header'
+import StyledContainer from '../../components/StyledContainer'
 
 export default function AddUserScreen({ navigation }) {
   const {
@@ -36,7 +36,7 @@ export default function AddUserScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaContainer>
+    <StyledContainer>
       <HeaderDetail onPressBack={onPressBack} />
       <KeyboardAvoidingView
         keyboardVerticalOffset={45}
@@ -57,7 +57,7 @@ export default function AddUserScreen({ navigation }) {
           onPress={onPressNext} />
       </View>
       </KeyboardAvoidingView>
-    </SafeAreaContainer>
+    </StyledContainer>
   )
 }
 
