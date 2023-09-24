@@ -6,16 +6,13 @@ import {
   Image,
   Platform,
   ScrollView,
-  Pressable,
   TouchableOpacity,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import * as Progress from 'react-native-progress';
-
-import {COLORS} from '../assets/Theme';
+import React, { useState, useEffect } from 'react';
+import { COLORS } from '../assets/Theme';
 import styled from 'styled-components/native';
-import {FontStyledText, StyledText} from '../components/Text';
-import {Box} from '../components/Box';
+import { StyledText } from '../components/Text';
+import { Box } from '../components/Box';
 import { getData } from '../utils';
 import { RightArrowBtn } from '../components/Button';
 
@@ -29,12 +26,37 @@ const Header = () => (
   <View>
     <Image
       source={require('../assets/images/headerLogo.png')}
-      style={{width: 50, height: 50}}
+      style={{ width: 50, height: 50 }}
     />
   </View>
 );
 
-const Gap = () => <View style={{height: 20}}></View>;
+const RowView = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Gap = () => <View style={{ height: 20 }}></View>;
+
+const StyledProgressBar = styled.View`
+  height: 10px;
+  background-color: ${COLORS.icon_gray};
+  flex: 1;
+  margin-right: 10px;
+  margin-top: ${Platform.OS === 'android' ? '5px' : 0};
+`;
+const ProgressBar = props => (
+  <StyledProgressBar>
+    <View
+      style={{
+        flexDirection: 'row',
+        width: `${props.status}`,
+        height: '100%',
+        backgroundColor: `${COLORS.green}`,
+      }}></View>
+  </StyledProgressBar>
+);
 
 const AdminHomeScreen = ({navigation}) => {
   // 관리자 정보 가져오기
@@ -60,43 +82,86 @@ const AdminHomeScreen = ({navigation}) => {
           fontSize={24}
         />
         <Gap />
-        <TouchableOpacity onPress={() => {navigation.push('GradeAssignScreen')}}>
-        <View style={styles.topBox}>
-          <View style={styles.boxContent}>
-            <FontStyledText style={styles.boxInnerText}>과제채점</FontStyledText>
-            <RightArrowBtn />
-          </View>
-          <FontStyledText style={styles.assignDesc}>Arsha 클론 코딩</FontStyledText>
-          <View style={styles.boxContent}>
-            <Progress.Bar
-              progress={0.3}
-              width={220}
-              color={COLORS.green}
-              height={10}
-              borderRadius={5} />
-            <View style={styles.progressTextBox}>
-              <FontStyledText style={styles.progressText}>{time}</FontStyledText>
+        <Box>
+          <TouchableOpacity style={{ padding: 20 }}>
+            <RowView style={{ marginBottom: 10 }}>
+              <StyledText content={'과제 채점'} fontSize={24} />
+              <RightArrowBtn />
+            </RowView>
+            <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
+            <RowView style={{ marginTop: 10 }}>
+              <ProgressBar status={'30%'} />
+              <StyledText content={`남은 시간 ${time}`} fontSize={16} />
+            </RowView>
+          </TouchableOpacity>
+        </Box>
+        <Gap />
+        <View style={{flex: 1, marginBottom: 20}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: 20,
+            }}>
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                backgroundColor: `${COLORS.gray}`,
+                borderRadius: 15,
+              }}>
+              <View>
+                <View
+                  style={{
+                    padding: 20,
+                    flex: 1,
+                  }}>
+                  <StyledText content={'출석체크'} fontSize={24} />
+                  <Image
+                    source={require('../assets/icons/calendar.png')}
+                    style={{width: 40, height: 40, marginTop: 10}}
+                  />
+                </View>
+              </View>
+            </TouchableOpacity>
+            <View style={{gap: 20, flex: 1}}>
+              <Box>
+                <TouchableOpacity style={{padding: 20}}>
+                  <StyledText content={'보증금'} fontSize={24} />
+                  <Image
+                    source={require('../assets/icons/money.png')}
+                    style={{width: 30, height: 30, marginTop: 10}}
+                  />
+                </TouchableOpacity>
+              </Box>
+              <Box style={{height: 350}}>
+                <TouchableOpacity style={{padding: 20}}>
+                  <StyledText content={'공지'} fontSize={24} />
+                  <Image
+                    source={require('../assets/icons/announce.png')}
+                    style={{width: 30, height: 30, marginTop: 10}}
+                  />
+                </TouchableOpacity>
+              </Box>
             </View>
           </View>
         </View>
-        </TouchableOpacity>
-        <Gap />
-        <View
-          style={{
-            flexDirection: 'row',
-            gap: 20,
-          }}>
+        <View style={{ gap: 20, flex: 1, flexDirection: 'row' }}>
           <View style={styles.middleBox}>
-            <View style={styles.boxContent}>
-              <FontStyledText style={styles.boxInnerText}>출석체크</FontStyledText>
-              <RightArrowBtn />
-            </View>
+            <TouchableOpacity style={{ padding: 20 }} onPress={() => {navigation.push('AddUserScreen')}}>
+              <StyledText content={'회원등록'} fontSize={24} />
+              <Image
+                source={require('../assets/icons/person-add.png')}
+                style={{ width: 30, height: 30, marginTop: 10 }}
+              />
+            </TouchableOpacity>
           </View>
           <View style={styles.middleBox}>
-            <View style={styles.boxContent}>
-              <FontStyledText style={styles.boxInnerText}>보증금 관리</FontStyledText>
-              <RightArrowBtn />
-            </View>
+            <TouchableOpacity style={{ padding: 20 }}>
+              <StyledText content={'세션일정'} fontSize={24} />
+              <Image
+                source={require('../assets/icons/session-timeout.png')}
+                style={{ width: 30, height: 30, marginTop: 10 }}
+              />
+            </TouchableOpacity>
           </View>
         </View>
         <Gap />
@@ -106,59 +171,69 @@ const AdminHomeScreen = ({navigation}) => {
         />
         <Gap />
         <Box>
-          <StyledText content={'공식 홈페이지 바로가기'} fontSize={20} />
+          <TouchableOpacity>
+            <RowView style={{ padding: 20 }}>
+              <StyledText content={'공식 홈페이지 바로가기'} fontSize={20} />
+              <RightArrowBtn />
+            </RowView>
+          </TouchableOpacity>
         </Box>
         <Gap />
         <Box>
-          <StyledText content={'노션 바로가기'} fontSize={20} />
+          <TouchableOpacity>
+            <RowView style={{ padding: 20 }}>
+              <StyledText content={'노션 바로가기'} fontSize={20} />
+              <RightArrowBtn />
+            </RowView>
+          </TouchableOpacity>
         </Box>
         <Gap />
         <Box>
-          <StyledText content={'피로스퀘어 바로가기'} fontSize={20} />
+          <TouchableOpacity>
+            <RowView style={{ padding: 20 }}>
+              <StyledText content={'피로스퀘어 바로가기'} fontSize={20} />
+              <RightArrowBtn />
+            </RowView>
+          </TouchableOpacity>
         </Box>
+        <Gap />
+        <View
+          style={{
+            width: 'auto',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Box style={{ flexDirection: 'row' }}>
+            <TouchableOpacity>
+              <RowView style={{ padding: 20 }}>
+                <Image
+                  source={require('../assets/icons/settings.png')}
+                  style={{ width: 20, height: 20 }}
+                />
+                <View style={{ width: 10 }} />
+                <StyledText content={'설정'} fontSize={20} />
+              </RowView>
+            </TouchableOpacity>
+          </Box>
+        </View>
       </ScrollView>
     </StyledContainer>
   );
 };
 
-export default AdminHomeScreen;
-
 const styles = StyleSheet.create({
-  topBox: {
-    height: 150,
-    backgroundColor: COLORS.gray,
-    borderRadius: 15,
-    paddingHorizontal: 20,
-    paddingVertical: 10
-  },
-  boxInnerText: {
-    fontSize: 24,
-  },
-  boxContent: {
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  assignDesc: {
-    fontSize: 15
-  },
   progressTextBox: {
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    paddingHorizontal: 10,  
-  },
-  progressText: {
-    fontSize: 18
+    paddingHorizontal: 10,
   },
   middleBox: {
     flex: 1,
-    height: 120,
     backgroundColor: COLORS.gray,
     borderRadius: 15,
-    paddingHorizontal: 20,
-    paddingVertical: 10
-  },
+  }
 })
+
+export default AdminHomeScreen;
