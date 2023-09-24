@@ -14,7 +14,7 @@ import styled from 'styled-components/native';
 import {StyledText} from '../components/Text';
 import {Box} from '../components/Box';
 
-const StyledContainer = styled.SafeAreaView`
+export const StyledContainer = styled.SafeAreaView`
   background-color: black;
   flex: 1;
   padding: ${Platform.OS === 'android' ? '20px' : 0};
@@ -29,7 +29,7 @@ const Header = () => (
   </View>
 );
 
-const RowView = styled.View`
+export const RowView = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -56,7 +56,19 @@ const ProgressBar = props => (
   </StyledProgressBar>
 );
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
+  const goToAsgnmt = () => {
+    navigation.navigate('AssignmentScreen');
+  };
+  const goToAnncmt = () => {
+    navigation.navigate('AnnouncementScreen');
+  };
+  const goToDeposit = () => {
+    navigation.navigate('DepositScreen');
+  };
+  const goToAtndnc = () => {
+    navigation.navigate('AttendanceScreen');
+  };
   return (
     <StyledContainer>
       <ScrollView>
@@ -68,7 +80,7 @@ const HomeScreen = () => {
         />
         <Gap />
         <Box>
-          <TouchableOpacity style={{padding: 20}}>
+          <TouchableOpacity style={{padding: 20}} onPress={goToAsgnmt}>
             <RowView style={{marginBottom: 10}}>
               <StyledText content={'과제'} fontSize={24} />
               <Image
@@ -95,7 +107,8 @@ const HomeScreen = () => {
                 flex: 1,
                 backgroundColor: `${COLORS.gray}`,
                 borderRadius: 15,
-              }}>
+              }}
+              onPress={goToAtndnc}>
               <View>
                 <View
                   style={{
@@ -112,7 +125,7 @@ const HomeScreen = () => {
             </TouchableOpacity>
             <View style={{gap: 20, flex: 1}}>
               <Box>
-                <TouchableOpacity style={{padding: 20}}>
+                <TouchableOpacity style={{padding: 20}} onPress={goToDeposit}>
                   <StyledText content={'보증금'} fontSize={24} />
                   <Image
                     source={require('../assets/icons/money.png')}
@@ -121,7 +134,7 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </Box>
               <Box style={{height: 350}}>
-                <TouchableOpacity style={{padding: 20}}>
+                <TouchableOpacity style={{padding: 20}} onPress={goToAnncmt}>
                   <StyledText content={'공지'} fontSize={24} />
                   <Image
                     source={require('../assets/icons/announce.png')}
