@@ -24,7 +24,6 @@ export default function AddUserInput({
         style={styles.textInput}
         placeholder={placeholder}
         placeholderTextColor={COLORS.light_gray}
-        required={true}
         keyboardType={keyboardType}
         autoFocus={true}
         maxLength={maxLength} />

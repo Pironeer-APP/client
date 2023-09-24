@@ -1,14 +1,18 @@
-import { View, Text, TextInput, StyleSheet } from 'react-native'
+import { TextInput, StyleSheet } from 'react-native'
 import React from 'react'
 import { COLORS } from '../assets/Theme'
 
-export default function LoginInput({placeholder, keyboardType}) {
+export default function LoginInput(props) {
   return (
     <TextInput
       style={styles.loginTextInput}
-      placeholder={placeholder}
+      placeholder={props.placeholder}
       placeholderTextColor={COLORS.light_gray}
-      keyboardType={keyboardType}
+      keyboardType={props.keyboardType}
+      value={props.value}
+      onChangeText={props.onChangeText}
+      maxLength={props.maxLength}
+      secureTextEntry={props.secureTextEntry}
     />
   )
 }

@@ -19,10 +19,10 @@ export const MiniButton = ({outline, onPress, children}) => {
   )
 }
 
-export const LoginButton = ({content, onPress}) => {
+export const LoginButton = ({onPress, children}) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <FontStyledText></FontStyledText>
+    <TouchableOpacity style={styles.loginContainer} onPress={onPress}>
+      <FontStyledText style={styles.loginText}>{children}</FontStyledText>
     </TouchableOpacity>
   )
 }
@@ -40,6 +40,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#000000',
   },
+  loginContainer: {
+    justifyContent: 'center',
+    width: '100%',
+    height: 60,
+    backgroundColor: COLORS.green,
+    borderRadius: 15,
+  },
+  loginText: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#000000',
+  }
 })
 
 const miniStyles = ({outline}) => StyleSheet.create({
