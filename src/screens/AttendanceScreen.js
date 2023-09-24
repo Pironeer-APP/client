@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {StyledContainer} from './HomeScreen';
+import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
 
 const AttendanceScreen = () => {
