@@ -7,6 +7,7 @@ import GradeAssignScreen from './admin/GradeAssignScreen';
 import AdminSessionScreen from './admin/AdminSessionScreen';
 import AdminDepositScreen from './admin/AdminDepositScreen';
 import AdminDepositDetail from './admin/AdminDepositDetail';
+import Settings from './Settings';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ export default function AdminNavigationRoutes() {
       <Stack.Screen name="AdminSessionScreen" component={AdminSessionScreen} />
       <Stack.Screen name="AddUserScreen" component={AddUserScreen} />
       <Stack.Screen name="AddUserSuccess" component={AddUserSuccessScreen} />
+      <Stack.Screen name="Settings" component={Settings} />
     </Stack.Navigator>
   )
 }
