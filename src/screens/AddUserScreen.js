@@ -31,7 +31,7 @@ export default function AddUserScreen({ navigation }) {
 
   const onPressBack = () => {
     if(titleNum > 0) setTitleNum(titleNum - 1);
-    else ; // 뒤로가기 구현 필요
+    else navigation.goBack();
   }
 
   return (

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Button, Image } from 'react-native'
 import React from 'react'
 import { FontStyledText } from './Text'
 import { COLORS } from '../assets/Theme'
@@ -27,6 +27,21 @@ export const LoginButton = ({onPress, children}) => {
   )
 }
 
+export const LeftArrowBtn = ({onPress}) => {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <Image source={require("../assets/icons/left-arrow.png")} style={styles.arrow} />
+    </TouchableOpacity>
+  )
+}
+export const RightArrowBtn = ({onPress}) => {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <Image source={require("../assets/icons/right-arrow.png")} style={styles.arrow} />
+    </TouchableOpacity>
+  )
+}
+
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
@@ -51,7 +66,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     color: '#000000',
-  }
+  },
+  arrow: {
+    resizeMode: 'contain',
+  },
 })
 
 const miniStyles = ({outline}) => StyleSheet.create({

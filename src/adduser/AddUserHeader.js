@@ -1,12 +1,11 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { LeftArrowBtn } from '../components/Button.js';
 
 export default function AddUserHeader({onPressBack}) {
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity onPress={onPressBack}>
-        <Image source={require("../assets/icons/left-arrow.png")} style={styles.image} />
-      </TouchableOpacity>
+      <LeftArrowBtn onPress={onPressBack} />
       <View style={{ flex: 1 }} />
     </View>
   )
