@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
   },
   arrow: {
     resizeMode: 'contain',
-    height: '100%'
   },
 })
 

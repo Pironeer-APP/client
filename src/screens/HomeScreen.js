@@ -71,10 +71,7 @@ const HomeScreen = () => {
           <TouchableOpacity style={{padding: 20}}>
             <RowView style={{marginBottom: 10}}>
               <StyledText content={'과제'} fontSize={24} />
-              <Image
-                source={require('../assets/icons/right-arrow.png')}
-                style={{width: 20, height: 20}}
-              />
+              <RightArrowBtn />
             </RowView>
             <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
             <RowView style={{marginTop: 10}}>
@@ -142,10 +139,7 @@ const HomeScreen = () => {
           <TouchableOpacity>
             <RowView style={{padding: 20}}>
               <StyledText content={'공식 홈페이지 바로가기'} fontSize={20} />
-              <Image
-                source={require('../assets/icons/right-arrow.png')}
-                style={{width: 20, height: 20}}
-              />
+              <RightArrowBtn />
             </RowView>
           </TouchableOpacity>
         </Box>
@@ -154,10 +148,7 @@ const HomeScreen = () => {
           <TouchableOpacity>
             <RowView style={{padding: 20}}>
               <StyledText content={'노션 바로가기'} fontSize={20} />
-              <Image
-                source={require('../assets/icons/right-arrow.png')}
-                style={{width: 20, height: 20}}
-              />
+              <RightArrowBtn />
             </RowView>
           </TouchableOpacity>
         </Box>
@@ -166,10 +157,7 @@ const HomeScreen = () => {
           <TouchableOpacity>
             <RowView style={{padding: 20}}>
               <StyledText content={'피로스퀘어 바로가기'} fontSize={20} />
-              <Image
-                source={require('../assets/icons/right-arrow.png')}
-                style={{width: 20, height: 20}}
-              />
+              <RightArrowBtn />
             </RowView>
           </TouchableOpacity>
         </Box>
