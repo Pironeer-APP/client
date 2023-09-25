@@ -8,6 +8,7 @@ import AdminSessionScreen from './admin/AdminSessionScreen';
 import AdminDepositScreen from './admin/AdminDepositScreen';
 import AdminDepositDetail from './admin/AdminDepositDetail';
 import Settings from './Settings';
+import OperationPolicyScreen from './OperationPolicyScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ export default function AdminNavigationRoutes() {
       <Stack.Screen name="AddUserScreen" component={AddUserScreen} />
       <Stack.Screen name="AddUserSuccess" component={AddUserSuccessScreen} />
       <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="OperationPolicyScreen" component={OperationPolicyScreen} />
     </Stack.Navigator>
   )
 }
