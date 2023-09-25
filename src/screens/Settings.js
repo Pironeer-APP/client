@@ -25,13 +25,11 @@ export default function Settings() {
       <HeaderDetail title="설정" />
       <ScrollView>
         <UserSection userInfo={userInfo} />
+        <Gap />
         <NotiSection />
         <ThemeSection />
-        <Gap />
         <PolicySection />
-        <Gap />
         <LogoutSection />
-        <Gap />
       </ScrollView>
     </StyledContainer>
   )
