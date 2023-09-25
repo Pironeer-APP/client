@@ -4,6 +4,10 @@ export const COLORS = {
   light_gray: '#6D6D6D',
   icon_gray: '#4B4B4B',
   gray: '#1C1C1D',
+  textColor: 'white',
+  badge_orange: '#C54422',
+  badge_green: '#35A67B',
+  badge_skyblue: '#2188B6',
 };
 
 // theme 설정

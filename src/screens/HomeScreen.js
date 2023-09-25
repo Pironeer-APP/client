@@ -13,8 +13,9 @@ import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import {StyledText} from '../components/Text';
 import {Box} from '../components/Box';
-import { RightArrowBtn } from '../components/Button';
+import {RightArrowBtn} from '../components/Button';
 import StyledContainer from '../components/StyledContainer';
+import Gap from '../components/Gap';
 
 const Header = () => (
   <View>
@@ -31,16 +32,14 @@ export const RowView = styled.View`
   align-items: center;
 `;
 
-export const Gap = () => <View style={{height: 20}}></View>;
-
-const StyledProgressBar = styled.View`
+export const StyledProgressBar = styled.View`
   height: 10px;
   background-color: ${COLORS.icon_gray};
   flex: 1;
   margin-right: 10px;
   margin-top: ${Platform.OS === 'android' ? '5px' : 0};
 `;
-const ProgressBar = props => (
+export const ProgressBar = props => (
   <StyledProgressBar>
     <View
       style={{

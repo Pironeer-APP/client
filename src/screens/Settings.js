@@ -6,9 +6,9 @@ import UserSection from '../settings/UserSection'
 import NotiSection from '../settings/NotiSection'
 import ThemeSection from '../settings/ThemeSection'
 import PolicySection from '../settings/PolicySection'
-import { Gap } from './HomeScreen'
 import LogoutSection from '../settings/LogoutSection'
 import { getData } from '../utils'
+import Gap from '../components/Gap'
 
 export default function Settings() {
   const [userInfo, setUserInfo] = useState({});
