@@ -6,8 +6,9 @@ import { COLORS } from '../assets/Theme'
 import { PaddingBox } from '../components/Box'
 import { getData } from '../utils'
 import { RightArrowBtn } from '../components/Button'
-import { Gap } from '../screens/HomeScreen'
+import Gap from '../components/Gap'
 import Section from './Section'
+
 
 export default function UserSection() {
   const [userInfo, setUserInfo] = useState({});
