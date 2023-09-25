@@ -8,20 +8,20 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { COLORS } from '../../assets/Theme';
+import React, {useState, useEffect} from 'react';
+import {COLORS} from '../../assets/Theme';
 import styled from 'styled-components/native';
-import { StyledText } from '../../components/Text';
-import { Box } from '../../components/Box';
-import { getData } from '../../utils';
-import { RightArrowBtn } from '../../components/Button';
-import StyledContainer from '../../components/StyledContainer'
+import {StyledText} from '../../components/Text';
+import {Box} from '../../components/Box';
+import {getData} from '../../utils';
+import {RightArrowBtn} from '../../components/Button';
+import StyledContainer from '../../components/StyledContainer';
 
 const Header = () => (
   <View>
     <Image
       source={require('../../assets/images/headerLogo.png')}
-      style={{ width: 50, height: 50 }}
+      style={{width: 50, height: 50}}
     />
   </View>
 );
@@ -32,7 +32,7 @@ const RowView = styled.View`
   align-items: center;
 `;
 
-const Gap = () => <View style={{ height: 20 }}></View>;
+const Gap = () => <View style={{height: 20}}></View>;
 
 const StyledProgressBar = styled.View`
   height: 10px;
@@ -59,7 +59,7 @@ const AdminHomeScreen = ({navigation}) => {
   const getAdminInfo = async () => {
     const adminData = await getData('user_info');
     setAdminInfo(adminData);
-  }
+  };
   useEffect(() => {
     getAdminInfo();
   }, []);
@@ -78,13 +78,13 @@ const AdminHomeScreen = ({navigation}) => {
         />
         <Gap />
         <Box>
-          <TouchableOpacity style={{ padding: 20 }}>
-            <RowView style={{ marginBottom: 10 }}>
+          <TouchableOpacity style={{padding: 20}}>
+            <RowView style={{marginBottom: 10}}>
               <StyledText content={'과제 채점'} fontSize={24} />
               <RightArrowBtn />
             </RowView>
             <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
-            <RowView style={{ marginTop: 10 }}>
+            <RowView style={{marginTop: 10}}>
               <ProgressBar status={'30%'} />
               <StyledText content={`남은 시간 ${time}`} fontSize={16} />
             </RowView>
@@ -119,7 +119,11 @@ const AdminHomeScreen = ({navigation}) => {
             </TouchableOpacity>
             <View style={{gap: 20, flex: 1}}>
               <Box>
-                <TouchableOpacity style={{padding: 20}} onPress={() => {navigation.push('AdminDepositScreen')}}>
+                <TouchableOpacity
+                  style={{padding: 20}}
+                  onPress={() => {
+                    navigation.push('AdminDepositScreen');
+                  }}>
                   <StyledText content={'보증금'} fontSize={24} />
                   <Image
                     source={require('../../assets/icons/money.png')}
@@ -128,7 +132,11 @@ const AdminHomeScreen = ({navigation}) => {
                 </TouchableOpacity>
               </Box>
               <Box style={{height: 350}}>
-                <TouchableOpacity style={{padding: 20}}>
+                <TouchableOpacity
+                  style={{padding: 20}}
+                  onPress={() => {
+                    navigation.navigate('AnnouncementScreen');
+                  }}>
                   <StyledText content={'공지'} fontSize={24} />
                   <Image
                     source={require('../../assets/icons/announce.png')}
@@ -139,22 +147,30 @@ const AdminHomeScreen = ({navigation}) => {
             </View>
           </View>
         </View>
-        <View style={{ gap: 20, flex: 1, flexDirection: 'row' }}>
+        <View style={{gap: 20, flex: 1, flexDirection: 'row'}}>
           <View style={styles.middleBox}>
-            <TouchableOpacity style={{ padding: 20 }} onPress={() => {navigation.push('AddUserScreen')}}>
+            <TouchableOpacity
+              style={{padding: 20}}
+              onPress={() => {
+                navigation.push('AddUserScreen');
+              }}>
               <StyledText content={'회원등록'} fontSize={24} />
               <Image
                 source={require('../../assets/icons/person-add.png')}
-                style={{ width: 30, height: 30, marginTop: 10 }}
+                style={{width: 30, height: 30, marginTop: 10}}
               />
             </TouchableOpacity>
           </View>
           <View style={styles.middleBox}>
-            <TouchableOpacity style={{ padding: 20 }} onPress={() => {navigation.push('AdminSessionScreen')}}>
+            <TouchableOpacity
+              style={{padding: 20}}
+              onPress={() => {
+                navigation.push('AdminSessionScreen');
+              }}>
               <StyledText content={'세션일정'} fontSize={24} />
               <Image
                 source={require('../../assets/icons/session-timeout.png')}
-                style={{ width: 30, height: 30, marginTop: 10 }}
+                style={{width: 30, height: 30, marginTop: 10}}
               />
             </TouchableOpacity>
           </View>
@@ -167,7 +183,7 @@ const AdminHomeScreen = ({navigation}) => {
         <Gap />
         <Box>
           <TouchableOpacity>
-            <RowView style={{ padding: 20 }}>
+            <RowView style={{padding: 20}}>
               <StyledText content={'공식 홈페이지 바로가기'} fontSize={20} />
               <RightArrowBtn />
             </RowView>
@@ -176,7 +192,7 @@ const AdminHomeScreen = ({navigation}) => {
         <Gap />
         <Box>
           <TouchableOpacity>
-            <RowView style={{ padding: 20 }}>
+            <RowView style={{padding: 20}}>
               <StyledText content={'노션 바로가기'} fontSize={20} />
               <RightArrowBtn />
             </RowView>
@@ -185,7 +201,7 @@ const AdminHomeScreen = ({navigation}) => {
         <Gap />
         <Box>
           <TouchableOpacity>
-            <RowView style={{ padding: 20 }}>
+            <RowView style={{padding: 20}}>
               <StyledText content={'피로스퀘어 바로가기'} fontSize={20} />
               <RightArrowBtn />
             </RowView>
@@ -198,14 +214,14 @@ const AdminHomeScreen = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Box style={{ flexDirection: 'row' }}>
+          <Box style={{flexDirection: 'row'}}>
             <TouchableOpacity onPress={() => navigation.push('Settings')}>
-              <RowView style={{ padding: 20 }}>
+              <RowView style={{padding: 20}}>
                 <Image
                   source={require('../../assets/icons/settings.png')}
-                  style={{ width: 20, height: 20 }}
+                  style={{width: 20, height: 20}}
                 />
-                <View style={{ width: 10 }} />
+                <View style={{width: 10}} />
                 <StyledText content={'설정'} fontSize={20} />
               </RowView>
             </TouchableOpacity>
@@ -228,7 +244,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.gray,
     borderRadius: 15,
-  }
-})
+  },
+});
 
 export default AdminHomeScreen;

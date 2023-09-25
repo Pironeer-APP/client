@@ -1,5 +1,6 @@
 import {
   FlatList,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -17,6 +18,9 @@ import Gap from '../components/Gap';
 import {Box, PaddingBox} from '../components/Box';
 import {StyledSubText, StyledText} from '../components/Text';
 import {RowView} from './HomeScreen';
+import {fetchPost, getData} from '../utils';
+import {useNavigation} from '@react-navigation/native';
+import {MainButton} from '../components/Button';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -45,12 +49,16 @@ const Badge = props => {
     );
   }
 };
-const PostBox = ({title, sort, date, read}) => {
+const PostBox = ({title, sort, date, id, read}) => {
+  const navigation = useNavigation();
+  const goToAncDet = () => {
+    navigation.navigate('AnnouncementDetail', {post_id: id});
+  };
   const dateString = date;
   const formattedDate = dayjs(dateString).format('M.D ddd').toUpperCase();
   return (
     <View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={goToAncDet}>
         <PaddingBox style={{marginTop: 0}}>
           <RowView>
             <StyledSubText content={formattedDate} />
@@ -67,6 +75,7 @@ const RenderItem = ({item}) => (
     title={item.title}
     sort={item.category}
     date={item.created_at}
+    id={item.post_id}
     read={true}
   />
 );
@@ -98,14 +107,7 @@ const SecondRoute = ({posts}) => <FilteredItems category={1} posts={posts} />;
 const ThirdRoute = ({posts}) => <FilteredItems category={2} posts={posts} />;
 const FourthRoute = ({posts}) => <FilteredItems category={3} posts={posts} />;
 
-// const renderScene = SceneMap({
-//   first: FirstRoute,
-//   second: SecondRoute,
-//   third: ThirdRoute,
-//   fourth: FourthRoute,
-// });
-
-const AnnouncementScreen = () => {
+const AnnouncementScreen = ({navigation}) => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -118,7 +120,12 @@ const AnnouncementScreen = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/post?level=20')
+    const url =
+      Platform.OS === 'android'
+        ? 'http://10.0.2.2:3000/api/post/20/all'
+        : 'http://localhost:3000/api/post/20/all';
+
+    fetch(url)
       .then(response => response.json())
       .then(data => {
         setPosts(data.posts);
@@ -141,6 +148,16 @@ const AnnouncementScreen = () => {
         return null;
     }
   };
+
+  const [userInfo, setUserInfo] = useState({});
+  const getUserInfo = async () => {
+    const storageUserInfo = await getData('user_info');
+    setUserInfo(storageUserInfo);
+  };
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
@@ -173,6 +190,12 @@ const AnnouncementScreen = () => {
           />
         )}
       />
+      {userInfo.is_admin === 1 ? (
+        <MainButton
+          content={'글 작성하기'}
+          onPress={() => navigation.navigate('AdminCreateNotice')}
+        />
+      ) : null}
     </StyledContainer>
   );
 };
