@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import React, { useState } from 'react'
 import { fetchPost, getData, storeData } from '../utils';
 
-export default function useAdminDepositDetail() {
+export default function useDepositDetail() {
   const [couponInfo, setCouponInfo] = useState([]);
   const [depositHistory, setDepositHistory] = useState([]);
   const [oneUserInfo, setOneUserInfo] = useState({});
