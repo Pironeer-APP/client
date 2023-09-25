@@ -12,10 +12,13 @@ export default function HeaderDetail({ title }) {
     navigation.goBack();
   };
   return (
-    <RowView>
-      <LeftArrowBtn onPress={handleGoBack} />
-      <StyledText content={title} fontSize={24} />
-      <View />
-    </RowView>
-  )
-}
+
+    <View style={{paddingVertical: 20}}>
+      <RowView>
+        <LeftArrowBtn onPress={handleGoBack} />
+        <StyledText content={title} fontSize={24} />
+        <View style={{width: 20}} />
+      </RowView>
+    </View>
+  );
+};
