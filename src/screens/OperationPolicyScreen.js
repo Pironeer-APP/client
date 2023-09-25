@@ -3,9 +3,9 @@ import React from 'react'
 import StyledContainer from '../components/StyledContainer'
 import { StyledText } from '../components/Text'
 import { SettingsItem } from '../settings/UserSection'
-import { Gap } from './HomeScreen'
 import { PaddingBox } from '../components/Box'
 import HeaderDetail from '../components/Header'
+import Gap from '../components/Gap'
 
 export default function OperationPolicyScreen() {
   return (
