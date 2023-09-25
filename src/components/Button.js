@@ -3,9 +3,9 @@ import React from 'react'
 import { FontStyledText } from './Text'
 import { COLORS } from '../assets/Theme'
 
-export const MainButton = ({content, onPress}) => {
+export const MainButton = ({height, content, onPress}) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={[styles.container, {height: height}]} onPress={onPress}>
       <FontStyledText style={styles.text}>{content}</FontStyledText>
     </TouchableOpacity>
   )
@@ -42,6 +42,16 @@ export const RightArrowBtn = ({onPress}) => {
   )
 }
 
+export const CouponButton = ({selected, content, onPress}) => {
+  const couponStyle = content === selected ? styles.couponSelected : styles.couponNotSelected;
+  const couponText = content === selected ? styles.text : styles.notSelectedText;
+  return (
+    <TouchableOpacity style={couponStyle} onPress={onPress}>
+      <FontStyledText style={couponText}>{content}</FontStyledText>
+    </TouchableOpacity>
+  )
+}
+
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
@@ -70,6 +80,25 @@ const styles = StyleSheet.create({
   arrow: {
     resizeMode: 'contain',
   },
+  couponNotSelected: {
+    justifyContent: 'center',
+    width: '70%',
+    height: 50,
+    backgroundColor: COLORS.light_gray,
+    borderRadius: 10,
+  },
+  couponSelected: {
+    justifyContent: 'center',
+    width: '70%',
+    height: 50,
+    backgroundColor: COLORS.green,
+    borderRadius: 10,
+  },
+  notSelectedText: {
+    fontSize: 22,
+    textAlign: 'center',
+    color: 'white',
+  }
 })
 
 const miniStyles = ({outline}) => StyleSheet.create({
