@@ -8,16 +8,18 @@ import {
   FlatList,
 } from 'react-native';
 import React from 'react';
-import {ProgressBar, RowView, StyledContainer} from './HomeScreen';
+import {ProgressBar, RowView} from './HomeScreen';
 import {StyledText} from '../components/Text';
-
+import StyledContainer from '../components/StyledContainer';
 import {Box} from '../components/Box';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
-
 import HeaderDetail from '../components/Header';
 
-
+// grade(과제 결과 INT값)
+// title(과제 제목)
+// due_date(마감 기한)
+// created_at(공지 생성 시각)
 const data = [
   {
     id: 1,

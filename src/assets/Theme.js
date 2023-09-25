@@ -4,6 +4,7 @@ export const COLORS = {
   light_gray: '#6D6D6D',
   icon_gray: '#4B4B4B',
   gray: '#1C1C1D',
+  textColor: 'white',
 };
 
 // theme 설정
