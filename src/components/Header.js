@@ -25,5 +25,5 @@ const RowHeader = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 0;
+  padding: 10px 0;
 `;

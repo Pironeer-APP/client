@@ -18,19 +18,15 @@ export default function OperationPolicyScreen() {
         <PaddingBox>
           <SettingsItem text="공지사항" />
         </PaddingBox>
-        <Gap />
         <PaddingBox>
           <SettingsItem text="서비스 이용 약관" />
         </PaddingBox>
-        <Gap />
         <PaddingBox>
           <SettingsItem text="오픈소스 라이센스" />
         </PaddingBox>
-        <Gap />
         <PaddingBox>
           <SettingsItem text="실험실" />
         </PaddingBox>
-        <Gap />
       </ScrollView>
     </StyledContainer>
   )
