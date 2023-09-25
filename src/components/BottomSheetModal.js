@@ -62,16 +62,14 @@ export default function BottomSheetModal({children}) {
   };
 
   return (
-    <View style={styles.container}>
-      <Animated.View style={[styles.bottomSheet, bottomSheetAnimation]} {...panResponder.panHandlers}>
-        <View style={styles.draggableArea}>
-          <View style={styles.dragHandle} />
-        </View>
-        <View style={styles.sheetContent}>
-          {children}
-        </View>
-      </Animated.View>
-    </View>
+    <Animated.View style={[styles.bottomSheet, bottomSheetAnimation]} {...panResponder.panHandlers}>
+      <View style={styles.draggableArea}>
+        <View style={styles.dragHandle} />
+      </View>
+      <View style={styles.sheetContent}>
+        {children}
+      </View>
+    </Animated.View>
   )
 }
 
