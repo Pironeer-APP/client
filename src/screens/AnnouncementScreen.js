@@ -6,7 +6,7 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import dayjs from 'dayjs';
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
@@ -17,71 +17,6 @@ import Gap from '../components/Gap';
 import {Box, PaddingBox} from '../components/Box';
 import {StyledSubText, StyledText} from '../components/Text';
 import {RowView} from './HomeScreen';
-
-const data = {
-  posts: [
-    {
-      post_id: 1,
-      level: 20,
-      title: 'test1_title',
-      content: 'test1_content',
-      category: 1,
-      created_at: '2023-09-24T23:48:02.000Z',
-      updated_at: '2023-09-24T23:48:02.000Z',
-      due_date: null,
-    },
-    {
-      post_id: 2,
-      level: 20,
-      title: 'test1_title2',
-      content: 'test1_content2',
-      category: 2,
-      created_at: '2023-09-25T01:05:05.000Z',
-      updated_at: '2023-09-25T01:05:05.000Z',
-      due_date: null,
-    },
-    {
-      post_id: 3,
-      level: 20,
-      title: 'test1_title3',
-      content: 'test1_content3',
-      category: 3,
-      created_at: '2023-09-25T01:05:20.000Z',
-      updated_at: '2023-09-25T01:05:20.000Z',
-      due_date: null,
-    },
-    {
-      post_id: 4,
-      level: 20,
-      title: 'test1_title3',
-      content: 'test1_content3',
-      category: 3,
-      created_at: '2023-09-25T01:05:20.000Z',
-      updated_at: '2023-09-25T01:05:20.000Z',
-      due_date: null,
-    },
-    {
-      post_id: 5,
-      level: 20,
-      title: 'test1_title3',
-      content: 'test1_content3',
-      category: 3,
-      created_at: '2023-09-25T01:05:20.000Z',
-      updated_at: '2023-09-25T01:05:20.000Z',
-      due_date: null,
-    },
-    {
-      post_id: 6,
-      level: 20,
-      title: 'test1_title3',
-      content: 'test1_content3',
-      category: 3,
-      created_at: '2023-09-25T01:05:20.000Z',
-      updated_at: '2023-09-25T01:05:20.000Z',
-      due_date: null,
-    },
-  ],
-};
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -136,18 +71,18 @@ const RenderItem = ({item}) => (
   />
 );
 
-const FirstRoute = () => (
+const FirstRoute = ({posts}) => (
   <View style={{flex: 1}}>
     <FlatList
-      data={data.posts}
+      data={posts}
       renderItem={RenderItem}
       keyExtractor={item => item.post_id}
     />
   </View>
 );
 
-const FilteredItems = ({category}) => {
-  const filteredPosts = data.posts.filter(item => item.category === category);
+const FilteredItems = ({category, posts}) => {
+  const filteredPosts = posts.filter(item => item.category === category);
   return (
     <View style={{flex: 1}}>
       <FlatList
@@ -159,16 +94,16 @@ const FilteredItems = ({category}) => {
   );
 };
 
-const SecondRoute = () => <FilteredItems category={1} />;
-const ThirdRoute = () => <FilteredItems category={2} />;
-const FourthRoute = () => <FilteredItems category={3} />;
+const SecondRoute = ({posts}) => <FilteredItems category={1} posts={posts} />;
+const ThirdRoute = ({posts}) => <FilteredItems category={2} posts={posts} />;
+const FourthRoute = ({posts}) => <FilteredItems category={3} posts={posts} />;
 
-const renderScene = SceneMap({
-  first: FirstRoute,
-  second: SecondRoute,
-  third: ThirdRoute,
-  fourth: FourthRoute,
-});
+// const renderScene = SceneMap({
+//   first: FirstRoute,
+//   second: SecondRoute,
+//   third: ThirdRoute,
+//   fourth: FourthRoute,
+// });
 
 const AnnouncementScreen = () => {
   const layout = useWindowDimensions();
@@ -180,6 +115,32 @@ const AnnouncementScreen = () => {
     {key: 'fourth', title: '기타'},
   ]);
 
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3000/api/post?level=20')
+      .then(response => response.json())
+      .then(data => {
+        setPosts(data.posts);
+      })
+      .catch(error => {
+        console.error('Error fetching posts:', error);
+      });
+  }, []);
+  const renderScene = ({route}) => {
+    switch (route.key) {
+      case 'first':
+        return <FirstRoute posts={posts} />;
+      case 'second':
+        return <SecondRoute posts={posts} />;
+      case 'third':
+        return <ThirdRoute posts={posts} />;
+      case 'fourth':
+        return <FourthRoute posts={posts} />;
+      default:
+        return null;
+    }
+  };
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
