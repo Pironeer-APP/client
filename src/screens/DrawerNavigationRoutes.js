@@ -5,6 +5,7 @@ import AssignmentScreen from './AssignmentScreen';
 import AnnouncementScreen from './AnnouncementScreen';
 import DepositScreen from './DepositScreen';
 import AttendanceScreen from './AttendanceScreen';
+import Settings from './Settings';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,7 @@ export default function DrawerNavigationRoutes() {
       <Stack.Screen name="AnnouncementScreen" component={AnnouncementScreen} />
       <Stack.Screen name="DepositScreen" component={DepositScreen} />
       <Stack.Screen name="AttendanceScreen" component={AttendanceScreen} />
+      <Stack.Screen name="Settings" component={Settings} />
     </Stack.Navigator>
   );
 }

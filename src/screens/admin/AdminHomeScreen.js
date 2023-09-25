@@ -9,23 +9,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { COLORS } from '../assets/Theme';
+import { COLORS } from '../../assets/Theme';
 import styled from 'styled-components/native';
-import { StyledText } from '../components/Text';
-import { Box } from '../components/Box';
-import { getData } from '../utils';
-import { RightArrowBtn } from '../components/Button';
-
-const StyledContainer = styled.SafeAreaView`
-  background-color: black;
-  flex: 1;
-  padding: ${Platform.OS === 'android' ? '20px' : 0};
-`;
+import { StyledText } from '../../components/Text';
+import { Box } from '../../components/Box';
+import { getData } from '../../utils';
+import { RightArrowBtn } from '../../components/Button';
+import StyledContainer from '../../components/StyledContainer'
 
 const Header = () => (
   <View>
     <Image
-      source={require('../assets/images/headerLogo.png')}
+      source={require('../../assets/images/headerLogo.png')}
       style={{ width: 50, height: 50 }}
     />
   </View>
@@ -116,7 +111,7 @@ const AdminHomeScreen = ({navigation}) => {
                   }}>
                   <StyledText content={'출석체크'} fontSize={24} />
                   <Image
-                    source={require('../assets/icons/calendar.png')}
+                    source={require('../../assets/icons/calendar.png')}
                     style={{width: 40, height: 40, marginTop: 10}}
                   />
                 </View>
@@ -124,10 +119,10 @@ const AdminHomeScreen = ({navigation}) => {
             </TouchableOpacity>
             <View style={{gap: 20, flex: 1}}>
               <Box>
-                <TouchableOpacity style={{padding: 20}}>
+                <TouchableOpacity style={{padding: 20}} onPress={() => {navigation.push('AdminDepositScreen')}}>
                   <StyledText content={'보증금'} fontSize={24} />
                   <Image
-                    source={require('../assets/icons/money.png')}
+                    source={require('../../assets/icons/money.png')}
                     style={{width: 30, height: 30, marginTop: 10}}
                   />
                 </TouchableOpacity>
@@ -136,7 +131,7 @@ const AdminHomeScreen = ({navigation}) => {
                 <TouchableOpacity style={{padding: 20}}>
                   <StyledText content={'공지'} fontSize={24} />
                   <Image
-                    source={require('../assets/icons/announce.png')}
+                    source={require('../../assets/icons/announce.png')}
                     style={{width: 30, height: 30, marginTop: 10}}
                   />
                 </TouchableOpacity>
@@ -149,16 +144,16 @@ const AdminHomeScreen = ({navigation}) => {
             <TouchableOpacity style={{ padding: 20 }} onPress={() => {navigation.push('AddUserScreen')}}>
               <StyledText content={'회원등록'} fontSize={24} />
               <Image
-                source={require('../assets/icons/person-add.png')}
+                source={require('../../assets/icons/person-add.png')}
                 style={{ width: 30, height: 30, marginTop: 10 }}
               />
             </TouchableOpacity>
           </View>
           <View style={styles.middleBox}>
-            <TouchableOpacity style={{ padding: 20 }}>
+            <TouchableOpacity style={{ padding: 20 }} onPress={() => {navigation.push('AdminSessionScreen')}}>
               <StyledText content={'세션일정'} fontSize={24} />
               <Image
-                source={require('../assets/icons/session-timeout.png')}
+                source={require('../../assets/icons/session-timeout.png')}
                 style={{ width: 30, height: 30, marginTop: 10 }}
               />
             </TouchableOpacity>
@@ -204,10 +199,10 @@ const AdminHomeScreen = ({navigation}) => {
             justifyContent: 'center',
           }}>
           <Box style={{ flexDirection: 'row' }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.push('Settings')}>
               <RowView style={{ padding: 20 }}>
                 <Image
-                  source={require('../assets/icons/settings.png')}
+                  source={require('../../assets/icons/settings.png')}
                   style={{ width: 20, height: 20 }}
                 />
                 <View style={{ width: 10 }} />

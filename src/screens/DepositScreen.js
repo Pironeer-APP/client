@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {HeaderDetail} from '../components/Header';
-import {StyledContainer} from './HomeScreen';
+import HeaderDetail from '../components/Header';
+import StyledContainer from '../components/StyledContainer';
 
 const DepositScreen = () => {
   return (

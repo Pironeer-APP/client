@@ -1,9 +1,11 @@
-import {useNavigation} from '@react-navigation/native';
-import {StyledText} from '../components/Text';
-import {RowView} from '../screens/HomeScreen';
-import {Image, TouchableOpacity, View} from 'react-native';
+import { View } from 'react-native'
+import React from 'react'
+import { LeftArrowBtn } from './Button.js';
+import { StyledText } from '../components/Text';
+import { RowView } from '../screens/HomeScreen';
+import { useNavigation } from '@react-navigation/native';
 
-export const HeaderDetail = props => {
+export default function HeaderDetail({ title }) {
   const navigation = useNavigation();
 
   const handleGoBack = () => {
@@ -11,14 +13,9 @@ export const HeaderDetail = props => {
   };
   return (
     <RowView>
-      <TouchableOpacity onPress={handleGoBack}>
-        <Image
-          source={require('../assets/icons/left-arrow.png')}
-          style={{width: 20, height: 20}}
-        />
-      </TouchableOpacity>
-      <StyledText content={`${props.title}`} fontSize={24} />
-      <View style={{width: 20}} />
+      <LeftArrowBtn onPress={handleGoBack} />
+      <StyledText content={title} fontSize={24} />
+      <View />
     </RowView>
-  );
-};
+  )
+}

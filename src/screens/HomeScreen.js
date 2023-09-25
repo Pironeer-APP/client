@@ -13,13 +13,8 @@ import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import {StyledText} from '../components/Text';
 import {Box} from '../components/Box';
-import {RightArrowBtn} from '../components/Button';
-
-export const StyledContainer = styled.SafeAreaView`
-  background-color: black;
-  flex: 1;
-  padding: ${Platform.OS === 'android' ? '20px' : 0};
-`;
+import { RightArrowBtn } from '../components/Button';
+import StyledContainer from '../components/StyledContainer';
 
 const Header = () => (
   <View>
@@ -36,7 +31,7 @@ export const RowView = styled.View`
   align-items: center;
 `;
 
-const Gap = () => <View style={{height: 20}}></View>;
+export const Gap = () => <View style={{height: 20}}></View>;
 
 const StyledProgressBar = styled.View`
   height: 10px;
@@ -183,7 +178,7 @@ const HomeScreen = ({navigation}) => {
             justifyContent: 'center',
           }}>
           <Box style={{flexDirection: 'row'}}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.push('Settings')}>
               <RowView style={{padding: 20}}>
                 <Image
                   source={require('../assets/icons/settings.png')}

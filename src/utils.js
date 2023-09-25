@@ -2,9 +2,6 @@ import { Platform } from "react-native";
 import { _ANDROID_AVD_API_HOST, _IOS_API_HOST } from "./variables";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const onPressHome = (navigation) => {
-  navigation.navigate('Home');
-}
 export const autoHyphen = (value) => {
   const newValue = value
     .replace(/[^0-9]/g, '')

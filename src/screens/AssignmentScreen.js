@@ -9,7 +9,7 @@ import {
 import React from 'react';
 import {RowView, StyledContainer} from './HomeScreen';
 import {StyledText} from '../components/Text';
-import {HeaderDetail} from '../components/Header';
+import HeaderDetail from '../components/Header';
 
 const AssignmentScreen = () => {
   return (

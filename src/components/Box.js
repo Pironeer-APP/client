@@ -8,4 +8,12 @@ const StyledBox = styled.View`
   border-radius: 15px;
 `;
 
+const StyledPaddingBox = styled.View`
+background-color: ${COLORS.gray};
+border-radius: 15px;
+padding: 15px 25px;
+marginTop: 10px;
+`
+
 export const Box = ({children}) => <StyledBox>{children}</StyledBox>;
+export const PaddingBox = ({children}) => <StyledPaddingBox>{children}</StyledPaddingBox>;

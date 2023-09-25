@@ -1,11 +1,12 @@
 import { View, StyleSheet, Keyboard, SafeAreaView, KeyboardAvoidingView } from 'react-native'
 import React, { useEffect } from 'react'
 
-import { COLORS } from '../assets/Theme'
-import { MainButton } from '../components/Button'
-import AddUserHeader from '../adduser/AddUserHeader'
-import AddUserContent from '../adduser/AddUserContent'
-import useAdduser from '../adduser/use-adduser'
+import { COLORS } from '../../assets/Theme'
+import { MainButton } from '../../components/Button'
+import AddUserContent from '../../adduser/AddUserContent'
+import useAdduser from '../../adduser/use-adduser'
+import HeaderDetail from '../../components/Header'
+import StyledContainer from '../../components/StyledContainer'
 
 export default function AddUserScreen({ navigation }) {
   const {
@@ -35,8 +36,8 @@ export default function AddUserScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <AddUserHeader onPressBack={onPressBack} />
+    <StyledContainer>
+      <HeaderDetail onPressBack={onPressBack} />
       <KeyboardAvoidingView
         keyboardVerticalOffset={45}
         behavior={Platform.select({ios: 'padding', android: undefined})}
@@ -56,7 +57,7 @@ export default function AddUserScreen({ navigation }) {
           onPress={onPressNext} />
       </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </StyledContainer>
   )
 }
 
