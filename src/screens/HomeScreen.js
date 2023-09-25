@@ -15,7 +15,7 @@ import {StyledText} from '../components/Text';
 import {Box} from '../components/Box';
 import {RightArrowBtn} from '../components/Button';
 import StyledContainer from '../components/StyledContainer';
-
+import Gap from '../components/Gap';
 
 const Header = () => (
   <View>
@@ -31,8 +31,6 @@ export const RowView = styled.View`
   justify-content: space-between;
   align-items: center;
 `;
-
-export const Gap = () => <View style={{height: 20}}></View>;
 
 export const StyledProgressBar = styled.View`
   height: 10px;
