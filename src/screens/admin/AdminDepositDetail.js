@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -9,6 +9,8 @@ import { StyledText } from '../../components/Text';
 import { CouponButton, MainButton } from '../../components/Button';
 import Gap from '../../components/Gap';
 import { fetchPost } from '../../utils';
+import DepositHistory from '../../deposit/DepositHistory';
+import useAdminDepositDetail from '../../deposit/use-adminDepositDetail';
 
 export default function AdminDepositDetail({ route }) {
   const userInfo = route.params.userInfo;
@@ -23,6 +25,7 @@ export default function AdminDepositDetail({ route }) {
       Alert.alert('면제권을 선택해 주세요', '', [
         {text: '확인'},
       ]);
+      return;
     }
     const price = selected === "과제면제권" ? 20000 : 10000;
     const url = '/admin/addCoupon';
@@ -39,6 +42,7 @@ export default function AdminDepositDetail({ route }) {
   return (
     <StyledContainer>
       <HeaderDetail title={`${userInfo.name}님의 보증금 관리`} />
+      <DepositHistory userInfo={userInfo} />
       <BottomSheetModal>
         {/* 여기에 모달 내용 담기 */}
         <StyledText content="직접 관리하기" fontSize={18} />
