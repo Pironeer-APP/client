@@ -10,10 +10,13 @@ import {
 import React from 'react';
 import {ProgressBar, RowView, StyledContainer} from './HomeScreen';
 import {StyledText} from '../components/Text';
-import {HeaderDetail} from '../components/Header';
+
 import {Box} from '../components/Box';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
+
+import HeaderDetail from '../components/Header';
+
 
 const data = [
   {
