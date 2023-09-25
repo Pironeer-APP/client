@@ -10,15 +10,17 @@ export const HeaderDetail = props => {
     navigation.goBack();
   };
   return (
-    <RowView>
-      <TouchableOpacity onPress={handleGoBack}>
-        <Image
-          source={require('../assets/icons/left-arrow.png')}
-          style={{width: 20, height: 20}}
-        />
-      </TouchableOpacity>
-      <StyledText content={`${props.title}`} fontSize={24} />
-      <View style={{width: 20}} />
-    </RowView>
+    <View style={{paddingVertical: 20}}>
+      <RowView>
+        <TouchableOpacity onPress={handleGoBack}>
+          <Image
+            source={require('../assets/icons/left-arrow.png')}
+            style={{width: 20, height: 20}}
+          />
+        </TouchableOpacity>
+        <StyledText content={`${props.title}`} fontSize={24} />
+        <View style={{width: 20}} />
+      </RowView>
+    </View>
   );
 };
