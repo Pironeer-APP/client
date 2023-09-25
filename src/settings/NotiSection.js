@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Section from './Section'
 import ToggleItem from '../components/ToggleItem';
-import { Gap } from '../screens/HomeScreen';
+import Gap from '../components/Gap';
 
 export default function NotiSection() {
   const [assignAlert, setAssignAlert] = useState(true);
