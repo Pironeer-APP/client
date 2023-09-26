@@ -7,7 +7,7 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import dayjs from 'dayjs';
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
@@ -21,7 +21,7 @@ import {RowView} from './HomeScreen';
 import {fetchPost, getData} from '../utils';
 import {useNavigation} from '@react-navigation/native';
 import {MainButton} from '../components/Button';
-import { useRoute } from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -53,7 +53,9 @@ const Badge = props => {
 const PostBox = ({title, sort, date, id, read}) => {
   const navigation = useNavigation();
   const goToAncDet = () => {
-    navigation.navigate('AnnouncementDetail', {post_id: id});
+    navigation.navigate('AnnouncementDetail', {
+      post_id: id,
+    });
   };
   const dateString = date;
   const formattedDate = dayjs(dateString).format('M.D ddd').toUpperCase();
@@ -119,6 +121,7 @@ const AnnouncementScreen = ({navigation}) => {
   ]);
 
   const [posts, setPosts] = useState([]);
+  let copiedPosts = JSON.parse(JSON.stringify(posts));
 
   useEffect(() => {
     const url =
@@ -129,12 +132,14 @@ const AnnouncementScreen = ({navigation}) => {
     fetch(url)
       .then(response => response.json())
       .then(data => {
+        console.log('공지');
         setPosts(data.posts);
       })
       .catch(error => {
         console.error('Error fetching posts:', error);
       });
-  }, []);
+  }, [copiedPosts]);
+
   const renderScene = ({route}) => {
     switch (route.key) {
       case 'first':
@@ -152,9 +157,6 @@ const AnnouncementScreen = ({navigation}) => {
 
   const route = useRoute();
   const userInfo = route.params.userInfo;
-
-  console.log(userInfo);
-
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
@@ -197,6 +199,7 @@ const AnnouncementScreen = ({navigation}) => {
     </StyledContainer>
   );
 };
+
 const TabLabel = styled.Text`
   color: ${props =>
     props.focused ? `${COLORS.bg_black}` : `${COLORS.textColor}`};

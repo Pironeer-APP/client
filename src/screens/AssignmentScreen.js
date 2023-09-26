@@ -6,8 +6,10 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  Animated,
+  Easing,
 } from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {ProgressBar, RowView} from './HomeScreen';
 import {StyledSubText, StyledText} from '../components/Text';
 import StyledContainer from '../components/StyledContainer';
@@ -16,10 +18,6 @@ import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import HeaderDetail from '../components/Header';
 
-// grade(과제 결과 INT값)
-// title(과제 제목)
-// due_date(마감 기한)
-// created_at(공지 생성 시각)
 const data = [
   {
     id: 1,
@@ -68,50 +66,83 @@ const StatusLine = () => {
     <View style={{backgroundColor: `${COLORS.icon_gray}`, width: 1, flex: 1}} />
   );
 };
-const InProgressAsgBox = () => (
-  <View
-    style={{
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 20,
-    }}>
+const InProgressAsgBox = () => {
+  const [scale] = useState(new Animated.Value(1)); // 초기 크기 1
+
+  useEffect(() => {
+    // 크기 애니메이션 설정
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(scale, {
+          toValue: 1.2,
+          duration: 1000,
+          easing: Easing.easeInOut,
+          useNativeDriver: false,
+        }),
+        Animated.timing(scale, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.easeInOut,
+          useNativeDriver: false,
+        }),
+      ]),
+    ).start();
+  }, []);
+  return (
     <View
       style={{
-        flexDirection: 'column',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 20,
       }}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <View style={{flex: 1}} />
-        <View>
-          <Image
-            source={require('../assets/icons/circle_onair.png')}
-            style={{width: 30, height: 30}}
-          />
+      <View
+        style={{
+          flexDirection: 'column',
+        }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: 50,
+          }}>
+          <View style={{flex: 1}} />
+          <View>
+            <Animated.Image
+              source={require('../assets/icons/circle_onair.png')}
+              style={{
+                width: 50,
+                height: 50,
+                transform: [{scale}], // 크기 애니메이션 적용
+              }}
+            />
+          </View>
+          <StatusLine />
         </View>
-        <StatusLine />
+      </View>
+      <View
+        style={{
+          flexDirection: 'column',
+          flex: 1,
+          justifyContent: 'center',
+        }}>
+        <Box>
+          <View style={{padding: 20}}>
+            <RowView style={{marginBottom: 10}}>
+              <StyledSubText content={'7.20 MON'} />
+              <StyledSubText content={'DUE 7.22'} />
+            </RowView>
+            <StyledText content={'피로그래머 카드게임'} fontSize={20} />
+            <RowView style={{marginTop: 10}}>
+              <ProgressBar status={'30%'} />
+              <StyledText content={'18:38:43'} fontSize={16} />
+            </RowView>
+          </View>
+        </Box>
       </View>
     </View>
-    <View
-      style={{
-        flexDirection: 'column',
-        flex: 1,
-        justifyContent: 'center',
-      }}>
-      <Box>
-        <View style={{padding: 20}}>
-          <RowView style={{marginBottom: 10}}>
-            <StyledSubText content={'7.20 MON'} />
-            <StyledSubText content={'DUE 7.22'} />
-          </RowView>
-          <StyledText content={'피로그래머 카드게임'} fontSize={20} />
-          <RowView style={{marginTop: 10}}>
-            <ProgressBar status={'30%'} />
-            <StyledText content={'18:38:43'} fontSize={16} />
-          </RowView>
-        </View>
-      </Box>
-    </View>
-  </View>
-);
+  );
+};
 const DoneAsgBox = ({grade}) => (
   <View
     style={{
@@ -123,7 +154,13 @@ const DoneAsgBox = ({grade}) => (
       style={{
         flexDirection: 'column',
       }}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: 50,
+        }}>
         <StatusLine />
         <StatusCircle grade={grade} />
         <StatusLine />
