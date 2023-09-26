@@ -1,21 +1,19 @@
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native'
 import React, {useState, useEffect} from 'react'
-import styled from 'styled-components/native'
-import { FontStyledText, StyledText } from '../components/Text'
-import { COLORS } from '../assets/Theme'
-import { PaddingBox } from '../components/Box'
-import { getData } from '../utils'
+import { StyledText } from '../components/Text'
 import { RightArrowBtn } from '../components/Button'
 import Gap from '../components/Gap'
 import Section from './Section'
+import { getData } from '../utils'
+import useUserInfo from '../use-userInfo'
 
 
 export default function UserSection() {
-  const [userInfo, setUserInfo] = useState({});
-  const getUserInfo = async () => {
-    const storageUserInfo = await getData('user_info');
-    setUserInfo(storageUserInfo);
-  }
+  const {
+    userInfo,
+    getUserInfo,
+  } = useUserInfo();
+  
   useEffect(() => {
     getUserInfo();
   }, []);

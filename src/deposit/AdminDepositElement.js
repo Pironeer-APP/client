@@ -1,11 +1,14 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import styled from 'styled-components/native'
+import { useNavigation } from '@react-navigation/native';
+
 import { COLORS } from '../assets/Theme'
 import { FontStyledText } from '../components/Text'
 import { RightArrowBtn } from '../components/Button'
 
-export default function AdminDepositElement({userInfo, navigation}) {
+export default function AdminDepositElement({userInfo}) {
+  const navigation = useNavigation();
   return (
     // navigate로 스크린에 파라미터 보내는 방법
     <DepositContainer onPress={() => navigation.navigate({name: 'AdminDepositDetail', params: {userInfo: userInfo}})}>

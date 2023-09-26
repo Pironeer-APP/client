@@ -7,18 +7,15 @@ import { FontStyledText } from '../components/Text'
 
 export default function Section({title, children}) {
   return (
-    <Container>
+    <View>
       <FontStyledText style={styles.settingDetail}>{title}</FontStyledText>
       <PaddingBox>
         {children}
       </PaddingBox>
-    </Container>
+    </View>
   )
 }
 
-const Container = styled.View`
-padding: 20px 0;
-`
 const styles = StyleSheet.create({
   settingDetail: {
     color: COLORS.light_gray,

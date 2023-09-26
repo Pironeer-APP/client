@@ -3,7 +3,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './src/screens/LoginScreen';
 import DrawerNavigationRoutes from './src/screens/DrawerNavigationRoutes';
-import AdminNavigationRoutes from './src/screens/AdminNavigationRoutes';
 import SplashScreen from './src/screens/SplashScreen';
 
 const Stack = createNativeStackNavigator();
@@ -18,10 +17,6 @@ export default function App() {
         <Stack.Screen
           name="DrawerNavigationRoutes"
           component={DrawerNavigationRoutes}
-        />
-        <Stack.Screen
-          name="AdminNavigationRoutes"
-          component={AdminNavigationRoutes}
         />
       </Stack.Navigator>
     </NavigationContainer>

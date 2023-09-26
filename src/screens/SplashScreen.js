@@ -20,8 +20,7 @@ export default function SplashScreen({ navigation }) {
       console.log(userInfo);
       navigation.replace(
         userInfo === null
-        ? 'LoginScreen' : userInfo.is_admin === 1
-        ? 'AdminNavigationRoutes' : 'DrawerNavigationRoutes');
+        ? 'LoginScreen' : 'DrawerNavigationRoutes');
     }, 1000);
   }
   useEffect(() => {

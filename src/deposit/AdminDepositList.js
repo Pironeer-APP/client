@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import useAdminDeposit from './use-adminDeposit'
 import AdminDepositElement from './AdminDepositElement';
 
-export default function AdminDepositList({navigation}) {
+export default function AdminDepositList() {
   const {
     userList,
     fetchData
@@ -19,7 +19,6 @@ export default function AdminDepositList({navigation}) {
         <AdminDepositElement
           key={user.user_id}
           userInfo={user}
-          navigation={navigation}
         />
       ))}
     </ScrollView>

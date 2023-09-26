@@ -53,6 +53,7 @@ export default function AddUserScreen({ navigation }) {
           onInputEmail={onInputEmail}
         />
         <MainButton
+          height={70}
           content="다음"
           onPress={onPressNext} />
       </View>
