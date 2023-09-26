@@ -8,7 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import {StyledText} from '../components/Text';
@@ -34,10 +34,12 @@ export const RowView = styled.View`
 `;
 
 export const StyledProgressBar = styled.View`
-  height: 10px;
+  height: 5px;
   background-color: ${COLORS.icon_gray};
   flex: 1;
   margin-right: 10px;
+  border-radius: 5px;
+  overflow: hidden;
   margin-top: ${Platform.OS === 'android' ? '5px' : 0};
 `;
 export const ProgressBar = props => (
@@ -53,10 +55,7 @@ export const ProgressBar = props => (
 );
 
 const HomeScreen = ({navigation}) => {
-  const {
-    userInfo,
-    getUserInfo
-  } = useUserInfo();
+  const {userInfo, getUserInfo} = useUserInfo();
 
   useEffect(() => {
     getUserInfo();
@@ -79,7 +78,7 @@ const HomeScreen = ({navigation}) => {
   };
   const goToSession = () => {
     navigation.navigate('AdminSessionScreen');
-  }
+  };
   return (
     <StyledContainer>
       <ScrollView>
@@ -93,7 +92,10 @@ const HomeScreen = ({navigation}) => {
         <Box>
           <TouchableOpacity style={{padding: 20}} onPress={goToAsgnmt}>
             <RowView style={{marginBottom: 10}}>
-              <StyledText content={userInfo.is_admin ? '과제 채점' : '과제'} fontSize={24} />
+              <StyledText
+                content={userInfo.is_admin ? '과제 채점' : '과제'}
+                fontSize={24}
+              />
               <RightArrowBtn />
             </RowView>
             <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
@@ -155,33 +157,31 @@ const HomeScreen = ({navigation}) => {
         </View>
         <Gap />
         {/* 관리자일 때만 보이는 */}
-        {!!userInfo.is_admin && (<>
-        <View style={{gap: 20, flex: 1, flexDirection: 'row'}}>
-          <View style={styles.middleBox}>
-            <TouchableOpacity
-              style={{padding: 20}}
-              onPress={goToAddUser}>
-              <StyledText content={'회원등록'} fontSize={24} />
-              <Image
-                source={require('../assets/icons/person-add.png')}
-                style={{width: 30, height: 30, marginTop: 10}}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.middleBox}>
-            <TouchableOpacity
-              style={{padding: 20}}
-              onPress={goToSession}>
-              <StyledText content={'세션일정'} fontSize={24} />
-              <Image
-                source={require('../assets/icons/session-timeout.png')}
-                style={{width: 30, height: 30, marginTop: 10}}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <Gap />
-        </>)}
+        {!!userInfo.is_admin && (
+          <>
+            <View style={{gap: 20, flex: 1, flexDirection: 'row'}}>
+              <View style={styles.middleBox}>
+                <TouchableOpacity style={{padding: 20}} onPress={goToAddUser}>
+                  <StyledText content={'회원등록'} fontSize={24} />
+                  <Image
+                    source={require('../assets/icons/person-add.png')}
+                    style={{width: 30, height: 30, marginTop: 10}}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.middleBox}>
+                <TouchableOpacity style={{padding: 20}} onPress={goToSession}>
+                  <StyledText content={'세션일정'} fontSize={24} />
+                  <Image
+                    source={require('../assets/icons/session-timeout.png')}
+                    style={{width: 30, height: 30, marginTop: 10}}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Gap />
+          </>
+        )}
         <StyledText
           content={'피로그래밍을 알차게 즐기고 싶다면?'}
           fontSize={20}
