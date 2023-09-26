@@ -7,15 +7,16 @@ import NotiSection from '../settings/NotiSection'
 import ThemeSection from '../settings/ThemeSection'
 import PolicySection from '../settings/PolicySection'
 import LogoutSection from '../settings/LogoutSection'
-import { getData } from '../utils'
 import Gap from '../components/Gap'
+import useUserInfo from '../use-userInfo'
 
 export default function Settings() {
-  const [userInfo, setUserInfo] = useState({});
-  const getUserInfo = async () => {
-    const storageUserInfo = await getData('user_info');
-    setUserInfo(storageUserInfo);
-  }
+  const {
+    userInfo,
+    isAdmin,
+    getUserInfo,
+  } = useUserInfo();
+  
   useEffect(() => {
     getUserInfo();
   }, []);

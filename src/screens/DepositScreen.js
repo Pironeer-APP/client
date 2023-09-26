@@ -6,16 +6,12 @@ import DepositHistory from '../deposit/DepositHistory';
 import useDepositDetail from '../deposit/use-depositDetail';
 import DepositHistoryHeader from '../deposit/DepositHistoryHeader';
 import useUserInfo from '../use-userInfo';
+import AdminDepositList from '../deposit/AdminDepositList';
+import { useRoute } from '@react-navigation/native';
 
 const DepositScreen = () => {
-  const {
-    userInfo,
-    getUserInfo,
-  } = useUserInfo();
-  
-  useEffect(() => {
-    getUserInfo();
-  }, []);
+  const route = useRoute();
+  const userInfo = route.params.userInfo;
 
   const {
     depositHistory,
@@ -38,16 +34,21 @@ const DepositScreen = () => {
 
   return (
     <StyledContainer>
-      <HeaderDetail title={`${userInfo.name}님의 보증금 관리`} />
-      <StyledContainer>
-        <DepositHistoryHeader
-          oneUserInfo={oneUserInfo}
-          couponInfo={couponInfo}
-        />
-        <DepositHistory
-          depositHistory={depositHistory}
-        />
-      </StyledContainer>
+      <HeaderDetail title={!!userInfo.is_admin ? '보증금 관리' : `${userInfo.name}님의 보증금 관리`} />
+      {!!userInfo.is_admin && (
+        <AdminDepositList />
+      )}
+      {!userInfo.is_admin && (
+        <StyledContainer>
+          <DepositHistoryHeader
+            oneUserInfo={oneUserInfo}
+            couponInfo={couponInfo}
+          />
+          <DepositHistory
+            depositHistory={depositHistory}
+          />
+        </StyledContainer>
+      )}
     </StyledContainer>
   );
 };

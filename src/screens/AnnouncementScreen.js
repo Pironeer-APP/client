@@ -21,6 +21,7 @@ import {RowView} from './HomeScreen';
 import {fetchPost, getData} from '../utils';
 import {useNavigation} from '@react-navigation/native';
 import {MainButton} from '../components/Button';
+import { useRoute } from '@react-navigation/native';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -149,14 +150,10 @@ const AnnouncementScreen = ({navigation}) => {
     }
   };
 
-  const [userInfo, setUserInfo] = useState({});
-  const getUserInfo = async () => {
-    const storageUserInfo = await getData('user_info');
-    setUserInfo(storageUserInfo);
-  };
-  useEffect(() => {
-    getUserInfo();
-  }, []);
+  const route = useRoute();
+  const userInfo = route.params.userInfo;
+
+  console.log(userInfo);
 
   return (
     <StyledContainer>
@@ -190,12 +187,13 @@ const AnnouncementScreen = ({navigation}) => {
           />
         )}
       />
-      {userInfo.is_admin === 1 ? (
+      {!!userInfo.is_admin && (
         <MainButton
           content={'글 작성하기'}
           onPress={() => navigation.navigate('AdminCreateNotice')}
+          height={70}
         />
-      ) : null}
+      )}
     </StyledContainer>
   );
 };

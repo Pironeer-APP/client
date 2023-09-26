@@ -8,7 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import {StyledText} from '../components/Text';
@@ -16,6 +16,7 @@ import {Box} from '../components/Box';
 import {RightArrowBtn} from '../components/Button';
 import StyledContainer from '../components/StyledContainer';
 import Gap from '../components/Gap';
+import useUserInfo from '../use-userInfo';
 
 const Header = () => (
   <View>
@@ -52,32 +53,47 @@ export const ProgressBar = props => (
 );
 
 const HomeScreen = ({navigation}) => {
+  const {
+    userInfo,
+    getUserInfo
+  } = useUserInfo();
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
   const goToAsgnmt = () => {
     navigation.navigate('AssignmentScreen');
   };
   const goToAnncmt = () => {
-    navigation.navigate('AnnouncementScreen');
+    navigation.navigate('AnnouncementScreen', {userInfo: userInfo});
   };
   const goToDeposit = () => {
-    navigation.navigate('DepositScreen');
+    navigation.navigate('DepositScreen', {userInfo: userInfo});
   };
   const goToAtndnc = () => {
     navigation.navigate('AttendanceScreen');
   };
+  const goToAddUser = () => {
+    navigation.navigate('AddUserScreen');
+  };
+  const goToSession = () => {
+    navigation.navigate('AdminSessionScreen');
+  }
   return (
     <StyledContainer>
       <ScrollView>
         <Header />
         <Gap />
         <StyledText
-          content={'20기 김피로님 \n오늘은 대면 세션 날이에요'}
+          content={`${userInfo.level}기 ${userInfo.name}님 \n오늘은 대면 세션 날이에요`}
           fontSize={24}
         />
         <Gap />
         <Box>
           <TouchableOpacity style={{padding: 20}} onPress={goToAsgnmt}>
             <RowView style={{marginBottom: 10}}>
-              <StyledText content={'과제'} fontSize={24} />
+              <StyledText content={userInfo.is_admin ? '과제 채점' : '과제'} fontSize={24} />
               <RightArrowBtn />
             </RowView>
             <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
@@ -138,6 +154,34 @@ const HomeScreen = ({navigation}) => {
           </View>
         </View>
         <Gap />
+        {/* 관리자일 때만 보이는 */}
+        {!!userInfo.is_admin && (<>
+        <View style={{gap: 20, flex: 1, flexDirection: 'row'}}>
+          <View style={styles.middleBox}>
+            <TouchableOpacity
+              style={{padding: 20}}
+              onPress={goToAddUser}>
+              <StyledText content={'회원등록'} fontSize={24} />
+              <Image
+                source={require('../assets/icons/person-add.png')}
+                style={{width: 30, height: 30, marginTop: 10}}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.middleBox}>
+            <TouchableOpacity
+              style={{padding: 20}}
+              onPress={goToSession}>
+              <StyledText content={'세션일정'} fontSize={24} />
+              <Image
+                source={require('../assets/icons/session-timeout.png')}
+                style={{width: 30, height: 30, marginTop: 10}}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <Gap />
+        </>)}
         <StyledText
           content={'피로그래밍을 알차게 즐기고 싶다면?'}
           fontSize={20}
@@ -193,5 +237,13 @@ const HomeScreen = ({navigation}) => {
     </StyledContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  middleBox: {
+    flex: 1,
+    backgroundColor: COLORS.gray,
+    borderRadius: 15,
+  },
+});
 
 export default HomeScreen;

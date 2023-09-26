@@ -3,10 +3,13 @@ import React from 'react'
 import { MiniButton } from '../../components/Button'
 import { COLORS } from '../../assets/Theme'
 import StyledContainer from '../../components/StyledContainer'
+import { useNavigation } from '@react-navigation/native';
 
-export default function AddUserSuccessScreen({ navigation }) {
+export default function AddUserSuccessScreen() {
+  const navigation = useNavigation();
+
   const onPress = () => {
-   navigation.navigate('AdminHomeScreen');
+   navigation.navigate('HomeScreen');
   }
   const onPressKeep = () => {
     navigation.navigate('AddUserScreen');

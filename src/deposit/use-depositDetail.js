@@ -1,6 +1,5 @@
-import { View, Text } from 'react-native'
-import React, { useState } from 'react'
-import { fetchPost, getData, storeData } from '../utils';
+import { useState } from 'react'
+import { fetchPost } from '../utils';
 
 export default function useDepositDetail() {
   const [couponInfo, setCouponInfo] = useState([]);
@@ -8,19 +7,19 @@ export default function useDepositDetail() {
   const [oneUserInfo, setOneUserInfo] = useState({});
 
   const getDepositHistory = async (userInfo) => {
-    const url = '/admin/getDepositHistory';
+    const url = '/deposit/getDepositHistory';
     const body = userInfo;
     const res = await fetchPost(url, body);
     setDepositHistory(res.histories);
   }
   const getCouponInfo = async (userInfo) => {
-    const url = '/admin/getCoupons';
+    const url = '/deposit/getCoupons';
     const body = userInfo;
     const res = await fetchPost(url, body);
     setCouponInfo(res.couponInfo);
   }
   const getOneUserInfo = async (userInfo) => {
-    const url = '/admin/getOneUserInfo';
+    const url = '/user/getOneUserInfo';
     const body = userInfo;
     const res = await fetchPost(url, body);
     setOneUserInfo(res.oneUserInfo);
