@@ -14,7 +14,7 @@ import GradeAssignScreen from './admin/GradeAssignScreen';
 import AdminSessionScreen from './admin/AdminSessionScreen';
 import AddUserScreen from './admin/AddUserScreen';
 import AddUserSuccessScreen from './admin/AddUserSuccessScreen';
-import { useRoute } from '@react-navigation/native';
+import AdminAddSessionScreen from './admin/AdminAddSessionScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +34,7 @@ export default function DrawerNavigationRoutes() {
       <Stack.Screen name="GradeAssignScreen" component={GradeAssignScreen} />
       <Stack.Screen name="AdminCreateNotice" component={AdminCreateNotice} />
       <Stack.Screen name="AdminSessionScreen" component={AdminSessionScreen} />
+      <Stack.Screen name="AdminAddSessionScreen" component={AdminAddSessionScreen} />
       <Stack.Screen name="AddUserScreen" component={AddUserScreen} />
       <Stack.Screen name="AddUserSuccess" component={AddUserSuccessScreen} />
     </Stack.Navigator>

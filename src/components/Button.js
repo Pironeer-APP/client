@@ -3,7 +3,7 @@ import React from 'react'
 import { FontStyledText } from './Text'
 import { COLORS } from '../assets/Theme'
 
-export const MainButton = ({height, content, onPress}) => {
+export const MainButton = ({height = 70, content, onPress}) => {
   return (
     <TouchableOpacity style={[styles.container, {height: height}]} onPress={onPress}>
       <FontStyledText style={styles.text}>{content}</FontStyledText>
@@ -48,6 +48,14 @@ export const CouponButton = ({selected, content, onPress}) => {
   return (
     <TouchableOpacity style={couponStyle} onPress={onPress}>
       <FontStyledText style={couponText}>{content}</FontStyledText>
+    </TouchableOpacity>
+  )
+}
+
+export const ConfirmSmallBtn = ({content}) => {
+  return (
+    <TouchableOpacity style={styles.confirmSmallContainer}>
+      <FontStyledText style={styles.confirmSmallText}>{content}</FontStyledText>
     </TouchableOpacity>
   )
 }
@@ -98,6 +106,19 @@ const styles = StyleSheet.create({
     fontSize: 22,
     textAlign: 'center',
     color: 'white',
+  },
+  confirmSmallContainer: {
+    backgroundColor: COLORS.green,
+    borderRadius: 30,
+    position: 'absolute',
+    right: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  confirmSmallText: {
+    color: COLORS.bg_black,
+    fontSize: 16,
+    textAlign: 'center',  
   }
 })
 
