@@ -13,7 +13,6 @@ import useUserInfo from '../use-userInfo'
 export default function Settings() {
   const {
     userInfo,
-    isAdmin,
     getUserInfo,
   } = useUserInfo();
   

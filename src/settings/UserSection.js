@@ -6,7 +6,7 @@ import Gap from '../components/Gap'
 import Section from './Section'
 import { getData } from '../utils'
 import useUserInfo from '../use-userInfo'
-
+import { useNavigation } from '@react-navigation/native';
 
 export default function UserSection() {
   const {
@@ -18,6 +18,12 @@ export default function UserSection() {
     getUserInfo();
   }, []);
 
+  const navigation = useNavigation();
+
+  const onPressCheck = (type) => {
+    navigation.navigate('CheckScreen', {type: type});
+  }
+
   return (
     <Section title="회원정보 수정">
       <View style={styles.profile}>
@@ -28,13 +34,11 @@ export default function UserSection() {
         </View>
       </View>
       <Gap />
-      <SettingsItem text="아이디 변경" />
+      <SettingsItem text="전화번호 변경" onPress={() => onPressCheck("phone")} />
       <Gap />
-      <SettingsItem text="비밀번호 변경" />
+      <SettingsItem text="비밀번호 변경" onPress={() => onPressCheck("password")} />
       <Gap />
-      <SettingsItem text="전화번호 변경" />
-      <Gap />
-      <SettingsItem text="이메일 변경" />
+      <SettingsItem text="이메일 변경" onPress={() => onPressCheck("email")} />
     </Section>   
   )
 }

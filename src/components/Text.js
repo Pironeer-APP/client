@@ -24,6 +24,7 @@ export const FontStyledText = ({style, children}) => (
   <Text style={[styles.fontStyle, style]}>{children}</Text>
 );
 
+
 const styles = StyleSheet.create({
   fontStyle: {
     color: 'white',
