@@ -2,10 +2,11 @@ import {View, Text} from 'react-native';
 import React, {useState, useEffect, useMemo} from 'react';
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
-import {useRoute} from '@react-navigation/native';
+import {useRoute, useIsFocused} from '@react-navigation/native';
 import {StyledText} from '../components/Text';
 import useUserInfo from '../use-userInfo';
 import {MainButton} from '../components/Button';
+import {fetchGet} from '../utils';
 
 const AnnouncementDetail = ({navigation}) => {
   const [post, setPost] = useState([]);
@@ -18,44 +19,25 @@ const AnnouncementDetail = ({navigation}) => {
   }, []);
 
   const postInMemo = useMemo(() => post, [post]);
-
+  const isFocused = useIsFocused();
+  const getPost = async () => {
+    const url = `/post/20/${post_id}`;
+    const res = await fetchGet(url);
+    setPost(res.post);
+  };
   useEffect(() => {
-    const url =
-      Platform.OS === 'android'
-        ? `http://10.0.2.2:3000/api/post/20/${post_id}`
-        : `http://localhost:3000/api/post/20/${post_id}`;
-
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        console.log('detail', data.post);
-
-        setPost(data.post);
-      })
-      .catch(error => {
-        console.error('Error fetching posts:', error);
-      });
-  }, [postInMemo]);
+    getPost();
+  }, [isFocused]);
 
   // delete fetch
   const deletePost = async () => {
+    const url = `/post/delete/${post.post_id}`;
+    const body = {post_id};
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/post/delete/${post.post_id}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({post_id}),
-        },
-      );
-
-      const result = await response.json();
-      navigation.goBack();
-      console.log('delete', result);
+      await fetchPost(url, body);
+      navigation.navigate('AnnouncementScreen');
     } catch (error) {
-      console.error('Error sending data:', error);
+      return error;
     }
   };
   return (

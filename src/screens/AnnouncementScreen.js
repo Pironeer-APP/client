@@ -18,10 +18,11 @@ import Gap from '../components/Gap';
 import {Box, PaddingBox} from '../components/Box';
 import {StyledSubText, StyledText} from '../components/Text';
 import {RowView} from './HomeScreen';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {MainButton} from '../components/Button';
 import {useRoute} from '@react-navigation/native';
-import { fetchGet } from '../utils';
+import {fetchGet} from '../utils';
+import useUserInfo from '../use-userInfo';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -121,15 +122,15 @@ const AnnouncementScreen = ({navigation}) => {
   ]);
 
   const [posts, setPosts] = useState([]);
-
+  const isFocused = useIsFocused();
   const getPost = async () => {
     const url = '/post/20/all';
     const res = await fetchGet(url);
     setPosts(res.posts);
-  }
+  };
   useEffect(() => {
     getPost();
-  }, []);
+  }, [isFocused]);
 
   const renderScene = ({route}) => {
     switch (route.key) {
@@ -146,8 +147,10 @@ const AnnouncementScreen = ({navigation}) => {
     }
   };
 
-  const route = useRoute();
-  const userInfo = route.params.userInfo;
+  const {userInfo, getUserInfo} = useUserInfo();
+  useEffect(() => {
+    getUserInfo();
+  }, []);
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />

@@ -5,11 +5,13 @@ import {COLORS} from '../assets/Theme';
 
 const TextCSS = styled.Text`
   font-size: ${props => props.fontSize}px;
-  color: white;
+  color: ${props => (props.color ? props.color : 'white')};
   font-family: 'Interop-Medium';
 `;
-export const StyledText = props => (
-  <TextCSS fontSize={props.fontSize}>{props.content}</TextCSS>
+export const StyledText = ({content, fontSize = 24, color = false}) => (
+  <TextCSS fontSize={fontSize} color={color}>
+    {content}
+  </TextCSS>
 );
 
 const SubTextCSS = styled.Text`
@@ -23,7 +25,6 @@ export const StyledSubText = props => <SubTextCSS>{props.content}</SubTextCSS>;
 export const FontStyledText = ({style, children}) => (
   <Text style={[styles.fontStyle, style]}>{children}</Text>
 );
-
 
 const styles = StyleSheet.create({
   fontStyle: {

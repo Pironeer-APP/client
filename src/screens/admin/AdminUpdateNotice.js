@@ -28,7 +28,8 @@ const AdminUpdateNotice = ({navigation}) => {
       );
 
       const result = await response.json();
-      navigation.goBack();
+      navigation.goBack('AnnouncementDetail', {post_id: post.post_id});
+
       console.log('update', result.message);
     } catch (error) {
       console.error('Error sending data:', error);
