@@ -15,10 +15,15 @@ import AdminSessionScreen from './admin/AdminSessionScreen';
 import AddUserScreen from './admin/AddUserScreen';
 import AddUserSuccessScreen from './admin/AddUserSuccessScreen';
 import AdminAddSessionScreen from './admin/AdminAddSessionScreen';
+<<<<<<< Updated upstream
 import CheckScreen from '../settings/screens/CheckScreen';
 import UpdateScreen from '../settings/screens/UpdateScreen';
 import UpdateSuccessScreen from '../settings/screens/UpdateSuccessScreen';
 import AdminUpdateNotice from './admin/AdminUpdateNotice';
+=======
+import AdminAttendanceScreen from './admin/AdminAttendanceScreen';
+import AdminAttendanceDetailScreen from './admin/AdminAttendanceDetailScreen';
+>>>>>>> Stashed changes
 
 const Stack = createNativeStackNavigator();
 
@@ -40,7 +45,12 @@ export default function DrawerNavigationRoutes() {
 
       <Stack.Screen name="OperationPolicyScreen" component={OperationPolicyScreen} />
 
+<<<<<<< Updated upstream
       {/* 관리자 */}
+=======
+      <Stack.Screen name="AdminAttendanceScreen" component={AdminAttendanceScreen} />
+      <Stack.Screen name="AdminAttendanceDetailScreen" component={AdminAttendanceDetailScreen} />
+>>>>>>> Stashed changes
       <Stack.Screen name="AdminDepositDetail" component={AdminDepositDetail} />
       <Stack.Screen name="GradeAssignScreen" component={GradeAssignScreen} />
       <Stack.Screen name="AdminCreateNotice" component={AdminCreateNotice} />

@@ -71,7 +71,14 @@ const HomeScreen = ({navigation}) => {
     navigation.navigate('DepositScreen', {userInfo: userInfo});
   };
   const goToAtndnc = () => {
-    navigation.navigate('AttendanceScreen');
+    //관리자인 경우 출석페이지
+    if (!!userInfo.is_admin) {
+      navigation.navigate('AdminAttendanceScreen');
+    }
+    // 일반회원인 경우 출석페이지
+    else {
+      navigation.navigate('AttendanceScreen');
+    }
   };
   const goToAddUser = () => {
     navigation.navigate('AddUserScreen');
