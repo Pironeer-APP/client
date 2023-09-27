@@ -21,3 +21,15 @@ export default function HeaderDetail({title}) {
     </View>
   );
 }
+
+export function HeaderAdmin({title, onPress}) {
+  return (
+    <View style={{paddingVertical: 20}}>
+      <RowView>
+        <LeftArrowBtn onPress={onPress} />
+        <StyledText content={title} fontSize={24} />
+        <View style={{width: 20}} />
+      </RowView>
+    </View>
+  );
+}

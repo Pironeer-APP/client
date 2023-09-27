@@ -15,6 +15,10 @@ import AdminSessionScreen from './admin/AdminSessionScreen';
 import AddUserScreen from './admin/AddUserScreen';
 import AddUserSuccessScreen from './admin/AddUserSuccessScreen';
 import AdminAddSessionScreen from './admin/AdminAddSessionScreen';
+import CheckScreen from '../settings/screens/CheckScreen';
+import UpdateScreen from '../settings/screens/UpdateScreen';
+import UpdateSuccessScreen from '../settings/screens/UpdateSuccessScreen';
+import AdminUpdateNotice from './admin/AdminUpdateNotice';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,14 +31,25 @@ export default function DrawerNavigationRoutes() {
       <Stack.Screen name="AnnouncementDetail" component={AnnouncementDetail} />
       <Stack.Screen name="DepositScreen" component={DepositScreen} />
       <Stack.Screen name="AttendanceScreen" component={AttendanceScreen} />
+
+      {/* 전체 설정 */}
       <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="CheckScreen" component={CheckScreen} />
+      <Stack.Screen name="UpdateScreen" component={UpdateScreen} />
+      <Stack.Screen name="UpdateSuccessScreen" component={UpdateSuccessScreen} />
+
       <Stack.Screen name="OperationPolicyScreen" component={OperationPolicyScreen} />
 
+      {/* 관리자 */}
       <Stack.Screen name="AdminDepositDetail" component={AdminDepositDetail} />
       <Stack.Screen name="GradeAssignScreen" component={GradeAssignScreen} />
       <Stack.Screen name="AdminCreateNotice" component={AdminCreateNotice} />
+      <Stack.Screen name="AdminUpdateNotice" component={AdminUpdateNotice} />
       <Stack.Screen name="AdminSessionScreen" component={AdminSessionScreen} />
-      <Stack.Screen name="AdminAddSessionScreen" component={AdminAddSessionScreen} />
+      <Stack.Screen
+        name="AdminAddSessionScreen"
+        component={AdminAddSessionScreen}
+      />
       <Stack.Screen name="AddUserScreen" component={AddUserScreen} />
       <Stack.Screen name="AddUserSuccess" component={AddUserSuccessScreen} />
     </Stack.Navigator>

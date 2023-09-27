@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import StyledContainer from '../components/StyledContainer'
 import HeaderDetail from '../components/Header'
@@ -9,11 +9,12 @@ import PolicySection from '../settings/PolicySection'
 import LogoutSection from '../settings/LogoutSection'
 import Gap from '../components/Gap'
 import useUserInfo from '../use-userInfo'
+import { StyledText } from '../components/Text'
+import UnregisterSection from '../settings/UnregisterSection'
 
 export default function Settings() {
   const {
     userInfo,
-    isAdmin,
     getUserInfo,
   } = useUserInfo();
   
@@ -31,6 +32,7 @@ export default function Settings() {
         <ThemeSection />
         <PolicySection />
         <LogoutSection />
+        <UnregisterSection />
       </ScrollView>
     </StyledContainer>
   )
