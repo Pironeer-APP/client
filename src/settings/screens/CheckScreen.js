@@ -65,6 +65,7 @@ export default function CheckScreen({route}) {
       Alert.alert('입력하신 정보가 일치하지 않아요', '다시 시도해 주세요', [
         {text: 'OK'},
       ]);
+      setData('');
     }
   }
 

@@ -55,7 +55,9 @@ export default function CheckScreen({ route }) {
     }
     const res = await fetchPost(url, body);
     console.log(res.updatedUserInfo);
-    navigation.navigate('UpdateSuccessScreen', {type: element.title});
+    if(res.updatedUserInfo) {
+      navigation.navigate('UpdateSuccessScreen', {type: element.title});
+    }
   }
 
   const josa = element.title === '이메일' ? '을' : '를';

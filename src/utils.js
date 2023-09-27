@@ -58,3 +58,12 @@ export const getData = async (key) => {
     console.log(e);
   }
 };
+export const removeData = async (key) => {
+  try {
+    await AsyncStorage.removeItem(key);
+    return true;
+  } catch(e) {
+    console.log(e);
+    return false;
+  }
+}
