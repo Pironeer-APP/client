@@ -18,6 +18,7 @@ import AdminAddSessionScreen from './admin/AdminAddSessionScreen';
 import CheckScreen from '../settings/screens/CheckScreen';
 import UpdateScreen from '../settings/screens/UpdateScreen';
 import UpdateSuccessScreen from '../settings/screens/UpdateSuccessScreen';
+import AdminUpdateNotice from './admin/AdminUpdateNotice';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,8 +44,12 @@ export default function DrawerNavigationRoutes() {
       <Stack.Screen name="AdminDepositDetail" component={AdminDepositDetail} />
       <Stack.Screen name="GradeAssignScreen" component={GradeAssignScreen} />
       <Stack.Screen name="AdminCreateNotice" component={AdminCreateNotice} />
+      <Stack.Screen name="AdminUpdateNotice" component={AdminUpdateNotice} />
       <Stack.Screen name="AdminSessionScreen" component={AdminSessionScreen} />
-      <Stack.Screen name="AdminAddSessionScreen" component={AdminAddSessionScreen} />
+      <Stack.Screen
+        name="AdminAddSessionScreen"
+        component={AdminAddSessionScreen}
+      />
       <Stack.Screen name="AddUserScreen" component={AddUserScreen} />
       <Stack.Screen name="AddUserSuccess" component={AddUserSuccessScreen} />
     </Stack.Navigator>
