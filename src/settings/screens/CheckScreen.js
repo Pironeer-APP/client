@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, KeyboardAvoidingView } from 'react-native'
-import React, {useState} from 'react'
+import { View, Text, StyleSheet, KeyboardAvoidingView, Alert } from 'react-native'
+import React, {useEffect, useState} from 'react'
 import StyledContainer from '../../components/StyledContainer'
 import HeaderDetail from '../../components/Header'
 import { StyledText } from '../../components/Text'
@@ -7,6 +7,8 @@ import { MainButton } from '../../components/Button'
 import { useNavigation } from '@react-navigation/native';
 import { SettingInput } from '../../components/Input'
 import Gap from '../../components/Gap'
+import useUserInfo from '../../use-userInfo'
+import { fetchPost } from '../../utils'
 
 const infoType = {
   'phone': {
@@ -35,8 +37,35 @@ export default function CheckScreen({route}) {
   const [data, setData] = useState('');
   const navigation = useNavigation();
 
-  const onPressOriginInfo = () => {
-    navigation.navigate('UpdateScreen', {type: route.params.type});
+  const {
+    userInfo,
+    getUserInfo
+  } = useUserInfo();
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
+  const compareInfo = async () => {
+    const url = `/auth/compareInfo/${route.params.type}`;
+    const body = {
+      type: data,
+      user_id: userInfo.user_id
+    }
+    const res = await fetchPost(url, body);
+    return res;
+  }
+
+  const onPressOriginInfo = async () => {
+    const res = await compareInfo();
+    console.log(res);
+    if(res.result === true) { // 기존 정보가 일치할 때만 변경 가능
+      navigation.navigate('UpdateScreen', {type: route.params.type});
+    } else {
+      Alert.alert('입력하신 정보가 일치하지 않아요', '다시 시도해 주세요', [
+        {text: 'OK'},
+      ]);
+    }
   }
 
   const josa = element.title === '이메일' ? '을' : '를';
@@ -59,7 +88,8 @@ export default function CheckScreen({route}) {
           placeholder={element.placeholder}
           autoFocus={true}
           value={data}
-          onChangeText={setData} />
+          onChangeText={setData}
+          secureTextEntry={route.params.type === 'password'} />
         </View>
         <MainButton content="다음" onPress={onPressOriginInfo} />
       </KeyboardAvoidingView>

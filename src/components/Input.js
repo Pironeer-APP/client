@@ -9,6 +9,7 @@ export const SettingInput = (props) => (
     autoFocus={props.autoFocus}
     value={props.value}
     onChangeText={props.onChangeText}
+    secureTextEntry={props.secureTextEntry}
   />
 )
 

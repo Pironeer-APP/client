@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, KeyboardAvoidingView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import StyledContainer from '../../components/StyledContainer'
 import HeaderDetail from '../../components/Header'
 import { StyledText } from '../../components/Text'
@@ -7,6 +7,8 @@ import { SettingInput } from '../../components/Input'
 import Gap from '../../components/Gap'
 import { useNavigation } from '@react-navigation/native';
 import { MainButton } from '../../components/Button'
+import { fetchPost } from '../../utils'
+import useUserInfo from '../../use-userInfo'
 
 const infoType = {
   'phone': {
@@ -35,7 +37,24 @@ export default function CheckScreen({ route }) {
   const [data, setData] = useState('');
   const navigation = useNavigation();
 
-  const onPressOriginInfo = () => {
+  const {
+    userInfo,
+    getUserInfo
+  } = useUserInfo();
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
+  const onPressOriginInfo = async () => {
+    const type = route.params.type;
+    const url = `/auth/updateInfo/${type}`;
+    const body = {
+      type: data,
+      user_id: userInfo.user_id
+    }
+    const res = await fetchPost(url, body);
+    console.log(res.updatedUserInfo);
     navigation.navigate('UpdateSuccessScreen', {type: element.title});
   }
 
@@ -59,7 +78,8 @@ export default function CheckScreen({ route }) {
             placeholder={element.placeholder}
             autoFocus={true}
             value={data}
-            onChangeText={setData} />
+            onChangeText={setData}
+            secureTextEntry={route.params.type === 'password'} />
         </View>
         <MainButton content="다음" onPress={onPressOriginInfo} />
       </KeyboardAvoidingView>
