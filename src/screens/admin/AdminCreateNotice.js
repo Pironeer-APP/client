@@ -23,7 +23,7 @@ import {fetchPost} from '../../utils';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
 
-const Camera = () => (
+export const Camera = () => (
   <TouchableOpacity>
     <Image
       source={require('../../assets/icons/camera.png')}
@@ -32,7 +32,7 @@ const Camera = () => (
   </TouchableOpacity>
 );
 
-const ChooseCategory = ({category, setCategory}) => {
+export const ChooseCategory = ({category, setCategory}) => {
   const PressedCat = ({index, content}) => {
     let color = COLORS.green;
     if (index === category) {
