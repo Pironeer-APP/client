@@ -1,7 +1,6 @@
 import {
   FlatList,
   Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -30,7 +29,7 @@ const BadgeCSS = styled.View`
   border-radius: 20px;
 `;
 
-const Badge = props => {
+export const Badge = props => {
   if (props.sort === 1) {
     return (
       <BadgeCSS color={`${COLORS.badge_skyblue}`}>

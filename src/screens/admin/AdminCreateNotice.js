@@ -67,7 +67,6 @@ const AdminCreateNotice = () => {
   const [category, setCategory] = useState(1); // 1: 세션, 2: 과제, 3: 기타
 
   const navigation = useNavigation();
-  console.log(category);
   const sendDataToServer = async () => {
     const url = '/post/create/20';
     const body = {title, content, category};
