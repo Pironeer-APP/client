@@ -5,7 +5,7 @@ import { COLORS } from '../../assets/Theme'
 import { MainButton } from '../../components/Button'
 import AddUserContent from '../../adduser/AddUserContent'
 import useAdduser from '../../adduser/use-adduser'
-import HeaderDetail from '../../components/Header'
+import HeaderDetail, { HeaderAdmin } from '../../components/Header'
 import StyledContainer from '../../components/StyledContainer'
 
 export default function AddUserScreen({ navigation }) {
@@ -37,7 +37,7 @@ export default function AddUserScreen({ navigation }) {
 
   return (
     <StyledContainer>
-      <HeaderDetail onPressBack={onPressBack} />
+      <HeaderAdmin onPress={onPressBack} />
       <KeyboardAvoidingView
         keyboardVerticalOffset={45}
         behavior={Platform.select({ios: 'padding', android: undefined})}
