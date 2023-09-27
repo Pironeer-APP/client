@@ -40,6 +40,25 @@ export const fetchPost = async(url, body) => {
     return error;
   }
 }
+export const fetchGet = async(url) => {
+  const SERVER_URL = getAPIHost();
+  try {
+    const res = await fetch(SERVER_URL+url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+    if(res.ok) {
+      const result = await res.json();
+      return result;
+    } else {
+      throw new Error(`Request failed with status ${res.status}`);
+    }
+  } catch(error) {
+    return error;
+  }
+}
 
 //async storage
 export const storeData = async (key, value) => {

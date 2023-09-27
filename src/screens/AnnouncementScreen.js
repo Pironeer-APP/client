@@ -18,10 +18,10 @@ import Gap from '../components/Gap';
 import {Box, PaddingBox} from '../components/Box';
 import {StyledSubText, StyledText} from '../components/Text';
 import {RowView} from './HomeScreen';
-import {fetchPost, getData} from '../utils';
 import {useNavigation} from '@react-navigation/native';
 import {MainButton} from '../components/Button';
 import {useRoute} from '@react-navigation/native';
+import { fetchGet } from '../utils';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -94,7 +94,7 @@ const FirstRoute = ({posts}) => (
 );
 
 const FilteredItems = ({category, posts}) => {
-  const filteredPosts = posts.filter(item => item.category === category);
+  const filteredPosts = posts?.filter(item => item.category === category);
   return (
     <View style={{flex: 1}}>
       <FlatList
@@ -121,24 +121,15 @@ const AnnouncementScreen = ({navigation}) => {
   ]);
 
   const [posts, setPosts] = useState([]);
-  let copiedPosts = JSON.parse(JSON.stringify(posts));
 
+  const getPost = async () => {
+    const url = '/post/20/all';
+    const res = await fetchGet(url);
+    setPosts(res.posts);
+  }
   useEffect(() => {
-    const url =
-      Platform.OS === 'android'
-        ? 'http://10.0.2.2:3000/api/post/20/all'
-        : 'http://localhost:3000/api/post/20/all';
-
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        console.log('공지');
-        setPosts(data.posts);
-      })
-      .catch(error => {
-        console.error('Error fetching posts:', error);
-      });
-  }, [copiedPosts]);
+    getPost();
+  }, []);
 
   const renderScene = ({route}) => {
     switch (route.key) {
