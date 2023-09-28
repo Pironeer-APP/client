@@ -46,6 +46,7 @@ const DepositScreen = () => {
       {!userInfoFromServer.is_admin && (
         <StyledContainer>
           <DepositHistoryHeader
+            userInfo={userInfoFromServer}
             couponInfo={couponInfo}
           />
           <DepositHistory
@@ -58,5 +59,3 @@ const DepositScreen = () => {
 };
 
 export default DepositScreen;
-
-const styles = StyleSheet.create({});

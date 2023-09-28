@@ -5,15 +5,15 @@ export default function useDepositDetail() {
   const [couponInfo, setCouponInfo] = useState([]);
   const [depositHistory, setDepositHistory] = useState([]);
 
-  const getDepositHistory = async (token) => {
+  const getDepositHistory = async (userInfo) => {
     const url = '/deposit/getDepositHistory';
-    const body = {token};
+    const body = {userInfo};
     const res = await fetchPost(url, body);
     setDepositHistory(res.histories);
   }
-  const getCouponInfo = async (token) => {
+  const getCouponInfo = async (userInfo) => {
     const url = '/deposit/getCoupons';
-    const body = {token};
+    const body = {userInfo};
     const res = await fetchPost(url, body);
     setCouponInfo(res.couponInfo);
   }

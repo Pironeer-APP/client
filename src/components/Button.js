@@ -43,8 +43,8 @@ export const RightArrowBtn = ({onPress}) => {
 }
 
 export const CouponButton = ({selected, content, onPress}) => {
-  const couponStyle = content === selected ? styles.couponSelected : styles.couponNotSelected;
-  const couponText = content === selected ? styles.text : styles.notSelectedText;
+  const couponStyle = selected ? styles.couponSelected : styles.couponNotSelected;
+  const couponText = selected ? styles.text : styles.notSelectedText;
   return (
     <TouchableOpacity style={couponStyle} onPress={onPress}>
       <FontStyledText style={couponText}>{content}</FontStyledText>
