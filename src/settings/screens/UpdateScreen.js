@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, KeyboardAvoidingView } from 'react-native'
+import { View, Text, StyleSheet, KeyboardAvoidingView, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import StyledContainer from '../../components/StyledContainer'
 import HeaderDetail from '../../components/Header'
@@ -48,6 +48,13 @@ export default function CheckScreen({ route }) {
 
   const onPressNewInfo = async () => {
     const type = route.params.type;
+    if(type === 'password' && data.length < 8) {
+      Alert.alert('비밀번호는 8자리 이상으로 설정해 주세요', '', [
+        {text: '확인'},
+      ]);
+      setData('');
+      return;
+    }
     const url = `/auth/updateInfo/${type}`;
     const body = {
       data: data,
@@ -78,6 +85,7 @@ export default function CheckScreen({ route }) {
           <StyledText fontSize={18} content={element.desc} />
           <Gap height={30} />
           <SettingInput
+            maxLength={route.params.type === 'phone' ? 13 : null}
             placeholder={element.placeholder}
             autoFocus={true}
             value={data}

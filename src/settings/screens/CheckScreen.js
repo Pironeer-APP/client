@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { SettingInput } from '../../components/Input'
 import Gap from '../../components/Gap'
 import useUserInfo from '../../use-userInfo'
-import { fetchPost } from '../../utils'
+import { autoHyphen, fetchPost } from '../../utils'
 
 const infoType = {
   'phone': {
@@ -63,10 +63,15 @@ export default function CheckScreen({route}) {
       navigation.navigate('UpdateScreen', {type: route.params.type});
     } else {
       Alert.alert('입력하신 정보가 일치하지 않아요', '다시 시도해 주세요', [
-        {text: 'OK'},
+        {text: '확인'},
       ]);
       setData('');
     }
+  }
+
+  const onChangePhoneId = (value) => {
+    value = autoHyphen(value);
+    setData(value);
   }
 
   const josa = element.title === '이메일' ? '을' : '를';
@@ -86,10 +91,11 @@ export default function CheckScreen({route}) {
         <StyledText fontSize={18} content={element.desc} />
         <Gap height={30} />
         <SettingInput
+          maxLength={route.params.type === 'phone' ? 13 : null}
           placeholder={element.placeholder}
           autoFocus={true}
           value={data}
-          onChangeText={setData}
+          onChangeText={route.params.type === 'phone' ? onChangePhoneId : setData}
           secureTextEntry={route.params.type === 'password'} />
         </View>
         <MainButton content="다음" onPress={onPressOriginInfo} />
