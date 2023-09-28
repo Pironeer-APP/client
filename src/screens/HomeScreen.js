@@ -133,7 +133,7 @@ const HomeScreen = ({navigation}) => {
                     padding: 20,
                     flex: 1,
                   }}>
-                  <StyledText content={'출석체크'} fontSize={24} />
+                  <StyledText content={'출석체크'} />
                   <Image
                     source={require('../assets/icons/calendar.png')}
                     style={{width: 40, height: 40, marginTop: 10}}
@@ -144,7 +144,7 @@ const HomeScreen = ({navigation}) => {
             <View style={{gap: 20, flex: 1}}>
               <Box>
                 <TouchableOpacity style={{padding: 20}} onPress={goToDeposit}>
-                  <StyledText content={'보증금'} fontSize={24} />
+                  <StyledText content={'보증금'} />
                   <Image
                     source={require('../assets/icons/money.png')}
                     style={{width: 30, height: 30, marginTop: 10}}

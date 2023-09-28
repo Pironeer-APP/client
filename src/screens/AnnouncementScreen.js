@@ -1,7 +1,6 @@
 import {
   FlatList,
   Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -18,10 +17,11 @@ import Gap from '../components/Gap';
 import {Box, PaddingBox} from '../components/Box';
 import {StyledSubText, StyledText} from '../components/Text';
 import {RowView} from './HomeScreen';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {MainButton} from '../components/Button';
-import { useRoute, useIsFocused } from '@react-navigation/native';
-import { fetchGet } from '../utils';
+import {useRoute} from '@react-navigation/native';
+import {fetchGet} from '../utils';
+import useUserInfo from '../use-userInfo';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -29,7 +29,7 @@ const BadgeCSS = styled.View`
   border-radius: 20px;
 `;
 
-const Badge = props => {
+export const Badge = props => {
   if (props.sort === 1) {
     return (
       <BadgeCSS color={`${COLORS.badge_skyblue}`}>
@@ -127,7 +127,7 @@ const AnnouncementScreen = ({navigation}) => {
     const url = '/post/20/all';
     const res = await fetchGet(url);
     setPosts(res.posts);
-  }
+  };
   useEffect(() => {
     getPosts();
   }, [isFocused]);
@@ -147,8 +147,14 @@ const AnnouncementScreen = ({navigation}) => {
     }
   };
 
-  const route = useRoute();
-  const userInfo = route.params.userInfo;
+  const {
+    userInfoFromServer,
+    getUserInfoFromServer
+  } = useUserInfo();
+  useEffect(() => {
+    getUserInfoFromServer();
+  }, []);
+
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
@@ -181,7 +187,7 @@ const AnnouncementScreen = ({navigation}) => {
           />
         )}
       />
-      {!!userInfo.is_admin && (
+      {!!userInfoFromServer.is_admin && (
         <MainButton
           content={'글 작성하기'}
           onPress={() => navigation.navigate('AdminCreateNotice')}
