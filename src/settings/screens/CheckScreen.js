@@ -38,19 +38,19 @@ export default function CheckScreen({route}) {
   const navigation = useNavigation();
 
   const {
-    userInfo,
-    getUserInfo
+    userToken,
+    getUserToken,
   } = useUserInfo();
 
   useEffect(() => {
-    getUserInfo();
+    getUserToken();
   }, []);
 
   const compareInfo = async () => {
     const url = `/auth/compareInfo/${route.params.type}`;
     const body = {
-      type: data,
-      user_id: userInfo.user_id
+      data: data,
+      user_token: userToken
     }
     const res = await fetchPost(url, body);
     return res;

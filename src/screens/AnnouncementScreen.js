@@ -20,7 +20,7 @@ import {StyledSubText, StyledText} from '../components/Text';
 import {RowView} from './HomeScreen';
 import {useNavigation} from '@react-navigation/native';
 import {MainButton} from '../components/Button';
-import {useRoute} from '@react-navigation/native';
+import { useRoute, useIsFocused } from '@react-navigation/native';
 import { fetchGet } from '../utils';
 
 const BadgeCSS = styled.View`
@@ -121,15 +121,16 @@ const AnnouncementScreen = ({navigation}) => {
   ]);
 
   const [posts, setPosts] = useState([]);
+  const isFocused = useIsFocused();
 
-  const getPost = async () => {
+  const getPosts = async () => {
     const url = '/post/20/all';
     const res = await fetchGet(url);
     setPosts(res.posts);
   }
   useEffect(() => {
-    getPost();
-  }, []);
+    getPosts();
+  }, [isFocused]);
 
   const renderScene = ({route}) => {
     switch (route.key) {

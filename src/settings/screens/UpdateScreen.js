@@ -7,7 +7,7 @@ import { SettingInput } from '../../components/Input'
 import Gap from '../../components/Gap'
 import { useNavigation } from '@react-navigation/native';
 import { MainButton } from '../../components/Button'
-import { fetchPost } from '../../utils'
+import { fetchPost, storeData } from '../../utils'
 import useUserInfo from '../../use-userInfo'
 
 const infoType = {
@@ -38,22 +38,23 @@ export default function CheckScreen({ route }) {
   const navigation = useNavigation();
 
   const {
-    userInfo,
-    getUserInfo
+    userToken,
+    getUserToken,
   } = useUserInfo();
 
   useEffect(() => {
-    getUserInfo();
-  }, []);
+    getUserToken();
+  }, [])
 
-  const onPressOriginInfo = async () => {
+  const onPressNewInfo = async () => {
     const type = route.params.type;
     const url = `/auth/updateInfo/${type}`;
     const body = {
-      type: data,
-      user_id: userInfo.user_id
+      data: data,
+      user_token: userToken
     }
     const res = await fetchPost(url, body);
+    await storeData('user_token', res.updatedUserInfo);
     console.log(res.updatedUserInfo);
     if(res.updatedUserInfo) {
       navigation.navigate('UpdateSuccessScreen', {type: element.title});
@@ -83,7 +84,7 @@ export default function CheckScreen({ route }) {
             onChangeText={setData}
             secureTextEntry={route.params.type === 'password'} />
         </View>
-        <MainButton content="다음" onPress={onPressOriginInfo} />
+        <MainButton content="다음" onPress={onPressNewInfo} />
       </KeyboardAvoidingView>
     </StyledContainer>
   )

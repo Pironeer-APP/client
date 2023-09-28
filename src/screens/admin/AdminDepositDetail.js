@@ -12,14 +12,44 @@ import { fetchPost } from '../../utils';
 import DepositHistory from '../../deposit/DepositHistory';
 import useDepositDetail from '../../deposit/use-depositDetail';
 import DepositHistoryHeader from '../../deposit/DepositHistoryHeader';
+import useUserInfo from '../../use-userInfo';
 
-export default function AdminDepositDetail({ route }) {
-  const userInfo = route.params.userInfo;
+export default function AdminDepositDetail() {
+  const {
+    userToken,
+    userInfoFromServer,
+    getUserToken,
+    getUserInfoFromServer
+  } = useUserInfo();
+  
+  useEffect(() => {
+    getUserToken();
+  }, []);
+  useEffect(() => {
+    getUserInfoFromServer(userToken);
+  }, [userToken]);
+
   const [selected, setSelected] = useState('');
   const onPressSelectCoupon = (content) => {
     setSelected(content);
   }
-  const navigation = useNavigation();
+  
+  const {
+    depositHistory,
+    couponInfo,
+    getDepositHistory,
+    getCouponInfo,
+  } = useDepositDetail();
+  
+  useEffect(() => {
+    getDepositHistory(userToken);
+  }, []);
+  useEffect(() => {
+    getCouponInfo(userToken);
+  }, []);
+  useEffect(() => {
+    getOneUserInfo(userToken);
+  }, []);
 
   const onPressAddCoupon = async () => {
     if(selected === '') {
@@ -31,40 +61,20 @@ export default function AdminDepositDetail({ route }) {
     const price = selected === "과제면제권" ? 20000 : 10000;
     const url = '/admin/addCoupon';
     const body = {
-      user_id: userInfo.user_id,
+      user_id: userInfoFromServer.user_id,
       type: selected,
       money: price
     };
     const res = await fetchPost(url, body);
+    getCouponInfo(userToken);
     console.log(res);
-    navigation.replace('AdminDepositDetail', {userInfo: userInfo});
   }
-
-  const {
-    depositHistory,
-    couponInfo,
-    oneUserInfo,
-    getDepositHistory,
-    getCouponInfo,
-    getOneUserInfo,
-  } = useDepositDetail();
-  
-  useEffect(() => {
-    getDepositHistory(userInfo);
-  }, []);
-  useEffect(() => {
-    getCouponInfo(userInfo);
-  }, []);
-  useEffect(() => {
-    getOneUserInfo(userInfo);
-  }, []);
 
   return (
     <>
     <StyledContainer>
-      <HeaderDetail title={`${userInfo.name}님의 보증금 관리`} />
+      <HeaderDetail title={`${userInfoFromServer.name}님의 보증금 관리`} />
       <DepositHistoryHeader
-        oneUserInfo={oneUserInfo}
         couponInfo={couponInfo}
       />
       <DepositHistory

@@ -6,6 +6,7 @@ import {useRoute} from '@react-navigation/native';
 import {StyledText} from '../components/Text';
 import useUserInfo from '../use-userInfo';
 import {MainButton} from '../components/Button';
+import { fetchGet, fetchPost } from '../utils';
 
 const AnnouncementDetail = ({navigation}) => {
   const [post, setPost] = useState([]);
@@ -17,54 +18,33 @@ const AnnouncementDetail = ({navigation}) => {
     getUserInfo();
   }, []);
 
-  const postInMemo = useMemo(() => post, [post]);
+  const getPosts = async () => {
+    const url = `/post/20/${post_id}`;
+    const res = await fetchGet(url);
+    setPost(res.post);
+  }
 
   useEffect(() => {
-    const url =
-      Platform.OS === 'android'
-        ? `http://10.0.2.2:3000/api/post/20/${post_id}`
-        : `http://localhost:3000/api/post/20/${post_id}`;
-
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        console.log('detail', data.post);
-
-        setPost(data.post);
-      })
-      .catch(error => {
-        console.error('Error fetching posts:', error);
-      });
-  }, [postInMemo]);
+    getPosts();
+  }, []);
 
   // delete fetch
   const deletePost = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/post/delete/${post.post_id}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({post_id}),
-        },
-      );
-
-      const result = await response.json();
-      navigation.goBack();
-      console.log('delete', result);
-    } catch (error) {
-      console.error('Error sending data:', error);
+    const url = `/post/delete/${post.post_id}`;
+    const body = {
+      post_id: post.post_id
     }
+    const res = fetchPost(url, body);
+    navigation.goBack();
   };
+
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
-      <StyledText content={`${post.created_at}`} fontSize={24} />
-      <StyledText content={`${post.category}`} fontSize={24} />
-      <StyledText content={`${post.title}`} fontSize={24} />
-      <StyledText content={`${post.content}`} fontSize={24} />
+      <StyledText content={`${post?.created_at}`} fontSize={24} />
+      <StyledText content={`${post?.category}`} fontSize={24} />
+      <StyledText content={`${post?.title}`} fontSize={24} />
+      <StyledText content={`${post?.content}`} fontSize={24} />
       {!!userInfo.is_admin && (
         <>
           <MainButton

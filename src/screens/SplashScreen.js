@@ -16,7 +16,7 @@ export default function SplashScreen({ navigation }) {
     // is_admin === 1 이면 AdminNavigationRoutes로 이동
     // 아니면(일반 사용자) DrawerNavigationRoutes로 이동
     setTimeout(async () => {
-      const userInfo = await getData('user_info');
+      const userInfo = await getData('user_token');
       console.log(userInfo);
       navigation.replace(
         userInfo === null
