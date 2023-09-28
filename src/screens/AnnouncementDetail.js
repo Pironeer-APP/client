@@ -26,9 +26,12 @@ const AnnouncementDetail = ({navigation}) => {
   const route = useRoute();
   const post_id = route.params.post_id;
 
-  const {userInfo, getUserInfo} = useUserInfo();
+  const {
+    userInfoFromServer,
+    getUserInfoFromServer
+  } = useUserInfo();
   useEffect(() => {
-    getUserInfo();
+    getUserInfoFromServer();
   }, []);
 
   const isFocused = useIsFocused();
@@ -63,7 +66,7 @@ const AnnouncementDetail = ({navigation}) => {
           <StyledSubText content={`${formattedDate}`} />
           <Badge sort={post.category} />
         </RowView>
-        {!!userInfo.is_admin && (
+        {!!userInfoFromServer.is_admin && (
           <RowView style={{gap: 10}}>
             <TouchableOpacity
               onPress={() => navigation.navigate('AdminUpdateNotice', {post})}>

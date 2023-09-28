@@ -4,6 +4,7 @@ import { COLORS } from '../assets/Theme'
 export const SettingInput = (props) => (
   <TextInput
     style={styles.textInput}
+    maxLength={props.maxLength}
     placeholder={props.placeholder}
     placeholderTextColor={COLORS.light_gray}
     autoFocus={props.autoFocus}

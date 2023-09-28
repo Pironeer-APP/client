@@ -10,12 +10,12 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function UserSection() {
   const {
-    userInfo,
-    getUserInfo,
+    userInfoFromServer,
+    getUserInfoFromServer
   } = useUserInfo();
   
   useEffect(() => {
-    getUserInfo();
+    getUserInfoFromServer();
   }, []);
 
   const navigation = useNavigation();
@@ -29,8 +29,8 @@ export default function UserSection() {
       <View style={styles.profile}>
         <ImageBackground style={styles.profileImg} source={require("../assets/images/headerLogo.png")} />
         <View style={styles.profileContent}>
-          <StyledText fontSize={25} content={userInfo.name} />
-          <StyledText fontSize={13} content={userInfo.email} />
+          <StyledText fontSize={25} content={userInfoFromServer.name} />
+          <StyledText fontSize={13} content={userInfoFromServer.email} />
         </View>
       </View>
       <Gap />

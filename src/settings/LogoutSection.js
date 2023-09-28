@@ -10,7 +10,7 @@ export default function LogoutSection() {
 
   const removeInfo = async () => {
     try {
-      await AsyncStorage.removeItem('user_info');
+      await AsyncStorage.removeItem('user_token');
       navigation.navigate('SplashScreen');
     } catch(e) {
       console.log(e);

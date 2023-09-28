@@ -122,13 +122,14 @@ const AnnouncementScreen = ({navigation}) => {
 
   const [posts, setPosts] = useState([]);
   const isFocused = useIsFocused();
-  const getPost = async () => {
+
+  const getPosts = async () => {
     const url = '/post/20/all';
     const res = await fetchGet(url);
     setPosts(res.posts);
   };
   useEffect(() => {
-    getPost();
+    getPosts();
   }, [isFocused]);
 
   const renderScene = ({route}) => {
@@ -146,10 +147,14 @@ const AnnouncementScreen = ({navigation}) => {
     }
   };
 
-  const {userInfo, getUserInfo} = useUserInfo();
+  const {
+    userInfoFromServer,
+    getUserInfoFromServer
+  } = useUserInfo();
   useEffect(() => {
-    getUserInfo();
+    getUserInfoFromServer();
   }, []);
+
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
@@ -182,7 +187,7 @@ const AnnouncementScreen = ({navigation}) => {
           />
         )}
       />
-      {!!userInfo.is_admin && (
+      {!!userInfoFromServer.is_admin && (
         <MainButton
           content={'글 작성하기'}
           onPress={() => navigation.navigate('AdminCreateNotice')}

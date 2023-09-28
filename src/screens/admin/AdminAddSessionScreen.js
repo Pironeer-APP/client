@@ -60,7 +60,7 @@ export default function AdminAddSessionScreen() {
       />
       <PaddingBox>
         <ToggleItem
-          text={face ? "대면" : "비대면"}
+          text="대면"
           onValueChange={faceToggleSwitch}
           value={face}
         />

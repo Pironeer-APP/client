@@ -1,16 +1,28 @@
 import {useState} from 'react';
-import { getData } from './utils';
+import { fetchPost, getData } from './utils';
 
 export default function useUserInfo() {
-  const [userInfo, setUserInfo] = useState({});
+  const [userToken, setUserToken] = useState({});
+  const [userInfoFromServer, setUserInfoFromServer] = useState({});
   
-  const getUserInfo = async () => {
-    const storageUserInfo = await getData('user_info');
-    setUserInfo(storageUserInfo);
+  const getUserToken = async () => {
+    const storageUserToken = await getData('user_token');
+    setUserToken(storageUserToken);
+  }
+
+  const getUserInfoFromServer = async () => {
+    const storageUserToken = await getData('user_token');
+    const url = '/user/getOneUserInfo';
+    const body = {userToken: storageUserToken};
+    const res = await fetchPost(url, body);
+
+    setUserInfoFromServer(res.oneUserInfo);
   }
 
   return {
-    userInfo,
-    getUserInfo,
+    userToken,
+    userInfoFromServer,
+    getUserToken,
+    getUserInfoFromServer
   }
 }

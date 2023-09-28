@@ -20,13 +20,13 @@ export default function useLogin() {
     }
     try {
       const fetchData = await fetchPost(url, body);
-      console.log('info...', fetchData.data); // 로그인 정보, 불일치면 {data: false}
-      if (fetchData.data === false) {
+      console.log('info...', fetchData.token); // 로그인 정보 token, 불일치면 {token: false}
+      if (fetchData.token === false) {
         setLoginStatus(false);
       } else {
         setLoginStatus(true);
-        const jsonUserInfo = JSON.stringify(fetchData.data);
-        await AsyncStorage.setItem('user_info', jsonUserInfo);
+        const jsonUserInfo = JSON.stringify(fetchData.token);
+        await AsyncStorage.setItem('user_token', jsonUserInfo);
         navigation.replace('SplashScreen');
       }
     } catch (err) {
