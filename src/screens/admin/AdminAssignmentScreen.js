@@ -9,12 +9,16 @@ import {Box} from '../../components/Box';
 import {MainButton, RightArrowBtn} from '../../components/Button';
 import Gap from '../../components/Gap';
 import {Assignmentdata} from '../AssignmentScreen';
+import {useNavigation} from '@react-navigation/native';
 
 const AssignmentBox = ({title, due}) => {
+  const navigation = useNavigation();
   return (
     <>
       <Box>
-        <TouchableOpacity style={{padding: 20}}>
+        <TouchableOpacity
+          style={{padding: 20}}
+          onPress={() => navigation.navigate('AdminGradingScreen', {title})}>
           <RowView>
             <View>
               <StyledSubText content={due} />
@@ -25,7 +29,7 @@ const AssignmentBox = ({title, due}) => {
           </RowView>
         </TouchableOpacity>
       </Box>
-      <Gap />
+      <Gap height={10} />
     </>
   );
 };
@@ -34,7 +38,8 @@ const renderItem = ({item}) => {
   return <AssignmentBox title={item.title} due={item.due_date} />;
 };
 
-const AdminAssignmentScreen = ({navigation}) => {
+const AdminAssignmentScreen = () => {
+  const navigation = useNavigation();
   return (
     <StyledContainer>
       <HeaderDetail title={'과제 채점'} />
