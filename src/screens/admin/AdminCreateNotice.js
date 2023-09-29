@@ -8,6 +8,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  KeyboardAvoidingView,
+  NativeModules,
+  ScrollView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -15,8 +18,6 @@ import styled from 'styled-components/native';
 import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import {StyledText} from '../../components/Text';
-import {useRoute} from '@react-navigation/native';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {COLORS} from '../../assets/Theme';
 import {MainButton} from '../../components/Button';
 import {fetchPost} from '../../utils';
@@ -77,6 +78,7 @@ const AdminCreateNotice = () => {
       console.error('Error sending data:', error);
     }
   };
+
   return (
     <StyledContainer>
       <HeaderDetail
@@ -89,14 +91,16 @@ const AdminCreateNotice = () => {
         <ChooseCategory category={category} setCategory={setCategory} />
       </View>
 
-      <View style={{flex: 1}}>
-        <TextInput
-          placeholder="제목"
-          value={title}
-          onChangeText={text => setTitle(text)}
-          placeholderTextColor={COLORS.light_gray}
-          style={styles.textInputTitle}
-        />
+      <TextInput
+        placeholder="제목"
+        value={title}
+        onChangeText={text => setTitle(text)}
+        placeholderTextColor={COLORS.light_gray}
+        style={styles.textInputTitle}
+      />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        style={{flex: 1}}>
         <TextInput
           placeholder="내용"
           value={content}
@@ -105,8 +109,9 @@ const AdminCreateNotice = () => {
           style={styles.textInputContent}
           multiline={true}
         />
+
         <Camera />
-      </View>
+      </KeyboardAvoidingView>
     </StyledContainer>
   );
 };
@@ -125,10 +130,10 @@ const styles = StyleSheet.create({
   },
   textInputContent: {
     color: 'white',
-    height: 60,
     marginBottom: 15,
     fontSize: 20,
     flex: 1,
+    textAlignVertical: 'top',
   },
 });
 export default AdminCreateNotice;
