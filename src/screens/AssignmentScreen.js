@@ -17,6 +17,8 @@ import {Box} from '../components/Box';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import HeaderDetail from '../components/Header';
+import useUserInfo from '../use-userInfo';
+import { fetchPost } from '../utils';
 
 const data = [
   {
@@ -197,7 +199,41 @@ const renderItem = ({item}) => {
     </>
   );
 };
+
+const saveUserId = async (userInfoFromServer) => {
+  const url = `/assign`
+  const body = {
+    userId: userInfoFromServer.user_id,
+    userLevel: userInfoFromServer.level
+  }
+  try {
+    const fetchData = await fetchPost(url, body);
+    console.log(fetchData);
+    console.log('성공!');
+  } catch(error) {
+    console.log(error);
+    console.log('에러');
+  }
+};
+
 const AssignmentScreen = () => {
+  // client로부터 user_id 받아서 server로 전송
+  const {
+    userToken,
+    userInfoFromServer,
+    getUserToken,
+    getUserInfoFromServer
+  } = useUserInfo();
+
+  useEffect(() => {
+    getUserToken();
+  }, []);
+  
+  useEffect(() => {
+    getUserInfoFromServer(userToken);
+    saveUserId(userInfoFromServer);
+  }, [userToken]);
+
   return (
     <StyledContainer>
       <HeaderDetail title={'과제'} />
