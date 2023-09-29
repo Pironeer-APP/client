@@ -19,6 +19,7 @@ import styled from 'styled-components/native';
 import HeaderDetail from '../components/Header';
 import useUserInfo from '../use-userInfo';
 import { fetchPost } from '../utils';
+import {useNavigation} from '@react-navigation/native';
 
 const data = [
   {
@@ -228,11 +229,26 @@ const AssignmentScreen = () => {
   useEffect(() => {
     getUserToken();
   }, []);
-  
+
   useEffect(() => {
     getUserInfoFromServer(userToken);
-    saveUserId(userInfoFromServer);
   }, [userToken]);
+
+  useEffect(() => {
+    saveUserId(userInfoFromServer);
+  }, [userInfoFromServer]);
+  
+  // homescreen에서 받아오거나..
+  // const {
+  //   userInfoFromServer,
+  //   getUserInfoFromServer
+  // } = useUserInfo();
+  // useEffect(() => {
+  //   getUserInfoFromServer();
+  // }, []);
+  // useEffect(() => {
+  //   saveUserId(userInfoFromServer);
+  // }, [userInfoFromServer]);
 
   return (
     <StyledContainer>
