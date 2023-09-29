@@ -1,7 +1,8 @@
-import { TextInput, StyleSheet } from 'react-native'
-import { COLORS } from '../assets/Theme'
+import {TextInput, StyleSheet} from 'react-native';
+import {COLORS} from '../assets/Theme';
+import styled from 'styled-components';
 
-export const SettingInput = (props) => (
+export const SettingInput = props => (
   <TextInput
     style={styles.textInput}
     maxLength={props.maxLength}
@@ -12,7 +13,7 @@ export const SettingInput = (props) => (
     onChangeText={props.onChangeText}
     secureTextEntry={props.secureTextEntry}
   />
-)
+);
 
 const styles = StyleSheet.create({
   textInput: {
@@ -22,5 +23,25 @@ const styles = StyleSheet.create({
     color: COLORS.textColor,
     borderBottomWidth: 2,
     borderBottomColor: COLORS.green,
-  }
-})
+  },
+});
+
+// TextInput
+const TextInputCSS = styled.TextInput`
+  color: white;
+  font-size: 20px;
+  padding: 10px 20px;
+  /* border-width: 1px;
+  border-bottom-color: ${COLORS.light_gray}; */
+`;
+
+export const CustomTextInput = ({placeholder, title, setTitle}) => {
+  return (
+    <TextInputCSS
+      placeholder={placeholder}
+      value={title}
+      onChangeText={text => setTitle(text)}
+      placeholderTextColor={COLORS.light_gray}
+    />
+  );
+};

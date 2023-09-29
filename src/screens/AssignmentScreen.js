@@ -21,13 +21,13 @@ import useUserInfo from '../use-userInfo';
 import { fetchPost } from '../utils';
 import {useNavigation} from '@react-navigation/native';
 
-const data = [
+export const Assignmentdata = [
   {
     id: 1,
     grade: 1,
     // 0: 미제출, 1: 미흡, 2: 지각, 3: 완료
     title: '피로그래머 카드게임',
-    due_date: '2023-09-24T00:20:44.000Z',
+    due_date: '7.20 MON',
     created_at: '2023-09-24T00:20:44.000Z',
     done: false,
   },
@@ -35,7 +35,7 @@ const data = [
     id: 2,
     grade: 0,
     title: '피로그래머 카드게임',
-    due_date: '2023-09-24T00:20:44.000Z',
+    due_date: '7.20 MON',
     created_at: '2023-09-24T00:20:44.000Z',
     done: true,
   },
@@ -43,7 +43,7 @@ const data = [
     id: 3,
     grade: 3,
     title: '피로그래머 카드게임',
-    due_date: '2023-09-24T00:20:44.000Z',
+    due_date: '7.20 MON',
     created_at: '2023-09-24T00:20:44.000Z',
     done: true,
   },
@@ -255,7 +255,7 @@ const AssignmentScreen = () => {
       <HeaderDetail title={'과제'} />
       <View style={{flex: 1}}>
         <FlatList
-          data={data}
+          data={Assignmentdata}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />

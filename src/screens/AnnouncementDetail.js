@@ -26,10 +26,7 @@ const AnnouncementDetail = ({navigation}) => {
   const route = useRoute();
   const post_id = route.params.post_id;
 
-  const {
-    userInfoFromServer,
-    getUserInfoFromServer
-  } = useUserInfo();
+  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
   useEffect(() => {
     getUserInfoFromServer();
   }, []);
@@ -56,14 +53,17 @@ const AnnouncementDetail = ({navigation}) => {
     }
   };
 
-  const dateString = post.created_at;
-  const formattedDate = dayjs(dateString).format('M.D ddd').toUpperCase();
+  const dateString = `${post.created_at}`;
+  const date = new Date(dateString);
+  date.setHours(date.getHours() + 18);
+  const RenderDate = dayjs(date).format('M.D ddd').toUpperCase();
+
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
       <RowView>
         <RowView style={{gap: 10}}>
-          <StyledSubText content={`${formattedDate}`} />
+          <StyledSubText content={`${RenderDate}`} />
           <Badge sort={post.category} />
         </RowView>
         {!!userInfoFromServer.is_admin && (
