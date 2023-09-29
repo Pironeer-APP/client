@@ -57,7 +57,7 @@ const AdminCreateAssignment = () => {
       <Gap height={10} />
       <Box>
         <View style={{padding: 20}}>
-          <StyledText content={'마감 기한 설정'} fontSize={20} />
+          <StyledText content={'마감 기한 설정'} fontSize={18} />
           <Gap height={10} />
           <View
             style={{
