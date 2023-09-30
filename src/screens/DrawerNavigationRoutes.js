@@ -19,6 +19,8 @@ import CheckScreen from '../settings/screens/CheckScreen';
 import UpdateScreen from '../settings/screens/UpdateScreen';
 import UpdateSuccessScreen from '../settings/screens/UpdateSuccessScreen';
 import AdminUpdateNotice from './admin/AdminUpdateNotice';
+import AdminAttendanceScreen from './admin/AdminAttendanceScreen';
+import AdminAttendanceDetailScreen from './admin/AdminAttendanceDetailScreen';
 import AdminAssignmentScreen from './admin/AdminAssignmentScreen';
 import AdminCreateAssignment from './admin/AdminCreateAssignment';
 import AdminGradingScreen from './admin/AdminGradingScreen';
@@ -50,6 +52,8 @@ export default function DrawerNavigationRoutes() {
       />
 
       {/* 관리자 */}
+      <Stack.Screen name="AdminAttendanceScreen" component={AdminAttendanceScreen} />
+      <Stack.Screen name="AdminAttendanceDetailScreen" component={AdminAttendanceDetailScreen} />
       <Stack.Screen
         name="AdminAssignmentScreen"
         component={AdminAssignmentScreen}
