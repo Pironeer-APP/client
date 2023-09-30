@@ -17,8 +17,9 @@ import {Box} from '../components/Box';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import HeaderDetail from '../components/Header';
-import {fetchGet} from '../utils';
+import {fetchGet, fetchPost} from '../utils';
 import useUserInfo from '../use-userInfo';
+import {useIsFocused} from '@react-navigation/native';
 
 export const Assignmentdata = [
   {
@@ -204,49 +205,43 @@ const renderItem = ({item}) => {
 
 const AssignmentScreen = () => {
   const [assignment, setAssignment] = useState([]);
-
   const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
+
+  useEffect(() => {
+    getUserInfoFromServer();
+  }, []);
+  // send user info
+
+  const isFocused = useIsFocused();
+
   const saveUserId = async userInfoFromServer => {
     const url = `/assign`;
     const body = {
       userId: userInfoFromServer.user_id,
       userLevel: userInfoFromServer.level,
     };
+    console.log('body: ', body);
     try {
       const fetchData = await fetchPost(url, body);
-      console.log(fetchData);
-      console.log('성공!');
+      setAssignment(fetchData);
+      console.log('성공  받아온 data: ', fetchData);
     } catch (error) {
       console.log(error);
       console.log('에러');
     }
   };
   useEffect(() => {
-    getUserInfoFromServer();
-  }, []);
-  useEffect(() => {
     saveUserId(userInfoFromServer);
   }, [userInfoFromServer]);
-
-  const getPosts = async () => {
-    const url = '/assign';
-    const res = await fetchGet(url);
-    setAssignment(res.data);
-  };
-  console.log('assignment', assignment);
-
-  useEffect(() => {
-    getPosts();
-  }, []);
 
   return (
     <StyledContainer>
       <HeaderDetail title={'과제'} />
       <View style={{flex: 1}}>
         <FlatList
-          data={assignment}
+          data={assignment.data}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.AssignId}
         />
       </View>
     </StyledContainer>
