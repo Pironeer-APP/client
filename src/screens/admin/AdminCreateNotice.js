@@ -101,7 +101,7 @@ const AdminCreateNotice = () => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('이미지 업로드 성공:', data);
+        console.log(data.message);
       })
       .catch(error => {
         console.error('이미지 업로드 실패:', error);
