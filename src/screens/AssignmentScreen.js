@@ -17,6 +17,8 @@ import {Box} from '../components/Box';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import HeaderDetail from '../components/Header';
+import {fetchGet} from '../utils';
+import useUserInfo from '../use-userInfo';
 
 export const Assignmentdata = [
   {
@@ -199,13 +201,50 @@ const renderItem = ({item}) => {
     </>
   );
 };
+
 const AssignmentScreen = () => {
+  const [assignment, setAssignment] = useState([]);
+
+  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
+  const saveUserId = async userInfoFromServer => {
+    const url = `/assign`;
+    const body = {
+      userId: userInfoFromServer.user_id,
+      userLevel: userInfoFromServer.level,
+    };
+    try {
+      const fetchData = await fetchPost(url, body);
+      console.log(fetchData);
+      console.log('성공!');
+    } catch (error) {
+      console.log(error);
+      console.log('에러');
+    }
+  };
+  useEffect(() => {
+    getUserInfoFromServer();
+  }, []);
+  useEffect(() => {
+    saveUserId(userInfoFromServer);
+  }, [userInfoFromServer]);
+
+  const getPosts = async () => {
+    const url = '/assign';
+    const res = await fetchGet(url);
+    setAssignment(res.data);
+  };
+  console.log('assignment', assignment);
+
+  useEffect(() => {
+    getPosts();
+  }, []);
+
   return (
     <StyledContainer>
       <HeaderDetail title={'과제'} />
       <View style={{flex: 1}}>
         <FlatList
-          data={Assignmentdata}
+          data={assignment}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />
