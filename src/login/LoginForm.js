@@ -1,9 +1,9 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Touchable, Pressable } from 'react-native'
 import React from 'react'
 import LoginInput from './LoginInput'
 import { LoginButton } from '../components/Button'
 import useLogin from './use-login'
-import { FontStyledText } from '../components/Text'
+import { FontStyledText, StyledText } from '../components/Text'
 
 export default function LoginForm({ navigation }) {
   const {
@@ -14,6 +14,10 @@ export default function LoginForm({ navigation }) {
     setPassword,
     onPressLogin,
   } = useLogin();
+
+  const onPressFindAccount = () => {
+    navigation.navigate('FindAccountScreen');
+  }
 
   return (
     <View style={styles.loginInputContainer}>
@@ -32,6 +36,9 @@ export default function LoginForm({ navigation }) {
       />
       <LoginButton onPress={() => onPressLogin(navigation)}>로그인</LoginButton>
       {!loginStatus && <FontStyledText style={styles.warning}>일치하는 회원 정보가 없습니다.</FontStyledText>}
+      <Pressable style={styles.findAccount} onPress={onPressFindAccount}>
+      <StyledText content="비밀번호 찾기" fontSize={15} />
+      </Pressable>
     </View>
   )
 }
@@ -39,10 +46,15 @@ export default function LoginForm({ navigation }) {
 const styles = StyleSheet.create({
   loginInputContainer: {
     flex: 1,
-    width: '100%'
+    width: '100%',
+    marginVertical: 10
   },
   warning: {
     color: 'red',
-    margin: 1
+    margin: 5,
+  },
+  findAccount: {
+    alignSelf: 'center',
+    paddingVertical: 10,
   }
 })

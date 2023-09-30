@@ -7,41 +7,46 @@ import useDepositDetail from '../deposit/use-depositDetail';
 import DepositHistoryHeader from '../deposit/DepositHistoryHeader';
 import useUserInfo from '../use-userInfo';
 import AdminDepositList from '../deposit/AdminDepositList';
-import { useRoute } from '@react-navigation/native';
 
 const DepositScreen = () => {
-  const route = useRoute();
-  const userInfo = route.params.userInfo;
-
+  const {
+    userToken,
+    userInfoFromServer,
+    getUserToken,
+    getUserInfoFromServer
+  } = useUserInfo();
+  
   const {
     depositHistory,
     couponInfo,
-    oneUserInfo,
     getDepositHistory,
     getCouponInfo,
-    getOneUserInfo,
   } = useDepositDetail();
   
   useEffect(() => {
-    getDepositHistory(userInfo);
+    getUserToken();
   }, []);
   useEffect(() => {
-    getCouponInfo(userInfo);
+    getUserInfoFromServer(userToken);
+  }, [userToken]);
+
+  useEffect(() => {
+    getDepositHistory(userToken);
   }, []);
   useEffect(() => {
-    getOneUserInfo(userInfo);
+    getCouponInfo(userToken);
   }, []);
 
   return (
     <StyledContainer>
-      <HeaderDetail title={!!userInfo.is_admin ? '보증금 관리' : `${userInfo.name}님의 보증금 관리`} />
-      {!!userInfo.is_admin && (
+      <HeaderDetail title={!!userInfoFromServer.is_admin ? '보증금 관리' : `${userInfoFromServer.name}님의 보증금 관리`} />
+      {!!userInfoFromServer.is_admin && (
         <AdminDepositList />
       )}
-      {!userInfo.is_admin && (
+      {!userInfoFromServer.is_admin && (
         <StyledContainer>
           <DepositHistoryHeader
-            oneUserInfo={oneUserInfo}
+            userInfo={userInfoFromServer}
             couponInfo={couponInfo}
           />
           <DepositHistory
@@ -54,5 +59,3 @@ const DepositScreen = () => {
 };
 
 export default DepositScreen;
-
-const styles = StyleSheet.create({});

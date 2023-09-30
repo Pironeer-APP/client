@@ -1,5 +1,5 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { ScrollView } from 'react-native'
+import React from 'react'
 import StyledContainer from '../components/StyledContainer'
 import HeaderDetail from '../components/Header'
 import UserSection from '../settings/UserSection'
@@ -8,25 +8,14 @@ import ThemeSection from '../settings/ThemeSection'
 import PolicySection from '../settings/PolicySection'
 import LogoutSection from '../settings/LogoutSection'
 import Gap from '../components/Gap'
-import useUserInfo from '../use-userInfo'
-import { StyledText } from '../components/Text'
 import UnregisterSection from '../settings/UnregisterSection'
 
 export default function Settings() {
-  const {
-    userInfo,
-    getUserInfo,
-  } = useUserInfo();
-  
-  useEffect(() => {
-    getUserInfo();
-  }, []);
-
   return (
     <StyledContainer>
       <HeaderDetail title="설정" />
       <ScrollView>
-        <UserSection userInfo={userInfo} />
+        <UserSection />
         <Gap />
         <NotiSection />
         <ThemeSection />

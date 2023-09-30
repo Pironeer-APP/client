@@ -1,80 +1,87 @@
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import React, {useState, useEffect, useMemo} from 'react';
+import dayjs from 'dayjs';
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
-import {useRoute} from '@react-navigation/native';
-import {StyledText} from '../components/Text';
+import {useRoute, useIsFocused} from '@react-navigation/native';
+import {StyledSubText, StyledText} from '../components/Text';
 import useUserInfo from '../use-userInfo';
 import {MainButton} from '../components/Button';
+import {fetchGet, fetchPost} from '../utils';
+import {Badge} from './AnnouncementScreen';
+import {RowView} from './HomeScreen';
+import Gap from '../components/Gap';
+import {COLORS} from '../assets/Theme';
+import styled from 'styled-components';
+
+const StyledBottomLine = styled.View`
+  height: 1px;
+  background-color: ${COLORS.light_gray};
+  margin: 5px 0 20px 0;
+`;
+const TitleBottomLine = () => <StyledBottomLine />;
 
 const AnnouncementDetail = ({navigation}) => {
   const [post, setPost] = useState([]);
   const route = useRoute();
   const post_id = route.params.post_id;
 
-  const {userInfo, getUserInfo} = useUserInfo();
+  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
   useEffect(() => {
-    getUserInfo();
+    getUserInfoFromServer();
   }, []);
 
-  const postInMemo = useMemo(() => post, [post]);
-
+  const isFocused = useIsFocused();
+  const getPost = async () => {
+    const url = `/post/20/${post_id}`;
+    const res = await fetchGet(url);
+    setPost(res.post);
+  };
   useEffect(() => {
-    const url =
-      Platform.OS === 'android'
-        ? `http://10.0.2.2:3000/api/post/20/${post_id}`
-        : `http://localhost:3000/api/post/20/${post_id}`;
-
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        console.log('detail', data.post);
-
-        setPost(data.post);
-      })
-      .catch(error => {
-        console.error('Error fetching posts:', error);
-      });
-  }, [postInMemo]);
+    getPost();
+  }, [isFocused]);
 
   // delete fetch
   const deletePost = async () => {
+    const url = `/post/delete/${post_id}`;
+    const body = {post_id};
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/post/delete/${post.post_id}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({post_id}),
-        },
-      );
-
-      const result = await response.json();
-      navigation.goBack();
-      console.log('delete', result);
+      await fetchPost(url, body);
+      navigation.navigate('AnnouncementScreen');
     } catch (error) {
       console.error('Error sending data:', error);
     }
   };
+
+  const dateString = `${post.created_at}`;
+  const date = new Date(dateString);
+  date.setHours(date.getHours() + 18);
+  const RenderDate = dayjs(date).format('M.D ddd').toUpperCase();
+
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
-      <StyledText content={`${post.created_at}`} fontSize={24} />
-      <StyledText content={`${post.category}`} fontSize={24} />
-      <StyledText content={`${post.title}`} fontSize={24} />
-      <StyledText content={`${post.content}`} fontSize={24} />
-      {!!userInfo.is_admin && (
-        <>
-          <MainButton
-            content={'수정하기'}
-            onPress={() => navigation.navigate('AdminUpdateNotice', {post})}
-            height={70}
-          />
-          <MainButton content={'삭제하기'} onPress={deletePost} height={70} />
-        </>
-      )}
+      <RowView>
+        <RowView style={{gap: 10}}>
+          <StyledSubText content={`${RenderDate}`} />
+          <Badge sort={post.category} />
+        </RowView>
+        {!!userInfoFromServer.is_admin && (
+          <RowView style={{gap: 10}}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('AdminUpdateNotice', {post})}>
+              <StyledSubText content={'수정'} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={deletePost}>
+              <StyledSubText content={'삭제'} />
+            </TouchableOpacity>
+          </RowView>
+        )}
+      </RowView>
+      <Gap />
+      <StyledText content={`${post.title}`} />
+      <TitleBottomLine />
+      <StyledText content={`${post.content}`} fontSize={20} />
     </StyledContainer>
   );
 };

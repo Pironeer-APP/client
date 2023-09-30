@@ -1,7 +1,6 @@
 import {
   FlatList,
   Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -18,10 +17,11 @@ import Gap from '../components/Gap';
 import {Box, PaddingBox} from '../components/Box';
 import {StyledSubText, StyledText} from '../components/Text';
 import {RowView} from './HomeScreen';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {MainButton} from '../components/Button';
 import {useRoute} from '@react-navigation/native';
-import { fetchGet } from '../utils';
+import {fetchGet} from '../utils';
+import useUserInfo from '../use-userInfo';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -29,7 +29,7 @@ const BadgeCSS = styled.View`
   border-radius: 20px;
 `;
 
-const Badge = props => {
+export const Badge = props => {
   if (props.sort === 1) {
     return (
       <BadgeCSS color={`${COLORS.badge_skyblue}`}>
@@ -58,7 +58,9 @@ const PostBox = ({title, sort, date, id, read}) => {
     });
   };
   const dateString = date;
-  const formattedDate = dayjs(dateString).format('M.D ddd').toUpperCase();
+  const date2 = new Date(dateString);
+  date2.setHours(date2.getHours() + 18);
+  const formattedDate = dayjs(date2).format('M.D ddd').toUpperCase();
   return (
     <View>
       <TouchableOpacity onPress={goToAncDet}>
@@ -121,15 +123,16 @@ const AnnouncementScreen = ({navigation}) => {
   ]);
 
   const [posts, setPosts] = useState([]);
+  const isFocused = useIsFocused();
 
-  const getPost = async () => {
+  const getPosts = async () => {
     const url = '/post/20/all';
     const res = await fetchGet(url);
     setPosts(res.posts);
-  }
+  };
   useEffect(() => {
-    getPost();
-  }, []);
+    getPosts();
+  }, [isFocused]);
 
   const renderScene = ({route}) => {
     switch (route.key) {
@@ -146,8 +149,11 @@ const AnnouncementScreen = ({navigation}) => {
     }
   };
 
-  const route = useRoute();
-  const userInfo = route.params.userInfo;
+  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
+  useEffect(() => {
+    getUserInfoFromServer();
+  }, []);
+
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
@@ -180,11 +186,11 @@ const AnnouncementScreen = ({navigation}) => {
           />
         )}
       />
-      {!!userInfo.is_admin && (
+      {!!userInfoFromServer.is_admin && (
         <MainButton
           content={'글 작성하기'}
           onPress={() => navigation.navigate('AdminCreateNotice')}
-          height={70}
+          height={60}
         />
       )}
     </StyledContainer>

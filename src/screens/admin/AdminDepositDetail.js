@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native'
 
 import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
@@ -12,60 +12,87 @@ import { fetchPost } from '../../utils';
 import DepositHistory from '../../deposit/DepositHistory';
 import useDepositDetail from '../../deposit/use-depositDetail';
 import DepositHistoryHeader from '../../deposit/DepositHistoryHeader';
+import useUserInfo from '../../use-userInfo';
 
-export default function AdminDepositDetail({ route }) {
+export default function AdminDepositDetail() {
+  const route = useRoute();
   const userInfo = route.params.userInfo;
-  const [selected, setSelected] = useState('');
-  const onPressSelectCoupon = (content) => {
-    setSelected(content);
-  }
-  const navigation = useNavigation();
 
-  const onPressAddCoupon = async () => {
-    if(selected === '') {
-      Alert.alert('면제권을 선택해 주세요', '', [
-        {text: '확인'},
-      ]);
-      return;
-    }
-    const price = selected === "과제면제권" ? 20000 : 10000;
-    const url = '/admin/addCoupon';
-    const body = {
-      user_id: userInfo.user_id,
-      type: selected,
-      money: price
-    };
-    const res = await fetchPost(url, body);
-    console.log(res);
-    navigation.replace('AdminDepositDetail', {userInfo: userInfo});
+  const [selected, setSelected] = useState(false);
+  const onPressSelectCoupon = () => {
+    setSelected(!selected);
   }
-
+  
   const {
     depositHistory,
     couponInfo,
-    oneUserInfo,
     getDepositHistory,
     getCouponInfo,
-    getOneUserInfo,
   } = useDepositDetail();
   
   useEffect(() => {
     getDepositHistory(userInfo);
   }, []);
+
   useEffect(() => {
     getCouponInfo(userInfo);
   }, []);
+
+  const onPressAddCoupon = async () => {
+    if(!selected) {
+      Alert.alert('방어권을 선택해 주세요', '', [
+        {text: '확인'},
+      ]);
+      return;
+    }
+    const url = '/admin/addCoupon';
+    const body = {
+      user_id: userInfo.user_id,
+    };
+    const res = await fetchPost(url, body);
+    getCouponInfo(userInfo);
+    console.log(res);
+  }
+
+  const {
+    userToken,
+    getUserToken,
+  } = useUserInfo();
+
   useEffect(() => {
-    getOneUserInfo(userInfo);
+    getUserToken();
   }, []);
+
+  const deleteCoupon = async (coupon_id) => {
+    console.log(coupon_id);
+    const url = '/admin/deleteCoupon';
+    const body = {
+      adminToken: userToken,
+      coupon_id: coupon_id
+    }
+    const res = await fetchPost(url, body);
+    console.log(res);
+    getCouponInfo(userInfo);
+  }
+
+  const onPressDeleteBadge = (coupon_id) => {
+    Alert.alert(`${userInfo.name}의 보증금 방어권 하나를 삭제하시겠습니까?`, '', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => deleteCoupon(coupon_id)},
+    ]);
+  }
 
   return (
     <>
     <StyledContainer>
       <HeaderDetail title={`${userInfo.name}님의 보증금 관리`} />
       <DepositHistoryHeader
-        oneUserInfo={oneUserInfo}
+        userInfo={userInfo}
         couponInfo={couponInfo}
+        onPressDeleteBadge={onPressDeleteBadge}
       />
       <DepositHistory
         depositHistory={depositHistory}
@@ -75,11 +102,7 @@ export default function AdminDepositDetail({ route }) {
       {/* 여기에 모달 내용 담기 */}
       <StyledText content="직접 관리하기" fontSize={18} />
       <View style={styles.couponContainer}>
-        <CouponButton selected={selected} content="과제면제권" onPress={() => onPressSelectCoupon("과제면제권")} />
-        <Gap height={20} />
-        <CouponButton selected={selected} content="지각면제권" onPress={() => onPressSelectCoupon("지각면제권")} />
-        <Gap height={20} />
-        <CouponButton selected={selected} content="특별면제권" onPress={() => onPressSelectCoupon("특별면제권")} />
+        <CouponButton selected={selected} content="보증금 방어권" onPress={onPressSelectCoupon} />
       </View>
       <MainButton height={60} content="추가하기" onPress={onPressAddCoupon} />
     </BottomSheetModal>

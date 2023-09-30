@@ -6,6 +6,11 @@ import {
   Platform,
   TextInput,
   StyleSheet,
+  TouchableOpacity,
+  Image,
+  KeyboardAvoidingView,
+  NativeModules,
+  ScrollView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -13,98 +18,139 @@ import styled from 'styled-components/native';
 import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import {StyledText} from '../../components/Text';
-import {useRoute} from '@react-navigation/native';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {COLORS} from '../../assets/Theme';
 import {MainButton} from '../../components/Button';
+import {fetchPost} from '../../utils';
+import {Box} from '../../components/Box';
+import {RowView} from '../HomeScreen';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {PermissionsAndroid} from 'react-native';  
 
-const FirstRoute = () => <View style={{height: 1, backgroundColor: 'blue'}} />;
-const SecondRoute = () => null;
-const ThirdRoute = () => null;
 
+export const ChooseCategory = ({category, setCategory}) => {
+  const PressedCat = ({index, content}) => {
+    let color = COLORS.green;
+    if (index === category) {
+      color = COLORS.green;
+    } else {
+      color = COLORS.light_gray;
+    }
+    return (
+      <TouchableOpacity onPress={() => setCategory(index)}>
+        <StyledText content={content} fontSize={17} color={color} />
+      </TouchableOpacity>
+    );
+  };
+  return (
+    <Box>
+      <View style={{paddingVertical: 15, paddingHorizontal: 20}}>
+        <RowView>
+          <StyledText content={'카테고리 선택'} fontSize={17} />
+          <RowView style={{width: '40%'}}>
+            <PressedCat index={1} content={'세션'} />
+            <PressedCat index={2} content={'과제'} />
+            <PressedCat index={3} content={'기타'} />
+          </RowView>
+        </RowView>
+      </View>
+    </Box>
+  );
+};
 const AdminCreateNotice = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const layout = useWindowDimensions();
-  const [index, setIndex] = useState(0);
-  const route = useRoute();
-  const [routes] = useState([
-    {key: 'first', title: '세션'},
-    {key: 'second', title: '과제'},
-    {key: 'third', title: '기타'},
-  ]);
-  const renderScene = ({route}) => {
-    switch (route.key) {
-      case 'first':
-        return <FirstRoute />;
-      case 'second':
-        return <SecondRoute />;
-      case 'third':
-        return <ThirdRoute />;
-      default:
-        return null;
-    }
-  };
-  let category = 1;
-  const navigation = useNavigation();
+  const [category, setCategory] = useState(1); // 1: 세션, 2: 과제, 3: 기타
+  const [selectedImages, setSelectedImages] = useState([]);
 
   const sendDataToServer = async () => {
+    const url = '/post/create/20';
+    const body = {title, content, category};
     try {
-      const response = await fetch('http://localhost:3000/api/post/create/20', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({title, content, category}),
-      });
-
-      const result = await response.json();
-      console.log('create', result);
-      navigation.goBack();
+      const result = await fetchPost(url, body); //서버에서 result.insertId return
+      if (result.createdPostId && selectedImages.length > 0) {
+        uploadImages(result.createdPostId);
+      }
     } catch (error) {
       console.error('Error sending data:', error);
     }
   };
+
+
+  const uploadImages = async (postId) => {
+    const formData = new FormData();
+    selectedImages.forEach((image, index) => {
+      const file = {
+        name: image.fileName,
+        type: image.type,
+        uri: image.uri,
+      };
+      formData.append('image' + index, file);
+    });
+
+    formData.append('post_id', postId);
+
+    fetch('http://localhost:3000/api/post/uploadimages', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('이미지 업로드 성공:', data);
+    })
+    .catch(error => {
+      console.error('이미지 업로드 실패:', error);
+    });
+  };
+
+  const onImageSelect = () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+      multiple: true,
+    };
+
+    launchImageLibrary(options, (response) => {
+      if (!response.didCancel) {
+        setSelectedImages(response.assets);
+      }
+    });
+  };
+
+
+  const Camera = () => (
+    <TouchableOpacity onPress={onImageSelect}>
+      <Image
+        source={require('../../assets/icons/camera.png')}
+        style={{width: 30, height: 30}}
+      />
+    </TouchableOpacity>
+  );
+
   return (
     <StyledContainer>
-      <HeaderDetail title={'글 작성하기'} />
-      <TabView
-        navigationState={{index, routes}}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{width: layout.width}}
-        renderTabBar={props => (
-          <TabBar
-            {...props}
-            indicatorStyle={{
-              backgroundColor: `${COLORS.green}`,
-              height: 47,
-              borderWidth: 5,
-              borderRadius: 15,
-              borderColor: `${COLORS.icon_gray}`,
-            }}
-            style={{
-              backgroundColor: `${COLORS.icon_gray}`,
-              fontWeight: 'bold',
-              shadowOffset: {height: 0, width: 0},
-              shadowColor: 'transparent',
-              borderRadius: 15,
-            }}
-            pressColor={'transparent'}
-            renderLabel={({route, focused}) => (
-              <TabLabel focused={focused}>{route.title}</TabLabel>
-            )}
-          />
-        )}
+      <HeaderDetail
+        title={'글 작성하기'}
+        button={'완료'}
+        buttonOnPress={sendDataToServer}
       />
-      <View style={{flex: 1}}>
-        <TextInput
-          placeholder="제목"
-          value={title}
-          onChangeText={text => setTitle(text)}
-          placeholderTextColor={COLORS.light_gray}
-          style={styles.textInputTitle}
-        />
+
+      <View>
+        <ChooseCategory category={category} setCategory={setCategory} />
+      </View>
+
+      <TextInput
+        placeholder="제목"
+        value={title}
+        onChangeText={text => setTitle(text)}
+        placeholderTextColor={COLORS.light_gray}
+        style={styles.textInputTitle}
+      />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        style={{flex: 1}}>
         <TextInput
           placeholder="내용"
           value={content}
@@ -113,17 +159,16 @@ const AdminCreateNotice = () => {
           style={styles.textInputContent}
           multiline={true}
         />
-      </View>
-      <MainButton content={'완료'} onPress={sendDataToServer} />
+
+      {selectedImages.map((image, index) => (
+        <Image key={index} source={{ uri: image.uri }} style={{ width: 100, height: 100 }} />
+      ))}
+        <Camera />
+      </KeyboardAvoidingView>
+
     </StyledContainer>
   );
 };
-const TabLabel = styled.Text`
-  color: ${props =>
-    props.focused ? `${COLORS.bg_black}` : `${COLORS.textColor}`};
-  font-size: 14px;
-  font-weight: bold;
-`;
 
 const styles = StyleSheet.create({
   inputWrapper: {
@@ -139,10 +184,10 @@ const styles = StyleSheet.create({
   },
   textInputContent: {
     color: 'white',
-    height: 60,
     marginBottom: 15,
     fontSize: 20,
     flex: 1,
+    textAlignVertical: 'top',
   },
 });
 export default AdminCreateNotice;

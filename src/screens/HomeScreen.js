@@ -55,20 +55,26 @@ export const ProgressBar = props => (
 );
 
 const HomeScreen = ({navigation}) => {
-  const {userInfo, getUserInfo} = useUserInfo();
-
+  const {userToken, userInfoFromServer, getUserToken, getUserInfoFromServer} =
+    useUserInfo();
+  console.log(userInfoFromServer);
   useEffect(() => {
-    getUserInfo();
+    getUserToken();
+  }, []);
+  useEffect(() => {
+    getUserInfoFromServer();
   }, []);
 
   const goToAsgnmt = () => {
-    navigation.navigate('AssignmentScreen');
+    userInfoFromServer.is_admin
+      ? navigation.navigate('AdminAssignmentScreen')
+      : navigation.navigate('AssignmentScreen');
   };
   const goToAnncmt = () => {
-    navigation.navigate('AnnouncementScreen', {userInfo: userInfo});
+    navigation.navigate('AnnouncementScreen', {userInfo: userInfoFromServer});
   };
   const goToDeposit = () => {
-    navigation.navigate('DepositScreen', {userInfo: userInfo});
+    navigation.navigate('DepositScreen');
   };
   const goToAtndnc = () => {
     //관리자인 경우 출석페이지
@@ -92,7 +98,7 @@ const HomeScreen = ({navigation}) => {
         <Header />
         <Gap />
         <StyledText
-          content={`${userInfo.level}기 ${userInfo.name}님 \n오늘은 대면 세션 날이에요`}
+          content={`${userInfoFromServer.level}기 ${userInfoFromServer.name}님 \n오늘은 대면 세션 날이에요`}
           fontSize={24}
         />
         <Gap />
@@ -100,7 +106,7 @@ const HomeScreen = ({navigation}) => {
           <TouchableOpacity style={{padding: 20}} onPress={goToAsgnmt}>
             <RowView style={{marginBottom: 10}}>
               <StyledText
-                content={userInfo.is_admin ? '과제 채점' : '과제'}
+                content={userInfoFromServer.is_admin ? '과제 관리' : '과제'}
                 fontSize={24}
               />
               <RightArrowBtn />
@@ -132,7 +138,7 @@ const HomeScreen = ({navigation}) => {
                     padding: 20,
                     flex: 1,
                   }}>
-                  <StyledText content={'출석체크'} fontSize={24} />
+                  <StyledText content={'출석체크'} />
                   <Image
                     source={require('../assets/icons/calendar.png')}
                     style={{width: 40, height: 40, marginTop: 10}}
@@ -143,7 +149,7 @@ const HomeScreen = ({navigation}) => {
             <View style={{gap: 20, flex: 1}}>
               <Box>
                 <TouchableOpacity style={{padding: 20}} onPress={goToDeposit}>
-                  <StyledText content={'보증금'} fontSize={24} />
+                  <StyledText content={'보증금'} />
                   <Image
                     source={require('../assets/icons/money.png')}
                     style={{width: 30, height: 30, marginTop: 10}}
@@ -164,7 +170,7 @@ const HomeScreen = ({navigation}) => {
         </View>
         <Gap />
         {/* 관리자일 때만 보이는 */}
-        {!!userInfo.is_admin && (
+        {!!userInfoFromServer.is_admin && (
           <>
             <View style={{gap: 20, flex: 1, flexDirection: 'row'}}>
               <View style={styles.middleBox}>
