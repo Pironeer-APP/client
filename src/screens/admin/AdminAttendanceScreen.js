@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import AdminAttendanceDetailScreen from './AdminAttendanceDetailScreen';
 
 
-const sessionDates = [
+const SESSION_DATES = [
   {"week1": ['12.27', '12.31', '01.02']},
   {"week2": ['01.04', '01.06', '01.08']},
   {"week3": ['01.10', '01.12', '01.15']},
@@ -53,7 +53,7 @@ const WeekContainer = (props) => {
         <StyledSubText content={`Week ${props.week}`}/>
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        {sessionDates[props.week - 1][`week${props.week}`].map((date, index) => {
+        {SESSION_DATES[props.week - 1][`week${props.week}`].map((date, index) => {
           return (
             <Date date={date} />
           )
@@ -67,7 +67,7 @@ const AdminAttendanceScreen = () => {
   return (
     <StyledContainer>
       <HeaderDetail title={'출석'} />
-      {sessionDates.map((notForUse, index) => (
+      {SESSION_DATES.map((notForUse, index) => (
         <WeekContainer key={index} week={index + 1} />
       ))}
     </StyledContainer>
