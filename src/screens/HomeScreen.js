@@ -57,7 +57,7 @@ export const ProgressBar = props => (
 const HomeScreen = ({navigation}) => {
   const {userToken, userInfoFromServer, getUserToken, getUserInfoFromServer} =
     useUserInfo();
-
+  console.log(userInfoFromServer);
   useEffect(() => {
     getUserToken();
   }, []);
