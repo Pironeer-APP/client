@@ -24,8 +24,7 @@ import {fetchPost} from '../../utils';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {PermissionsAndroid} from 'react-native';  
-
+import {PermissionsAndroid} from 'react-native';
 
 export const ChooseCategory = ({category, setCategory}) => {
   const PressedCat = ({index, content}) => {
@@ -75,8 +74,12 @@ const AdminCreateNotice = () => {
     }
   };
 
-
-  const uploadImages = async (postId) => {
+  const uploadImages = async postId => {
+    const url =
+      Platform.OS === 'ios'
+        ? 'http://localhost:3000/api/post/uploadimages'
+        : 'http://10.0.2.2:3000/api/post/uploadimages';
+    console.log(url);
     const formData = new FormData();
     selectedImages.forEach(image => {
       const file = {
@@ -89,20 +92,20 @@ const AdminCreateNotice = () => {
 
     formData.append('post_id', postId);
 
-    fetch('http://10.0.2.2:3000/api/post/uploadimages', {
+    fetch(url, {
       method: 'POST',
       body: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     })
-    .then(response => response.json())
-    .then(data => {
-      console.log('이미지 업로드 성공:', data);
-    })
-    .catch(error => {
-      console.error('이미지 업로드 실패:', error);
-    });
+      .then(response => response.json())
+      .then(data => {
+        console.log('이미지 업로드 성공:', data);
+      })
+      .catch(error => {
+        console.error('이미지 업로드 실패:', error);
+      });
   };
 
   const onImageSelect = () => {
@@ -110,18 +113,18 @@ const AdminCreateNotice = () => {
       mediaType: 'photo',
       quality: 1,
       multiple: true,
+      selectionLimit: 10,
     };
 
-    launchImageLibrary(options, (response) => {
+    launchImageLibrary(options, response => {
       if (!response.didCancel) {
         setSelectedImages(response.assets);
       }
     });
   };
 
-
   const Camera = () => (
-    <TouchableOpacity onPress={onImageSelect}>
+    <TouchableOpacity onPress={onImageSelect} style={{paddingTop: 10}}>
       <Image
         source={require('../../assets/icons/camera.png')}
         style={{width: 30, height: 30}}
@@ -159,17 +162,28 @@ const AdminCreateNotice = () => {
           style={styles.textInputContent}
           multiline={true}
         />
-
-      {selectedImages.map((image, index) => (
-        <Image key={index} source={{ uri: image.uri }} style={{ width: 100, height: 100 }} />
-      ))}
+        <ImagesContainer>
+          <ScrollView horizontal={true}>
+            {selectedImages.map((image, index) => (
+              <Image
+                key={index}
+                source={{uri: image.uri}}
+                style={{width: 100, height: 100}}
+              />
+            ))}
+          </ScrollView>
+        </ImagesContainer>
         <Camera />
       </KeyboardAvoidingView>
-
     </StyledContainer>
   );
 };
-
+const ImagesContainer = styled.View`
+  flex-direction: row;
+  overflow: hidden;
+  position: absolute;
+  bottom: 40px;
+`;
 const styles = StyleSheet.create({
   inputWrapper: {
     paddingVertical: 15,
