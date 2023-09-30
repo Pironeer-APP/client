@@ -78,18 +78,18 @@ const AdminCreateNotice = () => {
 
   const uploadImages = async (postId) => {
     const formData = new FormData();
-    selectedImages.forEach((image, index) => {
+    selectedImages.forEach(image => {
       const file = {
         name: image.fileName,
         type: image.type,
         uri: image.uri,
       };
-      formData.append('image' + index, file);
+      formData.append('images', file);
     });
 
     formData.append('post_id', postId);
 
-    fetch('http://localhost:3000/api/post/uploadimages', {
+    fetch('http://10.0.2.2:3000/api/post/uploadimages', {
       method: 'POST',
       body: formData,
       headers: {
