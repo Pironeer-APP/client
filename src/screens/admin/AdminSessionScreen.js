@@ -162,10 +162,14 @@ const InProgressAsgBox = ({ item }) => {
 };
 const DoneAsgBox = ({ item }) => {
   const {
+    convertDateTime,
+  } = useProgress();
+
+  const {
     itemMonth,
     itemDate,
     itemDayEn
-  } = convertDateTime(item);
+  } = convertDateTime(item.date);
 
   return (
     <Pressable
