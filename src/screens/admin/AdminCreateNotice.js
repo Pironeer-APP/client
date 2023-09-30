@@ -163,8 +163,6 @@ const AdminCreateNotice = () => {
       {selectedImages.map((image, index) => (
         <Image key={index} source={{ uri: image.uri }} style={{ width: 100, height: 100 }} />
       ))}
-      //<Camera />
-      //</View>
         <Camera />
       </KeyboardAvoidingView>
 
