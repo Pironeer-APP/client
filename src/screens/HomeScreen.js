@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
+import {useIsFocused} from '@react-navigation/native';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import {StyledText} from '../components/Text';
@@ -36,7 +37,6 @@ export const RowView = styled.View`
 export const StyledProgressBar = styled.View`
   height: 5px;
   background-color: ${COLORS.icon_gray};
-  flex: 1;
   margin-right: 10px;
   border-radius: 5px;
   overflow: hidden;
@@ -55,6 +55,8 @@ export const ProgressBar = props => (
 );
 
 const HomeScreen = ({navigation}) => {
+  const isFocused = useIsFocused();
+
   const {
     userToken,
     userInfoFromServer,
@@ -67,7 +69,7 @@ const HomeScreen = ({navigation}) => {
   }, []);
   useEffect(() => {
     getUserInfoFromServer();
-  }, []);
+  }, [isFocused]);
 
   const goToAsgnmt = () => {
     navigation.navigate('AssignmentScreen');
@@ -87,6 +89,7 @@ const HomeScreen = ({navigation}) => {
   const goToSession = () => {
     navigation.navigate('AdminSessionScreen');
   };
+  
   return (
     <StyledContainer>
       <ScrollView>
@@ -108,7 +111,9 @@ const HomeScreen = ({navigation}) => {
             </RowView>
             <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
             <RowView style={{marginTop: 10}}>
+              <View style={{ width: '50%' }}>
               <ProgressBar status={'30%'} />
+              </View>
               <StyledText content={'남은 시간 18:38:43'} fontSize={16} />
             </RowView>
           </TouchableOpacity>
