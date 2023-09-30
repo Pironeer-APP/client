@@ -18,13 +18,12 @@ export default function DepositHistoryHeader(props) {
       </View>
       {/* 뱃지 */}
       <View style={styles.row}>
-        {props.couponInfo?.map((coupon) => (
-          <CouponElement
-            key={coupon.coupon_id}
-            coupon={coupon}
-            userInfo={props.userInfo}
-            onPressDeleteBadge={() => props.onPressDeleteBadge(coupon.coupon_id)} />
-        ))}
+        <Text>
+          <StyledText content="남은 쿠폰 수 : " fontSize={20} />
+          <StyledText
+          content={props.couponInfo.length}
+          fontSize={20} />
+        </Text>
       </View>
     </View>
   )
