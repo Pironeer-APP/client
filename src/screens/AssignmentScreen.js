@@ -18,41 +18,43 @@ import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import HeaderDetail from '../components/Header';
 
-const data = [
+export const Assignmentdata = [
   {
     id: 1,
     grade: 1,
     // 0: 미제출, 1: 미흡, 2: 지각, 3: 완료
     title: '피로그래머 카드게임',
-    due_date: '2023-09-24T00:20:44.000Z',
+    due_date: '7.20 MON',
     created_at: '2023-09-24T00:20:44.000Z',
     done: false,
   },
   {
     id: 2,
     grade: 0,
-    title: '피로그래머 카드게임',
-    due_date: '2023-09-24T00:20:44.000Z',
+    title: '파이썬 술게임',
+    due_date: '7.20 MON',
     created_at: '2023-09-24T00:20:44.000Z',
     done: true,
   },
   {
     id: 3,
     grade: 3,
-    title: '피로그래머 카드게임',
-    due_date: '2023-09-24T00:20:44.000Z',
+    title: 'Arsha 클론코딩',
+    due_date: '7.20 MON',
     created_at: '2023-09-24T00:20:44.000Z',
     done: true,
   },
 ];
-const StatusCircle = ({grade}) => {
+export const StatusCircle = ({grade = 4}) => {
   let imageSource;
   if (grade == 0) {
     imageSource = require(`../assets/icons/circle_ex.png`);
-  } else if (grade === 3) {
+  } else if (grade == 3) {
     imageSource = require(`../assets/icons/circle_donggrami.png`);
-  } else {
+  } else if (grade == 1 || grade == 2) {
     imageSource = require(`../assets/icons/circle_semo.png`);
+  } else {
+    imageSource = require(`../assets/icons/circle_none.png`);
   }
   return (
     <View>
@@ -203,7 +205,7 @@ const AssignmentScreen = () => {
       <HeaderDetail title={'과제'} />
       <View style={{flex: 1}}>
         <FlatList
-          data={data}
+          data={Assignmentdata}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />

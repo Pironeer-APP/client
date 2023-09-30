@@ -55,12 +55,8 @@ export const ProgressBar = props => (
 );
 
 const HomeScreen = ({navigation}) => {
-  const {
-    userToken,
-    userInfoFromServer,
-    getUserToken,
-    getUserInfoFromServer
-  } = useUserInfo();
+  const {userToken, userInfoFromServer, getUserToken, getUserInfoFromServer} =
+    useUserInfo();
 
   useEffect(() => {
     getUserToken();
@@ -70,7 +66,9 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   const goToAsgnmt = () => {
-    navigation.navigate('AssignmentScreen');
+    userInfoFromServer.is_admin
+      ? navigation.navigate('AdminAssignmentScreen')
+      : navigation.navigate('AssignmentScreen');
   };
   const goToAnncmt = () => {
     navigation.navigate('AnnouncementScreen', {userInfo: userInfoFromServer});
@@ -101,7 +99,7 @@ const HomeScreen = ({navigation}) => {
           <TouchableOpacity style={{padding: 20}} onPress={goToAsgnmt}>
             <RowView style={{marginBottom: 10}}>
               <StyledText
-                content={userInfoFromServer.is_admin ? '과제 채점' : '과제'}
+                content={userInfoFromServer.is_admin ? '과제 관리' : '과제'}
                 fontSize={24}
               />
               <RightArrowBtn />
