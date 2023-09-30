@@ -17,9 +17,9 @@ import {Box} from '../components/Box';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import HeaderDetail from '../components/Header';
+import {fetchGet, fetchPost} from '../utils';
 import useUserInfo from '../use-userInfo';
-import { fetchPost } from '../utils';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 
 export const Assignmentdata = [
   {
@@ -34,7 +34,7 @@ export const Assignmentdata = [
   {
     id: 2,
     grade: 0,
-    title: '피로그래머 카드게임',
+    title: '파이썬 술게임',
     due_date: '7.20 MON',
     created_at: '2023-09-24T00:20:44.000Z',
     done: true,
@@ -42,20 +42,22 @@ export const Assignmentdata = [
   {
     id: 3,
     grade: 3,
-    title: '피로그래머 카드게임',
+    title: 'Arsha 클론코딩',
     due_date: '7.20 MON',
     created_at: '2023-09-24T00:20:44.000Z',
     done: true,
   },
 ];
-const StatusCircle = ({grade}) => {
+export const StatusCircle = ({grade = 4}) => {
   let imageSource;
   if (grade == 0) {
     imageSource = require(`../assets/icons/circle_ex.png`);
-  } else if (grade === 3) {
+  } else if (grade == 3) {
     imageSource = require(`../assets/icons/circle_donggrami.png`);
-  } else {
+  } else if (grade == 1 || grade == 2) {
     imageSource = require(`../assets/icons/circle_semo.png`);
+  } else {
+    imageSource = require(`../assets/icons/circle_none.png`);
   }
   return (
     <View>
@@ -201,63 +203,45 @@ const renderItem = ({item}) => {
   );
 };
 
-const saveUserId = async (userInfoFromServer) => {
-  const url = `/assign`
-  const body = {
-    userId: userInfoFromServer.user_id,
-    userLevel: userInfoFromServer.level
-  }
-  try {
-    const fetchData = await fetchPost(url, body);
-    console.log(fetchData);
-    console.log('성공!');
-  } catch(error) {
-    console.log(error);
-    console.log('에러');
-  }
-};
-
 const AssignmentScreen = () => {
-  // client로부터 user_id 받아서 server로 전송
-  const {
-    userToken,
-    userInfoFromServer,
-    getUserToken,
-    getUserInfoFromServer
-  } = useUserInfo();
+  const [assignment, setAssignment] = useState([]);
+  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
 
   useEffect(() => {
-    getUserToken();
+    getUserInfoFromServer();
   }, []);
+  // send user info
 
-  useEffect(() => {
-    getUserInfoFromServer(userToken);
-  }, [userToken]);
+  const isFocused = useIsFocused();
 
+  const saveUserId = async userInfoFromServer => {
+    const url = `/assign`;
+    const body = {
+      userId: userInfoFromServer.user_id,
+      userLevel: userInfoFromServer.level,
+    };
+    console.log('body: ', body);
+    try {
+      const fetchData = await fetchPost(url, body);
+      setAssignment(fetchData);
+      console.log('성공  받아온 data: ', fetchData);
+    } catch (error) {
+      console.log(error);
+      console.log('에러');
+    }
+  };
   useEffect(() => {
     saveUserId(userInfoFromServer);
   }, [userInfoFromServer]);
-  
-  // homescreen에서 받아오거나..
-  // const {
-  //   userInfoFromServer,
-  //   getUserInfoFromServer
-  // } = useUserInfo();
-  // useEffect(() => {
-  //   getUserInfoFromServer();
-  // }, []);
-  // useEffect(() => {
-  //   saveUserId(userInfoFromServer);
-  // }, [userInfoFromServer]);
 
   return (
     <StyledContainer>
       <HeaderDetail title={'과제'} />
       <View style={{flex: 1}}>
         <FlatList
-          data={Assignmentdata}
+          data={assignment.data}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.AssignId}
         />
       </View>
     </StyledContainer>
