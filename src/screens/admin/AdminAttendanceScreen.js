@@ -18,11 +18,18 @@ const DateContainer = styled.View`
   padding: 10px;
 `;
 
-const Date = (props) => {
+const DateBox = (props) => {
   const navigation = useNavigation();
   // 세션 월, 일 변수 할당
   const month = props.date.month;
   const day = props.date.day;
+
+  // 오늘 일정인지
+  let isToday = false;
+  const today = new Date();
+  if(Number(today.getMonth().toLocaleString()) + 1 === Number(month) && Number(today.getDate().toLocaleString()) === Number(day)) {
+    isToday = true;
+  }
   // 핸드폰 스크린 너비에 따른 날짜상자 크기 정하기
   const screenWidth = Dimensions.get('window').width;
   const boxWidth = (screenWidth - 30) / 3.4;
@@ -48,13 +55,13 @@ const WeekContainer = (props) => {
             return (
               <>
               <GapH />
-              <Date date={date} />
+              <DateBox date={date} />
               <GapH />
               </>
             )
           } else {
             return (
-              <Date date={date} />
+              <DateBox date={date} />
             )
           }
         })}
