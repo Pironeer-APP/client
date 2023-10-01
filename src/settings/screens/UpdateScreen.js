@@ -7,7 +7,7 @@ import { SettingInput } from '../../components/Input'
 import Gap from '../../components/Gap'
 import { useNavigation } from '@react-navigation/native';
 import { MainButton } from '../../components/Button'
-import { fetchPost, storeData } from '../../utils'
+import { autoHyphen, fetchPost, storeData } from '../../utils'
 import useUserInfo from '../../use-userInfo'
 
 const infoType = {
@@ -29,9 +29,15 @@ const infoType = {
     desc: '',
     placeholder: 'piropiro@gmail.com',
   },
+  'level': {
+    id: 3,
+    title: '관리자 기수',
+    desc: '피로그래밍 N기 운영진',
+    placeholder: '20',
+  },
 }
 
-export default function CheckScreen({ route }) {
+export default function UpdateScreen({ route }) {
   const element = infoType[route.params.type];
 
   const [data, setData] = useState('');
@@ -70,6 +76,16 @@ export default function CheckScreen({ route }) {
 
   const josa = element.title === '이메일' ? '을' : '를';
 
+  const onChangePhoneId = (value) => {
+    value = autoHyphen(value);
+    setData(value);
+  }
+
+  const onChangeLevel = (value) => {
+    value = value.replace(/[^0-9]/g, '');
+    setData(value);
+  }
+
   return (
     <StyledContainer>
       <HeaderDetail title={`${element.title} 변경`} />
@@ -89,8 +105,9 @@ export default function CheckScreen({ route }) {
             placeholder={element.placeholder}
             autoFocus={true}
             value={data}
-            onChangeText={setData}
-            secureTextEntry={route.params.type === 'password'} />
+            onChangeText={route.params.type === 'phone' ? onChangePhoneId : route.params.type === 'level' ? onChangeLevel : setData}
+            secureTextEntry={route.params.type === 'password'}
+            keyboardType={route.params.type === 'phone' || route.params.type === 'level' ? 'numeric' : null} />
         </View>
         <MainButton content="다음" onPress={onPressNewInfo} />
       </KeyboardAvoidingView>

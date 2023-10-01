@@ -19,13 +19,11 @@ import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import {StyledText} from '../../components/Text';
 import {COLORS} from '../../assets/Theme';
-import {MainButton} from '../../components/Button';
-import {fetchPost} from '../../utils';
+import {fetchPost, getAPIHost} from '../../utils';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {PermissionsAndroid} from 'react-native';  
-
+import {PermissionsAndroid} from 'react-native';
 
 export const ChooseCategory = ({category, setCategory}) => {
   const PressedCat = ({index, content}) => {
@@ -56,11 +54,21 @@ export const ChooseCategory = ({category, setCategory}) => {
     </Box>
   );
 };
+
+export const Camera = ({onImageSelect}) => (
+  <TouchableOpacity onPress={onImageSelect}>
+    <Image
+      source={require('../../assets/icons/camera.png')}
+      style={{width: 30, height: 30}}
+    />
+  </TouchableOpacity>
+);
 const AdminCreateNotice = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState(1); // 1: 세션, 2: 과제, 3: 기타
   const [selectedImages, setSelectedImages] = useState([]);
+  const navigation = useNavigation();
 
   const sendDataToServer = async () => {
     const url = '/post/create/20';
@@ -70,65 +78,56 @@ const AdminCreateNotice = () => {
       if (result.createdPostId && selectedImages.length > 0) {
         uploadImages(result.createdPostId);
       }
+      navigation.goBack();
     } catch (error) {
       console.error('Error sending data:', error);
     }
   };
 
-
-  const uploadImages = async (postId) => {
+  const uploadImages = async postId => {
     const formData = new FormData();
-    selectedImages.forEach((image, index) => {
+    const SERVER_URL = getAPIHost();
+    const URL = SERVER_URL + '/post/uploadimages';
+    selectedImages.forEach(image => {
       const file = {
         name: image.fileName,
         type: image.type,
         uri: image.uri,
       };
-      formData.append('image' + index, file);
+      formData.append('images', file);
     });
 
     formData.append('post_id', postId);
 
-    fetch('http://localhost:3000/api/post/uploadimages', {
+    fetch(URL, {
       method: 'POST',
       body: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     })
-    .then(response => response.json())
-    .then(data => {
-      console.log('이미지 업로드 성공:', data);
-    })
-    .catch(error => {
-      console.error('이미지 업로드 실패:', error);
-    });
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.message);
+      })
+      .catch(error => {
+        console.error('이미지 업로드 실패:', error);
+      });
   };
-
   const onImageSelect = () => {
     const options = {
       mediaType: 'photo',
       quality: 1,
       multiple: true,
+      selectionLimit: 10,
     };
 
-    launchImageLibrary(options, (response) => {
+    launchImageLibrary(options, response => {
       if (!response.didCancel) {
         setSelectedImages(response.assets);
       }
     });
   };
-
-
-  const Camera = () => (
-    <TouchableOpacity onPress={onImageSelect}>
-      <Image
-        source={require('../../assets/icons/camera.png')}
-        style={{width: 30, height: 30}}
-      />
-    </TouchableOpacity>
-  );
-
   return (
     <StyledContainer>
       <HeaderDetail
@@ -160,16 +159,33 @@ const AdminCreateNotice = () => {
           multiline={true}
         />
 
-      {selectedImages.map((image, index) => (
-        <Image key={index} source={{ uri: image.uri }} style={{ width: 100, height: 100 }} />
-      ))}
-        <Camera />
+        <ImagesContainer>
+          <ScrollView horizontal={true}>
+            {selectedImages.map((image, index) => (
+              <Image
+                key={index}
+                source={{uri: image.uri}}
+                style={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: 10,
+                  marginRight: 10,
+                }}
+              />
+            ))}
+          </ScrollView>
+        </ImagesContainer>
+        <Camera onImageSelect={onImageSelect} />
       </KeyboardAvoidingView>
-
     </StyledContainer>
   );
 };
-
+export const ImagesContainer = styled.View`
+  flex-direction: row;
+  overflow: hidden;
+  position: absolute;
+  bottom: 40px;
+`;
 const styles = StyleSheet.create({
   inputWrapper: {
     paddingVertical: 15,

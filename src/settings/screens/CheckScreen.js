@@ -96,7 +96,8 @@ export default function CheckScreen({route}) {
           autoFocus={true}
           value={data}
           onChangeText={route.params.type === 'phone' ? onChangePhoneId : setData}
-          secureTextEntry={route.params.type === 'password'} />
+          secureTextEntry={route.params.type === 'password'}
+          keyboardType={route.params.type === 'phone' ? 'numeric' : null} />
         </View>
         <MainButton content="다음" onPress={onPressOriginInfo} />
       </KeyboardAvoidingView>

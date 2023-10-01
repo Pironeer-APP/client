@@ -71,7 +71,7 @@ const StatusLine = () => {
     <View style={{backgroundColor: `${COLORS.icon_gray}`, width: 1, flex: 1}} />
   );
 };
-const InProgressAsgBox = () => {
+const InProgressAsgBox = ({grade, title, due}) => {
   const [scale] = useState(new Animated.Value(1)); // 초기 크기 1
 
   useEffect(() => {
@@ -134,10 +134,9 @@ const InProgressAsgBox = () => {
         <Box>
           <View style={{padding: 20}}>
             <RowView style={{marginBottom: 10}}>
-              <StyledSubText content={'7.20 MON'} />
-              <StyledSubText content={'DUE 7.22'} />
+              <StyledSubText content={`DUE ${due}`} />
             </RowView>
-            <StyledText content={'피로그래머 카드게임'} fontSize={20} />
+            <StyledText content={title} fontSize={20} />
             <RowView style={{marginTop: 10}}>
               <ProgressBar status={'30%'} />
               <StyledText content={'18:38:43'} fontSize={16} />
@@ -148,7 +147,7 @@ const InProgressAsgBox = () => {
     </View>
   );
 };
-const DoneAsgBox = ({grade}) => (
+const DoneAsgBox = ({grade, title, due}) => (
   <View
     style={{
       flexDirection: 'row',
@@ -180,11 +179,10 @@ const DoneAsgBox = ({grade}) => (
       <View style={{padding: 20}}>
         <RowView style={{marginBottom: 10}}>
           <View>
-            <StyledText content={'7.22'} fontSize={20} />
-            <StyledText content={'TUE'} fontSize={20} />
+            <StyledText content={due} fontSize={20} />
           </View>
           <View style={{flex: 1, marginLeft: 20}}>
-            <StyledText content={'피로그래머 카드게임'} fontSize={20} />
+            <StyledText content={title} fontSize={20} />
           </View>
         </RowView>
       </View>
@@ -194,10 +192,14 @@ const DoneAsgBox = ({grade}) => (
 const renderItem = ({item}) => {
   return (
     <>
-      {item.done === false ? (
-        <InProgressAsgBox grade={item.grade} />
+      {item.done === 0 ? (
+        <InProgressAsgBox
+          grade={item.grade}
+          title={item.title}
+          due={item.due_date}
+        />
       ) : (
-        <DoneAsgBox grade={item.grade} />
+        <DoneAsgBox grade={item.grade} title={item.title} due={item.due_date} />
       )}
     </>
   );

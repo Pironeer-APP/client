@@ -4,3 +4,7 @@ import React from 'react'
 export default Gap = ({height = 20}) => (
   <View style={{height: height}} />
 )
+
+export const GapH = ({width = 20}) => (
+  <View style={{width: width}} />
+)
