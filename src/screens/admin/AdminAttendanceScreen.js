@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from "styled-components/native";
 import { COLORS } from "../../assets/Theme";
 import { StyledSubText, StyledText } from '../../components/Text';
@@ -8,36 +8,33 @@ import HeaderDetail from '../../components/Header';
 import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AdminAttendanceDetailScreen from './AdminAttendanceDetailScreen';
-
-
-const SESSION_DATES = [
-  {"week1": ['12.27', '12.31', '01.02']},
-  {"week2": ['01.04', '01.06', '01.08']},
-  {"week3": ['01.10', '01.12', '01.15']},
-  {"week4": ['01.20', '01.23', '01.25']}
-];
-
-// const goToDateAtndnc = () => {
-//   navigation.navigate('AdminAttendanceDetailScreen');
-// };
+import Gap, { GapH } from '../../components/Gap';
+import useUserInfo from '../../use-userInfo';
+import { fetchPost, getData } from '../../utils';
 
 const DateContainer = styled.View`
   background-color: ${COLORS.gray};
-  width: ${props => props.width};
-  height: ${props => props.width};
   border-radius: 12px;
   padding: 10px;
 `;
 
-const Date = (props) => {
+const DateBox = (props) => {
   const navigation = useNavigation();
   // 세션 월, 일 변수 할당
-  const [month, day] = props.date.split('.');
+  const month = props.date.month;
+  const day = props.date.day;
+
+  // 오늘 일정인지
+  let isToday = false;
+  const today = new Date();
+  if(Number(today.getMonth().toLocaleString()) + 1 === Number(month) && Number(today.getDate().toLocaleString()) === Number(day)) {
+    isToday = true;
+  }
   // 핸드폰 스크린 너비에 따른 날짜상자 크기 정하기
   const screenWidth = Dimensions.get('window').width;
   const boxWidth = (screenWidth - 30) / 3.4;
   return (
-    <TouchableOpacity onPress={() => navigation.navigate({name: 'AdminAttendanceDetailScreen', params:{month: month, day: day}})}>
+    <TouchableOpacity style={{flex: 1}} onPress={() => navigation.navigate({name: 'AdminAttendanceDetailScreen', params:{month: month, day: day, session_id: props.date.session_id}})}>
       <DateContainer width={boxWidth} style={{ justifyContent:'center' }}>
         <StyledText content={month} fontSize={35} />
         <StyledText content={day} fontSize={35} />
@@ -53,10 +50,20 @@ const WeekContainer = (props) => {
         <StyledSubText content={`Week ${props.week}`}/>
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        {SESSION_DATES[props.week - 1][`week${props.week}`].map((date, index) => {
-          return (
-            <Date date={date} />
-          )
+        {props.item?.map((date, index) => {
+          if(index === 1) {
+            return (
+              <>
+              <GapH />
+              <DateBox date={date} />
+              <GapH />
+              </>
+            )
+          } else {
+            return (
+              <DateBox date={date} />
+            )
+          }
         })}
       </View>
     </View>
@@ -64,11 +71,27 @@ const WeekContainer = (props) => {
 };
 
 const AdminAttendanceScreen = () => {
+  const [sessions, setSessions] = useState();
+
+  const getSessions = async () => {
+    const userToken = await getData('user_token');
+    const url = '/session/getWeekSessions';
+    const body = {
+      userToken: userToken
+    }
+    const result = await fetchPost(url, body);
+    setSessions(result.sessions);
+  }
+  
+  useEffect(() => {
+    getSessions();
+  }, []);
+
   return (
     <StyledContainer>
       <HeaderDetail title={'출석'} />
-      {SESSION_DATES.map((notForUse, index) => (
-        <WeekContainer key={index} week={index + 1} />
+      {sessions?.map((item, index) => (
+        <WeekContainer key={index} week={index + 1} item={item} />
       ))}
     </StyledContainer>
   )

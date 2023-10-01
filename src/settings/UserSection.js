@@ -24,6 +24,10 @@ export default function UserSection() {
     navigation.navigate('CheckScreen', {type: type});
   }
 
+  const onPressUpdateLevel = (type) => {
+    navigation.navigate('UpdateScreen', {type: type});
+  }
+
   return (
     <Section title="회원정보 수정">
       <View style={styles.profile}>
@@ -39,6 +43,12 @@ export default function UserSection() {
       <SettingsItem text="비밀번호 변경" onPress={() => onPressCheck("password")} />
       <Gap />
       <SettingsItem text="이메일 변경" onPress={() => onPressCheck("email")} />
+      {userInfoFromServer.is_admin ? (
+        <>
+        <Gap />
+        <SettingsItem text="(관리자) 기수 변경" onPress={() => onPressUpdateLevel("level")} />
+        </>
+      ) : null}
     </Section>   
   )
 }

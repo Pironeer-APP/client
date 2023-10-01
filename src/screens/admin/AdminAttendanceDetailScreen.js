@@ -12,6 +12,8 @@ import { FontStyledText } from '../../components/Text'
 // import { RightArrowBtn } from '../../components/Button'
 import { useNavigation } from '@react-navigation/native';
 import { MainButton } from '../../components/Button'
+import { fetchPost, getData } from '../../utils';
+import { useIsFocused } from '@react-navigation/native';
 
 // const useAdminAttendance = () => {
 //   const 
@@ -66,34 +68,41 @@ const AttendanceStatus = (props) => {
   )
 }
 
-const AdminAttendanceElement = ({userInfo, month, day}) => {
+const AdminAttendanceElement = ({rerender, setRerender, session_id, userInfo, month, day}) => {
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const navigation = useNavigation();
 
   const toggleBottomSheet = () => {
     setBottomSheetVisible(!isBottomSheetVisible);
   };
 
   //출석, 지각, 결석 버튼 색깔 바꾸기
-  const [changeGreen, setChangeGreen] = useState(`${COLORS.icon_gray}`);
-  const [changeOrange, setChangeOrange] = useState(`${COLORS.icon_gray}`);
-  const [changeRed, setChangeRed] = useState(`${COLORS.icon_gray}`);
+  const btnColors = [
+    COLORS.icon_gray,
+    COLORS.green,
+    'orange',
+    'red'
+  ]
+  const [selectedBtn, setSelectedBtn] = useState(0);
 
-  const handleColor1 = () => { 
-    setChangeGreen(`${COLORS.green}`);
-    setChangeOrange(`${COLORS.icon_gray}`);
-    setChangeRed(`${COLORS.icon_gray}`);
+  const handleSelectBtn = (type) => {
+    // type 0: 선택X type 1: 출석 type 2: 지각 type 3: 결석
+    setSelectedBtn(type);
   }
 
-  const handleColor2 = () => {
-    setChangeGreen(`${COLORS.icon_gray}`);
-    setChangeOrange('orange');
-    setChangeRed(`${COLORS.icon_gray}`);
-  }
-
-  const handleColor3 = () => {
-    setChangeGreen(`${COLORS.icon_gray}`);
-    setChangeOrange(`${COLORS.icon_gray}`);
-    setChangeRed('red');
+  const onPressUpdateAttend = async () => {
+    const attendType = selectedBtn === 0 ? null : selectedBtn === 1 ? '출석' : selectedBtn === 2 ? '지각' : '결석';
+    const url = '/attend/updateAttend';
+    const body = {
+      user_id: userInfo.user_id,
+      attendType: attendType,
+      session_id: session_id
+    }
+    const result = await fetchPost(url, body);
+    console.log(result);
+    setBottomSheetVisible(!isBottomSheetVisible);
+    setSelectedBtn(0);
+    setRerender(!rerender);
   }
 
   return (
@@ -119,16 +128,16 @@ const AdminAttendanceElement = ({userInfo, month, day}) => {
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:'space-between' }}>
               <AttendanceStatus title={'Date'} content={`${month}월 ${day}일`} fontSize={25} style={{}}/>
-              <AttendanceStatus title={'Status'} content={'결석'} fontSize={25}/>
+              <AttendanceStatus title={'Status'} content={userInfo.type} fontSize={25}/>
               <AttendanceStatus title={''} content={''} fontSize={25}/>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 60 }}>
-              <AttendanceStatusButton content={'출석'} fontSize={25} onPress={handleColor1} bgColor={changeGreen}/>
-              <AttendanceStatusButton content={'지각'} fontSize={25} onPress={handleColor2} bgColor={changeOrange}/>
-              <AttendanceStatusButton content={'결석'} fontSize={25} onPress={handleColor3} bgColor={changeRed}/>
+              <AttendanceStatusButton content={'출석'} fontSize={25} onPress={() => handleSelectBtn(1)} bgColor={selectedBtn === 0 || selectedBtn === 1 ? btnColors[selectedBtn] : btnColors[0]}/>
+              <AttendanceStatusButton content={'지각'} fontSize={25} onPress={() => handleSelectBtn(2)} bgColor={selectedBtn === 0 || selectedBtn === 2 ? btnColors[selectedBtn] : btnColors[0]}/>
+              <AttendanceStatusButton content={'결석'} fontSize={25} onPress={() => handleSelectBtn(3)} bgColor={selectedBtn === 0 || selectedBtn === 3 ? btnColors[selectedBtn] : btnColors[0]}/>
             </View>
             <View style={{flex:1, justifyContent: 'center'}}>
-              <MainButton height={60} content={'변경'} onPress={'d'} />
+              <MainButton height={60} content={'변경'} onPress={onPressUpdateAttend} />
             </View>
           </View>
         </Modal>
@@ -137,23 +146,17 @@ const AdminAttendanceElement = ({userInfo, month, day}) => {
 };
 
 const AdminAttendanceList = (props) => {
-  const {
-    userList,
-    fetchData
-  } = useAdminDeposit();
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   return (
     <ScrollView>
-      {userList?.map((user) => (
+      {props.attends?.map((user) => (
         <AdminAttendanceElement
           key={user.user_id}
+          session_id={props.session_id}
           userInfo={user}
           month={props.month}
           day={props.day}
+          rerender={props.rerender}
+          setRerender={props.setRerender}
         />
       ))}
     </ScrollView>
@@ -163,11 +166,33 @@ const AdminAttendanceList = (props) => {
 const AdminAttendanceDetailScreen = ({route}) => {
   const month = route.params.month;
   const day = route.params.day;
-  // const date = [month, day];
+  const session_id = route.params.session_id;
+  
+  const [attends, setAttends] = useState();
+  const [rerender, setRerender] = useState(false);
+
+  const getAttends = async () => {
+    const userToken = await getData('user_token');
+    const url = '/attend/getSessionAttendAdmin';
+    const body = {
+      userToken: userToken,
+      session_id: session_id,
+    }
+    const result = await fetchPost(url, body);
+    setAttends(result.attends);
+  }
+  
+  useEffect(() => {
+    getAttends();
+  }, [rerender]);
+
   return (
     <StyledContainer>
       <HeaderDetail title={`${month}월 ${day}일 출석`} />
-      <AdminAttendanceList month={month} day={day}/>
+      <AdminAttendanceList 
+          rerender={rerender}
+          setRerender={setRerender}
+          session_id={session_id} attends={attends} month={month} day={day}/>
     </StyledContainer>
   )
 }
