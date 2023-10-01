@@ -1,5 +1,5 @@
 import {View, Text, TouchableOpacity, FlatList} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
 import {RowView} from '../HomeScreen';
@@ -9,7 +9,8 @@ import {Box} from '../../components/Box';
 import {MainButton, RightArrowBtn} from '../../components/Button';
 import Gap from '../../components/Gap';
 import {Assignmentdata} from '../AssignmentScreen';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {fetchGet} from '../../utils';
 
 const AssignmentBox = ({title, due}) => {
   const navigation = useNavigation();
@@ -40,12 +41,25 @@ const renderItem = ({item}) => {
 
 const AdminAssignmentScreen = () => {
   const navigation = useNavigation();
+  const [assigns, setAssigns] = useState([]);
+  const isFocused = useIsFocused();
+
+  const getAssigns = async () => {
+    const url = `/admin/assign/20`;
+    const res = await fetchGet(url);
+    setAssigns(res.posts);
+    console.log(res);
+  };
+  useEffect(() => {
+    getAssigns();
+  }, [isFocused]);
+
   return (
     <StyledContainer>
       <HeaderDetail title={'과제 채점'} />
       <View style={{flex: 1}}>
         <FlatList
-          data={Assignmentdata}
+          data={assigns}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />

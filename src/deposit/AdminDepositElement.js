@@ -8,7 +8,7 @@ import { FontStyledText } from '../components/Text'
 import { RightArrowBtn } from '../components/Button'
 
 export default function AdminDepositElement({userInfo}) {
-  const navigation = useNavigation();
+  const navigation = useNavigation();     
   return (
     // navigate로 스크린에 파라미터 보내는 방법
     <DepositContainer onPress={() => navigation.navigate({name: 'AdminDepositDetail', params: {userInfo: userInfo}})}>
@@ -17,7 +17,7 @@ export default function AdminDepositElement({userInfo}) {
         <FontStyledText style={{fontSize: 20, color: COLORS.green, marginHorizontal: 20}}>{userInfo.deposit.toLocaleString('en')}</FontStyledText>
         <RightArrowBtn />
       </AmountContainer>
-    </DepositContainer>
+    </DepositContainer> 
   )
 }
 

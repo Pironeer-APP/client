@@ -1,4 +1,12 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Platform,
+  Image,
+  Dimensions,
+  ScrollView,
+} from 'react-native';
 import React, {useState, useEffect, useMemo} from 'react';
 import dayjs from 'dayjs';
 import StyledContainer from '../components/StyledContainer';
@@ -7,12 +15,14 @@ import {useRoute, useIsFocused} from '@react-navigation/native';
 import {StyledSubText, StyledText} from '../components/Text';
 import useUserInfo from '../use-userInfo';
 import {MainButton} from '../components/Button';
-import {fetchGet, fetchPost} from '../utils';
+import {fetchGet, fetchPost, getAPIHost} from '../utils';
 import {Badge} from './AnnouncementScreen';
 import {RowView} from './HomeScreen';
 import Gap from '../components/Gap';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components';
+import {Box} from '../components/Box';
+import AutoHeightImage from 'react-native-auto-height-image';
 
 const StyledBottomLine = styled.View`
   height: 1px;
@@ -21,8 +31,15 @@ const StyledBottomLine = styled.View`
 `;
 const TitleBottomLine = () => <StyledBottomLine />;
 
+export function convertToUrl(url) {
+  const host =
+    Platform.OS === 'ios' ? 'http://127.0.0.1:3000/' : 'http://10.0.2.2:3000/';
+  const FULL_URL = host + url;
+  return FULL_URL.replace(/\\/g, '/');
+}
 const AnnouncementDetail = ({navigation}) => {
   const [post, setPost] = useState([]);
+  const [images, setImages] = useState([]);
   const route = useRoute();
   const post_id = route.params.post_id;
 
@@ -36,10 +53,14 @@ const AnnouncementDetail = ({navigation}) => {
     const url = `/post/20/${post_id}`;
     const res = await fetchGet(url);
     setPost(res.post);
+    setImages(res.result);
   };
   useEffect(() => {
     getPost();
   }, [isFocused]);
+
+  const imagesUrl = images.map(img => convertToUrl(img));
+  // console.log('imagesUrl: ', imagesUrl);
 
   // delete fetch
   const deletePost = async () => {
@@ -58,30 +79,47 @@ const AnnouncementDetail = ({navigation}) => {
   date.setHours(date.getHours() + 18);
   const RenderDate = dayjs(date).format('M.D ddd').toUpperCase();
 
+  const windowWidth = Dimensions.get('window').width;
+
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
-      <RowView>
-        <RowView style={{gap: 10}}>
-          <StyledSubText content={`${RenderDate}`} />
-          <Badge sort={post.category} />
-        </RowView>
-        {!!userInfoFromServer.is_admin && (
+      <ScrollView>
+        <RowView>
           <RowView style={{gap: 10}}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('AdminUpdateNotice', {post})}>
-              <StyledSubText content={'수정'} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={deletePost}>
-              <StyledSubText content={'삭제'} />
-            </TouchableOpacity>
+            <StyledSubText content={`${RenderDate}`} />
+            <Badge sort={post.category} />
           </RowView>
-        )}
-      </RowView>
-      <Gap />
-      <StyledText content={`${post.title}`} />
-      <TitleBottomLine />
-      <StyledText content={`${post.content}`} fontSize={20} />
+          {!!userInfoFromServer.is_admin && (
+            <RowView style={{gap: 10}}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('AdminUpdateNotice', {post, imagesUrl})
+                }>
+                <StyledSubText content={'수정'} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={deletePost}>
+                <StyledSubText content={'삭제'} />
+              </TouchableOpacity>
+            </RowView>
+          )}
+        </RowView>
+        <Gap />
+
+        <StyledText content={`${post.title}`} />
+        <TitleBottomLine />
+
+        <StyledText content={`${post.content}`} fontSize={20} />
+        <Gap height={10} />
+        {imagesUrl.map((image, index) => (
+          <AutoHeightImage
+            key={index}
+            source={{uri: image}}
+            width={windowWidth}
+            style={{borderRadius: 10, marginBottom: 10}}
+          />
+        ))}
+      </ScrollView>
     </StyledContainer>
   );
 };
