@@ -17,42 +17,47 @@ import {Box} from '../components/Box';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import HeaderDetail from '../components/Header';
+import {fetchGet, fetchPost} from '../utils';
+import useUserInfo from '../use-userInfo';
+import {useIsFocused} from '@react-navigation/native';
 
-const data = [
+export const Assignmentdata = [
   {
     id: 1,
     grade: 1,
     // 0: 미제출, 1: 미흡, 2: 지각, 3: 완료
     title: '피로그래머 카드게임',
-    due_date: '2023-09-24T00:20:44.000Z',
+    due_date: '7.20 MON',
     created_at: '2023-09-24T00:20:44.000Z',
     done: false,
   },
   {
     id: 2,
     grade: 0,
-    title: '피로그래머 카드게임',
-    due_date: '2023-09-24T00:20:44.000Z',
+    title: '파이썬 술게임',
+    due_date: '7.20 MON',
     created_at: '2023-09-24T00:20:44.000Z',
     done: true,
   },
   {
     id: 3,
     grade: 3,
-    title: '피로그래머 카드게임',
-    due_date: '2023-09-24T00:20:44.000Z',
+    title: 'Arsha 클론코딩',
+    due_date: '7.20 MON',
     created_at: '2023-09-24T00:20:44.000Z',
     done: true,
   },
 ];
-const StatusCircle = ({grade}) => {
+export const StatusCircle = ({grade = 4}) => {
   let imageSource;
   if (grade == 0) {
     imageSource = require(`../assets/icons/circle_ex.png`);
-  } else if (grade === 3) {
+  } else if (grade == 3) {
     imageSource = require(`../assets/icons/circle_donggrami.png`);
-  } else {
+  } else if (grade == 1 || grade == 2) {
     imageSource = require(`../assets/icons/circle_semo.png`);
+  } else {
+    imageSource = require(`../assets/icons/circle_none.png`);
   }
   return (
     <View>
@@ -66,7 +71,7 @@ const StatusLine = () => {
     <View style={{backgroundColor: `${COLORS.icon_gray}`, width: 1, flex: 1}} />
   );
 };
-const InProgressAsgBox = () => {
+const InProgressAsgBox = ({grade, title, due}) => {
   const [scale] = useState(new Animated.Value(1)); // 초기 크기 1
 
   useEffect(() => {
@@ -129,10 +134,9 @@ const InProgressAsgBox = () => {
         <Box>
           <View style={{padding: 20}}>
             <RowView style={{marginBottom: 10}}>
-              <StyledSubText content={'7.20 MON'} />
-              <StyledSubText content={'DUE 7.22'} />
+              <StyledSubText content={`DUE ${due}`} />
             </RowView>
-            <StyledText content={'피로그래머 카드게임'} fontSize={20} />
+            <StyledText content={title} fontSize={20} />
             <RowView style={{marginTop: 10}}>
               <ProgressBar status={'30%'} />
               <StyledText content={'18:38:43'} fontSize={16} />
@@ -143,7 +147,7 @@ const InProgressAsgBox = () => {
     </View>
   );
 };
-const DoneAsgBox = ({grade}) => (
+const DoneAsgBox = ({grade, title, due}) => (
   <View
     style={{
       flexDirection: 'row',
@@ -175,11 +179,10 @@ const DoneAsgBox = ({grade}) => (
       <View style={{padding: 20}}>
         <RowView style={{marginBottom: 10}}>
           <View>
-            <StyledText content={'7.22'} fontSize={20} />
-            <StyledText content={'TUE'} fontSize={20} />
+            <StyledText content={due} fontSize={20} />
           </View>
           <View style={{flex: 1, marginLeft: 20}}>
-            <StyledText content={'피로그래머 카드게임'} fontSize={20} />
+            <StyledText content={title} fontSize={20} />
           </View>
         </RowView>
       </View>
@@ -189,23 +192,58 @@ const DoneAsgBox = ({grade}) => (
 const renderItem = ({item}) => {
   return (
     <>
-      {item.done === false ? (
-        <InProgressAsgBox grade={item.grade} />
+      {item.done === 0 ? (
+        <InProgressAsgBox
+          grade={item.grade}
+          title={item.title}
+          due={item.due_date}
+        />
       ) : (
-        <DoneAsgBox grade={item.grade} />
+        <DoneAsgBox grade={item.grade} title={item.title} due={item.due_date} />
       )}
     </>
   );
 };
+
 const AssignmentScreen = () => {
+  const [assignment, setAssignment] = useState([]);
+  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
+
+  useEffect(() => {
+    getUserInfoFromServer();
+  }, []);
+  // send user info
+
+  const isFocused = useIsFocused();
+
+  const saveUserId = async userInfoFromServer => {
+    const url = `/assign`;
+    const body = {
+      userId: userInfoFromServer.user_id,
+      userLevel: userInfoFromServer.level,
+    };
+    console.log('body: ', body);
+    try {
+      const fetchData = await fetchPost(url, body);
+      setAssignment(fetchData);
+      console.log('성공  받아온 data: ', fetchData);
+    } catch (error) {
+      console.log(error);
+      console.log('에러');
+    }
+  };
+  useEffect(() => {
+    saveUserId(userInfoFromServer);
+  }, [userInfoFromServer]);
+
   return (
     <StyledContainer>
       <HeaderDetail title={'과제'} />
       <View style={{flex: 1}}>
         <FlatList
-          data={data}
+          data={assignment.data}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.AssignId}
         />
       </View>
     </StyledContainer>

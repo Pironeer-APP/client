@@ -8,7 +8,7 @@ export const autoHyphen = (value) => {
     .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3").replace(/(\-{1,2})$/g, "");
   return newValue;
 }
-const getAPIHost = () => {
+export const getAPIHost = () => {
   if(Platform.OS === 'ios') {
       return _IOS_API_HOST;
   }

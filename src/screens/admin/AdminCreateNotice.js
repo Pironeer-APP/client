@@ -8,6 +8,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  KeyboardAvoidingView,
+  NativeModules,
+  ScrollView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -15,22 +18,14 @@ import styled from 'styled-components/native';
 import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import {StyledText} from '../../components/Text';
-import {useRoute} from '@react-navigation/native';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {COLORS} from '../../assets/Theme';
 import {MainButton} from '../../components/Button';
 import {fetchPost} from '../../utils';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {PermissionsAndroid} from 'react-native';  
 
-export const Camera = () => (
-  <TouchableOpacity>
-    <Image
-      source={require('../../assets/icons/camera.png')}
-      style={{width: 30, height: 30}}
-    />
-  </TouchableOpacity>
-);
 
 export const ChooseCategory = ({category, setCategory}) => {
   const PressedCat = ({index, content}) => {
@@ -65,18 +60,75 @@ const AdminCreateNotice = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState(1); // 1: 세션, 2: 과제, 3: 기타
+  const [selectedImages, setSelectedImages] = useState([]);
 
-  const navigation = useNavigation();
   const sendDataToServer = async () => {
     const url = '/post/create/20';
     const body = {title, content, category};
     try {
-      await fetchPost(url, body);
-      navigation.goBack();
+      const result = await fetchPost(url, body); //서버에서 result.insertId return
+      if (result.createdPostId && selectedImages.length > 0) {
+        uploadImages(result.createdPostId);
+      }
     } catch (error) {
       console.error('Error sending data:', error);
     }
   };
+
+
+  const uploadImages = async (postId) => {
+    const formData = new FormData();
+    selectedImages.forEach(image => {
+      const file = {
+        name: image.fileName,
+        type: image.type,
+        uri: image.uri,
+      };
+      formData.append('images', file);
+    });
+
+    formData.append('post_id', postId);
+
+    fetch('http://10.0.2.2:3000/api/post/uploadimages', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data.message);
+    })
+    .catch(error => {
+      console.error('이미지 업로드 실패:', error);
+    });
+  };
+
+  const onImageSelect = () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+      multiple: true,
+    };
+
+    launchImageLibrary(options, (response) => {
+      if (!response.didCancel) {
+        setSelectedImages(response.assets);
+      }
+    });
+  };
+
+
+  const Camera = () => (
+    <TouchableOpacity onPress={onImageSelect}>
+      <Image
+        source={require('../../assets/icons/camera.png')}
+        style={{width: 30, height: 30}}
+      />
+    </TouchableOpacity>
+  );
+
   return (
     <StyledContainer>
       <HeaderDetail
@@ -89,14 +141,16 @@ const AdminCreateNotice = () => {
         <ChooseCategory category={category} setCategory={setCategory} />
       </View>
 
-      <View style={{flex: 1}}>
-        <TextInput
-          placeholder="제목"
-          value={title}
-          onChangeText={text => setTitle(text)}
-          placeholderTextColor={COLORS.light_gray}
-          style={styles.textInputTitle}
-        />
+      <TextInput
+        placeholder="제목"
+        value={title}
+        onChangeText={text => setTitle(text)}
+        placeholderTextColor={COLORS.light_gray}
+        style={styles.textInputTitle}
+      />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        style={{flex: 1}}>
         <TextInput
           placeholder="내용"
           value={content}
@@ -105,8 +159,13 @@ const AdminCreateNotice = () => {
           style={styles.textInputContent}
           multiline={true}
         />
+
+      {selectedImages.map((image, index) => (
+        <Image key={index} source={{ uri: image.uri }} style={{ width: 100, height: 100 }} />
+      ))}
         <Camera />
-      </View>
+      </KeyboardAvoidingView>
+
     </StyledContainer>
   );
 };
@@ -125,10 +184,10 @@ const styles = StyleSheet.create({
   },
   textInputContent: {
     color: 'white',
-    height: 60,
     marginBottom: 15,
     fontSize: 20,
     flex: 1,
+    textAlignVertical: 'top',
   },
 });
 export default AdminCreateNotice;

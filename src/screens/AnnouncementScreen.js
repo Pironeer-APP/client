@@ -58,7 +58,9 @@ const PostBox = ({title, sort, date, id, read}) => {
     });
   };
   const dateString = date;
-  const formattedDate = dayjs(dateString).format('M.D ddd').toUpperCase();
+  const date2 = new Date(dateString);
+  date2.setHours(date2.getHours() + 18);
+  const formattedDate = dayjs(date2).format('M.D ddd').toUpperCase();
   return (
     <View>
       <TouchableOpacity onPress={goToAncDet}>
@@ -147,10 +149,7 @@ const AnnouncementScreen = ({navigation}) => {
     }
   };
 
-  const {
-    userInfoFromServer,
-    getUserInfoFromServer
-  } = useUserInfo();
+  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
   useEffect(() => {
     getUserInfoFromServer();
   }, []);
@@ -191,7 +190,7 @@ const AnnouncementScreen = ({navigation}) => {
         <MainButton
           content={'글 작성하기'}
           onPress={() => navigation.navigate('AdminCreateNotice')}
-          height={70}
+          height={60}
         />
       )}
     </StyledContainer>

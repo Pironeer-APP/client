@@ -72,7 +72,9 @@ const HomeScreen = ({navigation}) => {
   }, [isFocused]);
 
   const goToAsgnmt = () => {
-    navigation.navigate('AssignmentScreen');
+    userInfoFromServer.is_admin
+      ? navigation.navigate('AdminAssignmentScreen')
+      : navigation.navigate('AssignmentScreen');
   };
   const goToAnncmt = () => {
     navigation.navigate('AnnouncementScreen', {userInfo: userInfoFromServer});
@@ -81,7 +83,14 @@ const HomeScreen = ({navigation}) => {
     navigation.navigate('DepositScreen');
   };
   const goToAtndnc = () => {
-    navigation.navigate('AttendanceScreen');
+    //관리자인 경우 출석페이지
+    if (!!userInfoFromServer.is_admin) {
+      navigation.navigate('AdminAttendanceScreen');
+    }
+    // 일반회원인 경우 출석페이지
+    else {
+      navigation.navigate('AttendanceScreen');
+    }
   };
   const goToAddUser = () => {
     navigation.navigate('AddUserScreen');
@@ -104,7 +113,7 @@ const HomeScreen = ({navigation}) => {
           <TouchableOpacity style={{padding: 20}} onPress={goToAsgnmt}>
             <RowView style={{marginBottom: 10}}>
               <StyledText
-                content={userInfoFromServer.is_admin ? '과제 채점' : '과제'}
+                content={userInfoFromServer.is_admin ? '과제 관리' : '과제'}
                 fontSize={24}
               />
               <RightArrowBtn />

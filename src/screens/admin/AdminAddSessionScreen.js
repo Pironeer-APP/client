@@ -17,7 +17,7 @@ export default function AdminAddSessionScreen() {
   const faceToggleSwitch = () => setFace(!face);
 
   const [date, setDate] = useState(new Date());
-  
+
   const [sessionTitle, setSessionTitle] = useState('');
   const [sessionPlace, setSessionPlace] = useState('');
 
@@ -34,10 +34,11 @@ export default function AdminAddSessionScreen() {
 
   const onPressConfirm = async () => {
     console.log(date);
+    console.log(new Date(date.getTime() + 9 * 60 * 1000));
     const url = '/session/addSchedule';
     const body = {
       title: sessionTitle,
-      date: date,
+      date: new Date(date.getTime() + 9 * 60 * 60 * 1000),
       face: face,
       place: sessionPlace,
       userToken: userToken
@@ -46,10 +47,10 @@ export default function AdminAddSessionScreen() {
       const res = await fetchPost(url, body);
       console.log(res);
       navigation.navigate('AdminSessionScreen');
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -61,7 +62,7 @@ export default function AdminAddSessionScreen() {
       />
       <TextInput
         style={styles.titleInput}
-        placeholder='일정 명'
+        placeholder="일정 명"
         placeholderTextColor={COLORS.light_gray}
         color={COLORS.textColor}
         value={sessionTitle}
@@ -70,23 +71,30 @@ export default function AdminAddSessionScreen() {
       {/* 지도 api 적용해보기 */}
       <TextInput
         style={styles.titleInput}
-        placeholder='장소'
+        placeholder="장소"
         placeholderTextColor={COLORS.light_gray}
         color={COLORS.textColor}
         value={sessionPlace}
         onChangeText={setSessionPlace}
       />
       <PaddingBox>
-        <ToggleItem
-          text="대면"
-          onValueChange={faceToggleSwitch}
-          value={face}
-        />
+        <ToggleItem text="대면" onValueChange={faceToggleSwitch} value={face} />
       </PaddingBox>
       <PaddingBox>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5}}>
-        <StyledText content={`${date.getMonth() + 1}월 ${date.getDate()}일`} fontSize={20} />
-        <StyledText content={`${date.getHours()}:${date.getMinutes()}`} fontSize={20} />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingVertical: 5,
+          }}>
+          <StyledText
+            content={`${Number(date.getMonth().toLocaleString()) + 1}월 ${date.getDate().toLocaleString()}일`}
+            fontSize={20}
+          />
+          <StyledText
+            content={`${date.getHours().toLocaleString()}:${date.getMinutes().toLocaleString()}`}
+            fontSize={20}
+          />
         </View>
       </PaddingBox>
       <StyledContainer>
@@ -99,8 +107,7 @@ export default function AdminAddSessionScreen() {
         theme="dark"
         minuteInterval={5}
         fadeToColor="none"
-        is24hourSource="locale"
-        timeZoneOffsetInMinutes={0} />
+        is24hourSource="locale" />
       </StyledContainer>
     </StyledContainer>
     </TouchableWithoutFeedback>
@@ -111,6 +118,6 @@ const styles = StyleSheet.create({
   titleInput: {
     borderBottomColor: COLORS.light_gray,
     borderBottomWidth: 1,
-    fontSize: 25
-  }
-})
+    fontSize: 25,
+  },
+});
