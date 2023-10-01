@@ -8,14 +8,16 @@ import {CustomTextInput} from '../../components/Input';
 import DatePicker from 'react-native-date-picker';
 import {Box, PaddingBox} from '../../components/Box';
 import {StyledSubText, StyledText} from '../../components/Text';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {RowView} from '../HomeScreen';
 import Gap from '../../components/Gap';
+import {fetchPost} from '../../utils';
 
 const AdminCreateAssignment = () => {
   const navigation = useNavigation();
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(new Date());
+  const route = useRoute();
 
   const DayConverter = DayInNum => {
     if (DayInNum == 0) return 'SUN';
@@ -32,20 +34,31 @@ const AdminCreateAssignment = () => {
   const minute = `${date.getMinutes()}`;
   const RenderHour = hour.padStart(2, '0');
   const RenderMinutes = minute.padStart(2, '0');
+  const month = `${date.getMonth() + 1}`;
+  const RenderMonth = month.padStart(2, '0');
+  const level = route.params.level;
 
   //  보낼 값
-  console.log(
-    `${
-      date.getMonth() + 1
-    }/${date.getDate()} ${RenderdDay} ${RenderHour}:${RenderMinutes}`,
-  );
+
+  const dateData = `${date.getFullYear()}-${RenderMonth}-${date.getDate()} ${RenderHour}:${RenderMinutes}:00`;
+  console.log(dateData);
+  const createAssign = async () => {
+    const url = `/admin/assign/${level}/create`;
+    const body = {title, dateData};
+    try {
+      await fetchPost(url, body);
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
+  };
 
   return (
     <StyledContainer>
       <HeaderDetail
         title={'과제 등록'}
         button={'완료'}
-        buttonOnPress={() => {}}
+        buttonOnPress={createAssign}
       />
       <Box>
         <CustomTextInput

@@ -72,8 +72,10 @@ const HomeScreen = ({navigation}) => {
   }, [isFocused]);
 
   const goToAsgnmt = () => {
-    userInfoFromServer.is_admin
-      ? navigation.navigate('AdminAssignmentScreen')
+    userInfoFromServer.is_admin === 1
+      ? navigation.navigate('AdminAssignmentScreen', {
+          userLevel: userInfoFromServer.level,
+        })
       : navigation.navigate('AssignmentScreen');
   };
   const goToAnncmt = () => {
