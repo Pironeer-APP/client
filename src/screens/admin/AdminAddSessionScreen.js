@@ -1,23 +1,16 @@
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Button,
-  Touchable,
-  TouchableOpacity,
-} from 'react-native';
-import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import { View, Text, TextInput, StyleSheet, Button, Touchable, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
 
-import StyledContainer from '../../components/StyledContainer';
-import FormHeader from '../../components/FormHeader';
-import {COLORS} from '../../assets/Theme';
-import ToggleItem from '../../components/ToggleItem';
-import {PaddingBox} from '../../components/Box';
-import DatePicker from 'react-native-date-picker';
-import {StyledText} from '../../components/Text';
-import {fetchPost} from '../../utils';
+import StyledContainer from '../../components/StyledContainer'
+import { COLORS } from '../../assets/Theme'
+import ToggleItem from '../../components/ToggleItem'
+import { PaddingBox } from '../../components/Box'
+import DatePicker from 'react-native-date-picker'
+import { StyledText } from '../../components/Text'
+import { fetchPost } from '../../utils'
+import HeaderDetail from '../../components/Header'
+import useUserInfo from '../../use-userInfo'
 
 export default function AdminAddSessionScreen() {
   const [face, setFace] = useState(false);
@@ -30,13 +23,26 @@ export default function AdminAddSessionScreen() {
 
   const navigation = useNavigation();
 
+  const {
+    userToken,
+    getUserToken,
+  } = useUserInfo();
+
+  useEffect(() => {
+    getUserToken();
+  }, []);
+
   const onPressConfirm = async () => {
+    console.log(date);
+    console.log(new Date(date.getTime() + 9 * 60 * 1000));
     const url = '/session/addSchedule';
     const body = {
       title: sessionTitle,
-      date: date,
+      date: new Date(date.getTime() + 9 * 60 * 60 * 1000),
       face: face,
-    };
+      place: sessionPlace,
+      userToken: userToken
+    }
     try {
       const res = await fetchPost(url, body);
       console.log(res);
@@ -47,8 +53,13 @@ export default function AdminAddSessionScreen() {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <StyledContainer>
-      <FormHeader title="일정 추가" onPress={onPressConfirm} />
+      <HeaderDetail
+        title={'일정 추가'}
+        button={'완료'}
+        buttonOnPress={onPressConfirm}
+      />
       <TextInput
         style={styles.titleInput}
         placeholder="일정 명"
@@ -77,29 +88,30 @@ export default function AdminAddSessionScreen() {
             paddingVertical: 5,
           }}>
           <StyledText
-            content={`${date.getMonth() + 1}월 ${date.getDate()}일`}
+            content={`${Number(date.getMonth().toLocaleString()) + 1}월 ${date.getDate().toLocaleString()}일`}
             fontSize={20}
           />
           <StyledText
-            content={`${date.getHours()}:${date.getMinutes()}`}
+            content={`${date.getHours().toLocaleString()}:${date.getMinutes().toLocaleString()}`}
             fontSize={20}
           />
         </View>
       </PaddingBox>
       <StyledContainer>
-        <DatePicker
-          date={date}
-          onDateChange={setDate}
-          androidVariant="iosClone"
-          locale="ko-kr"
-          textColor={COLORS.textColor}
-          theme="dark"
-          minuteInterval={5}
-          fadeToColor="none"
-        />
+      <DatePicker
+        date={date}
+        onDateChange={setDate}
+        androidVariant="iosClone"
+        locale="ko"
+        textColor={COLORS.textColor}
+        theme="dark"
+        minuteInterval={5}
+        fadeToColor="none"
+        is24hourSource="locale" />
       </StyledContainer>
     </StyledContainer>
-  );
+    </TouchableWithoutFeedback>
+  )
 }
 
 const styles = StyleSheet.create({

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
+import {useIsFocused} from '@react-navigation/native';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import {StyledText} from '../components/Text';
@@ -36,7 +37,6 @@ export const RowView = styled.View`
 export const StyledProgressBar = styled.View`
   height: 5px;
   background-color: ${COLORS.icon_gray};
-  flex: 1;
   margin-right: 10px;
   border-radius: 5px;
   overflow: hidden;
@@ -55,19 +55,27 @@ export const ProgressBar = props => (
 );
 
 const HomeScreen = ({navigation}) => {
-  const {userToken, userInfoFromServer, getUserToken, getUserInfoFromServer} =
-    useUserInfo();
-  console.log(userInfoFromServer);
+  const isFocused = useIsFocused();
+
+  const {
+    userToken,
+    userInfoFromServer,
+    getUserToken,
+    getUserInfoFromServer
+  } = useUserInfo();
+
   useEffect(() => {
     getUserToken();
   }, []);
   useEffect(() => {
     getUserInfoFromServer();
-  }, []);
+  }, [isFocused]);
 
   const goToAsgnmt = () => {
-    userInfoFromServer.is_admin
-      ? navigation.navigate('AdminAssignmentScreen')
+    userInfoFromServer.is_admin === 1
+      ? navigation.navigate('AdminAssignmentScreen', {
+          userLevel: userInfoFromServer.level,
+        })
       : navigation.navigate('AssignmentScreen');
   };
   const goToAnncmt = () => {
@@ -78,7 +86,7 @@ const HomeScreen = ({navigation}) => {
   };
   const goToAtndnc = () => {
     //관리자인 경우 출석페이지
-    if (!!userInfo.is_admin) {
+    if (!!userInfoFromServer.is_admin) {
       navigation.navigate('AdminAttendanceScreen');
     }
     // 일반회원인 경우 출석페이지
@@ -92,6 +100,7 @@ const HomeScreen = ({navigation}) => {
   const goToSession = () => {
     navigation.navigate('AdminSessionScreen');
   };
+  
   return (
     <StyledContainer>
       <ScrollView>
@@ -113,7 +122,9 @@ const HomeScreen = ({navigation}) => {
             </RowView>
             <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
             <RowView style={{marginTop: 10}}>
+              <View style={{ width: '50%' }}>
               <ProgressBar status={'30%'} />
+              </View>
               <StyledText content={'남은 시간 18:38:43'} fontSize={16} />
             </RowView>
           </TouchableOpacity>

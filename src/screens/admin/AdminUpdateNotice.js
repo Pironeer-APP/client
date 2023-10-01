@@ -161,6 +161,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 20,
     flex: 1,
+    textAlignVertical: 'top',
   },
 });
 export default AdminUpdateNotice;
