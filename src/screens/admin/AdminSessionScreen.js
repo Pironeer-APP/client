@@ -227,7 +227,6 @@ const renderItem = ({ item }) => {
     isTodaySchedule = true;
   }
 
-  console.log(isTodaySchedule);
   return (
     <>
       {isTodaySchedule ? (
