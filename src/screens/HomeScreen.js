@@ -57,7 +57,7 @@ export const ProgressBar = props => (
 const HomeScreen = ({navigation}) => {
   const {userToken, userInfoFromServer, getUserToken, getUserInfoFromServer} =
     useUserInfo();
-  console.log(userInfoFromServer);
+
   useEffect(() => {
     getUserToken();
   }, []);
@@ -66,8 +66,10 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   const goToAsgnmt = () => {
-    userInfoFromServer.is_admin
-      ? navigation.navigate('AdminAssignmentScreen')
+    userInfoFromServer.is_admin === 1
+      ? navigation.navigate('AdminAssignmentScreen', {
+          userLevel: userInfoFromServer.level,
+        })
       : navigation.navigate('AssignmentScreen');
   };
   const goToAnncmt = () => {

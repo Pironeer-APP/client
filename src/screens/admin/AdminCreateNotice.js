@@ -19,7 +19,6 @@ import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import {StyledText} from '../../components/Text';
 import {COLORS} from '../../assets/Theme';
-import {MainButton} from '../../components/Button';
 import {fetchPost, getAPIHost} from '../../utils';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
