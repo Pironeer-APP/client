@@ -11,7 +11,7 @@ import {Box} from '../../components/Box';
 import {MainButton, RightArrowBtn} from '../../components/Button';
 import Gap from '../../components/Gap';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {fetchGet} from '../../utils';
+import {fetchPost, getData} from '../../utils';
 import dayjs from 'dayjs';
 
 const ModalBox = styled.View`
@@ -142,12 +142,15 @@ const AdminAssignmentScreen = ({route}) => {
     );
   };
   const getAssigns = async () => {
-
-    const url = `/admin/assign/${getLevel}`;
-
+    const userToken = await getData('user_token');
+    const url = `/assign/readAssign/all`;
+    const body = {
+      userToken: userToken
+    };
+    console.log('body: ', body);
     try {
-      const responseData = await fetchGet(url);
-      // console.log('받아온 데이터:', responseData);
+      const responseData = await fetchPost(url, body);
+      console.log('받아온 데이터: ', responseData);
       setAssigns(responseData.data);
     } catch (error) {
       // 네트워크 오류 또는 예외 처리
