@@ -24,6 +24,7 @@ import AdminAttendanceDetailScreen from './admin/AdminAttendanceDetailScreen';
 import AdminAssignmentScreen from './admin/AdminAssignmentScreen';
 import AdminCreateAssignment from './admin/AdminCreateAssignment';
 import AdminGradingScreen from './admin/AdminGradingScreen';
+import AdminUpdateAssign from './admin/AdminUpdateAssign';
 
 const Stack = createNativeStackNavigator();
 
@@ -52,8 +53,14 @@ export default function DrawerNavigationRoutes() {
       />
 
       {/* 관리자 */}
-      <Stack.Screen name="AdminAttendanceScreen" component={AdminAttendanceScreen} />
-      <Stack.Screen name="AdminAttendanceDetailScreen" component={AdminAttendanceDetailScreen} />
+      <Stack.Screen
+        name="AdminAttendanceScreen"
+        component={AdminAttendanceScreen}
+      />
+      <Stack.Screen
+        name="AdminAttendanceDetailScreen"
+        component={AdminAttendanceDetailScreen}
+      />
       <Stack.Screen
         name="AdminAssignmentScreen"
         component={AdminAssignmentScreen}
@@ -62,9 +69,11 @@ export default function DrawerNavigationRoutes() {
         name="AdminCreateAssignment"
         component={AdminCreateAssignment}
       />
+      <Stack.Screen name="AdminUpdateAssign" component={AdminUpdateAssign} />
       <Stack.Screen name="AdminGradingScreen" component={AdminGradingScreen} />
       <Stack.Screen name="AdminDepositDetail" component={AdminDepositDetail} />
       <Stack.Screen name="GradeAssignScreen" component={GradeAssignScreen} />
+
       <Stack.Screen name="AdminCreateNotice" component={AdminCreateNotice} />
       <Stack.Screen name="AdminUpdateNotice" component={AdminUpdateNotice} />
       <Stack.Screen name="AdminSessionScreen" component={AdminSessionScreen} />

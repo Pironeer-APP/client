@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Modal from 'react-native-modal';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
@@ -18,37 +18,38 @@ import {StatusCircle} from '../AssignmentScreen'; // 0: x / 1, 2: semo / 3: O
 import Gap from '../../components/Gap';
 import {COLORS} from '../../assets/Theme';
 import {Image} from 'react-native-svg';
+import {fetchPost} from '../../utils';
 
 const StdGradingData = [
   {
     id: 1,
     name: '정환희',
-    grade: 1,
+    grade: 4,
   },
   {
     id: 2,
     name: '장민서',
-    grade: 3,
+    grade: 4,
   },
   {
     id: 3,
     name: '양원채',
-    grade: 2,
+    grade: 4,
   },
   {
     id: 4,
     name: '민세원',
-    grade: 0,
+    grade: 4,
   },
   {
     id: 5,
     name: '박석류',
-    grade: 3,
+    grade: 4,
   },
   {
     id: 6,
     name: '김정곤',
-    // grade: 2,
+    grade: 4,
   },
 ];
 const UnSelectedBtn = () => (
@@ -114,7 +115,7 @@ const Student = ({id, name, grade, stdId, setStdId, stdGrade, setStdGrade}) => {
       <Box>
         <TouchableOpacity
           style={{padding: 20}}
-          onLongPress={() => {
+          onPress={() => {
             setModalVisible(true);
             setStdId(id);
             setStdGrade(grade);
@@ -132,9 +133,25 @@ const Student = ({id, name, grade, stdId, setStdId, stdGrade, setStdGrade}) => {
 const AdminGradingScreen = () => {
   const route = useRoute();
   const title = route.params?.title;
+  const level = route.params.level;
+  const assignLevel = route.params.assignLevel;
   const [stdId, setStdId] = useState(0);
   const [stdGrade, setStdGrade] = useState(4);
 
+  console.log(level, title, assignLevel);
+  const getStdsData = async () => {
+    const url = `/admin/assign/${level}/${assignLevel}`;
+    const body = {title};
+    try {
+      const stdDatas = await fetchPost(url, body);
+      console.log('stdDatas: ', stdDatas);
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
+  };
+  useEffect(() => {
+    getStdsData();
+  }, []);
   const renderItem = ({item}) => {
     return (
       <Student

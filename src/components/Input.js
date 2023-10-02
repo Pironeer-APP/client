@@ -32,17 +32,21 @@ const TextInputCSS = styled.TextInput`
   color: white;
   font-size: 20px;
   padding: 10px 20px;
-  /* border-width: 1px;
-  border-bottom-color: ${COLORS.light_gray}; */
 `;
 
-export const CustomTextInput = ({placeholder, title, setTitle}) => {
+export const CustomTextInput = ({
+  placeholder,
+  title,
+  setTitle,
+  autoFocus = false,
+}) => {
   return (
     <TextInputCSS
       placeholder={placeholder}
       value={title}
       onChangeText={text => setTitle(text)}
       placeholderTextColor={COLORS.light_gray}
+      autoFocus={autoFocus}
     />
   );
 };
