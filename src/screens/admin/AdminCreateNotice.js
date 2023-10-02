@@ -110,6 +110,7 @@ const AdminCreateNotice = () => {
       mediaType: 'photo',
       quality: 1,
       multiple: true,
+      selectionLimit: 10,
     };
 
     launchImageLibrary(options, (response) => {
