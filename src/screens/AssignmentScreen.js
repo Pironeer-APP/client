@@ -195,10 +195,10 @@ const renderItem = ({item}) => {
         <InProgressAsgBox
           grade={item.grade}
           title={item.title}
-          due={item.due_date}
-        />
+          due={item.dueDate}
+        /> // 왼쪽에 생성시각 필요 -> item.createdDate 에 MON 2.12 형식으로 저장되어 있음
       ) : (
-        <DoneAsgBox grade={item.grade} title={item.title} due={item.due_date} />
+        <DoneAsgBox grade={item.grade} title={item.title} due={item.dueDate} />
       )}
     </>
   );
