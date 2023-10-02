@@ -2,78 +2,71 @@ import { View, Text } from 'react-native'
 import React, {useState} from 'react'
 
 export default function useProgress() {
-  // formatting datetime
-  const convertDateTime = (date) => {
-    // Date 객체 만들기
-    const itemDateTime = new Date(date);
+  // 실제 세션1 10/7 SAT 10:00, 세션2 10/10 TUE 10:00
+  // 1시간 여유 세션1 10/7 SAT 11:00, 세션2 10/10 TUE 11:00
+  // 오늘 10/7 SAT 10:00 -> CLEAR
+  // 오늘 10/7 SAT 11:00 -> 세션2 InProgress
+  // 현재 시간보다 큰 첫 번째 세션이 다음 세션
+  // 이전 세션과 다음 세션 시간의 차이가 전체 limit
+  // 오늘 시간과 다음 세션 시간의 차이가 남은 시간 status
+  // 과제도 동일한 로직
+  const [lastScheduleId, setLastScheduleId] = useState(); // 직전 세션의 id
+  const [nextScheduleId, setNextScheduleId] = useState(); // 다음 세션의 id
+  const [limit, setLimit] = useState(); // 지난 세션 ~ 다음 세션까지 전체 limit
+  const [status, setStatus] = useState();
 
-    let itemMonth = String(Number(itemDateTime.getMonth().toLocaleString()) + 1); // toLocaleString으로 지역 시간 반영하기
-    let itemDate = itemDateTime.getDate().toLocaleString();
-
-    // 한 자리인 경우 앞에 0 붙이기
-    if (itemMonth.length === 1) itemMonth = '0' + itemMonth;
-    if (itemDate.length === 1) itemDate = '0' + itemDate;
-
-    // 요일을 영어로 변경
-    const itemDay = itemDateTime.getDay().toLocaleString();
-
-    let itemDayEn = '';
-    switch (itemDay) {
-      case '0':
-        itemDayEn = 'SUN';
+  const getTimeLimit = (dataList) => {
+    const now = new Date();
+    let nextScheduleDateTime = 0;
+    let lastScheduleDateTime = 0;
+    // dataList는 date가 최신 순
+    for(let i = dataList.length - 1; i > 0; i--) {
+      const session1h = new Date(dataList[i].date_plus_1h); // CLEAR 표시를 위한 1시간 여유분
+      if(now.getTime() < session1h.getTime()) {
+        let lastScheduleDate;
+        setNextScheduleId(dataList[i].session_id);
+        const nextScheduleDate = new Date(dataList[i].date);
+        nextScheduleDateTime = nextScheduleDate.getTime();
+        if(i >= 1) {
+          setLastScheduleId(dataList[i+1].session_id);
+          lastScheduleDate = new Date(dataList[i+1].date);
+          lastScheduleDateTime = lastScheduleDate.getTime();
+        } else {
+          lastScheduleDateTime = nextScheduleDateTime - 24 * 3 * 60 * 60 * 1000; // 3일 전을 기준
+        }
+        setLimit(nextScheduleDateTime - lastScheduleDateTime);
+        
         break;
-      case '1':
-        itemDayEn = 'MON';
-        break;
-      case '2':
-        itemDayEn = 'TUE';
-        break;
-      case '3':
-        itemDayEn = 'WED';
-        break;
-      case '4':
-        itemDayEn = 'THU';
-        break;
-      case '5':
-        itemDayEn = 'FRI';
-        break;
-      case '6':
-        itemDayEn = 'SAT';
-        break;
+      }
     }
-
-    return {
-      itemDateTime,
-      itemMonth,
-      itemDate,
-      itemDayEn
+    if(nextScheduleDateTime > now.getTime()) {
+      setStatus(nextScheduleDateTime - now.getTime());
+    } else {
+      setStatus(0);
     }
   }
 
-  // 24시간 기준 일정까지 남은 시간 측정
-  const maxLimit = 24 * 60 * 60;
-
-  const [timeLimit, setTimeLimit] = useState(); // 남은 시간
-  const [timeStatus, setTimeStatus] = useState(0); // 24시간 대비 남은 시간 비율
-
-  const getTimeLimit = async (itemDateTime) => {
-    const now = new Date();
-    // 현재 시간에서 일정까지 남은 시간 측정
-    let limit = Math.trunc((itemDateTime.getTime() - now.getTime()) / 1000);
-    if (limit < 0) limit = 0; // 음수 방지
-
-    // 위에서 구한 남은 시간을 24시간 대비 비율 측정
-    let status = limit / maxLimit * 100;
-    if (status < 0) status = 0;
-
-    setTimeStatus(status);
-    setTimeLimit(limit);
+  const convertTime = (timeLimitSec) => {
+    let hour = String(Math.trunc(timeLimitSec / 60 / 60));
+    let min = String(Math.trunc(timeLimitSec / 60 % 60));
+    let sec = String(Math.trunc(timeLimitSec % 60));
+    if (hour.length === 1) hour = '0' + hour;
+    if (min.length === 1) min = '0' + min;
+    if (sec.length === 1) sec = '0' + sec;
+    
+    return {
+      hour,
+      min,
+      sec
+    }
   }
 
   return {
-    convertDateTime,
-    timeLimit,
-    timeStatus,
-    getTimeLimit,
+    lastScheduleId, // 현재 시간 기준 직전 스케줄
+    nextScheduleId, // 현재 시간 기준 다가오는 스케줄
+    limit, // 직전 스케줄과 다가오는 스케줄의 시간 차
+    status, // 현재 시간과 다가오는 스케줄의 시간 차
+    getTimeLimit, // lastScheduleId, nextScheduleId, limit, status를 구할 수 있는 함수
+    convertTime, // 초 단위의 시간을 시, 분, 초로 변환하는 함수
   }
 }

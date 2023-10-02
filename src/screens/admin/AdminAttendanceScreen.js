@@ -30,12 +30,10 @@ const DateBox = (props) => {
   if(Number(today.getMonth().toLocaleString()) + 1 === Number(month) && Number(today.getDate().toLocaleString()) === Number(day)) {
     isToday = true;
   }
-  // 핸드폰 스크린 너비에 따른 날짜상자 크기 정하기
-  const screenWidth = Dimensions.get('window').width;
-  const boxWidth = (screenWidth - 30) / 3.4;
+
   return (
     <TouchableOpacity style={{flex: 1}} onPress={() => navigation.navigate({name: 'AdminAttendanceDetailScreen', params:{month: month, day: day, session_id: props.date.session_id}})}>
-      <DateContainer width={boxWidth} style={{ justifyContent:'center' }}>
+      <DateContainer style={{ justifyContent:'center' }}>
         <StyledText content={month} fontSize={35} />
         <StyledText content={day} fontSize={35} />
       </DateContainer>
