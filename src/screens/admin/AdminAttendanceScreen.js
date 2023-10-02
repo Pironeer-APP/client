@@ -32,7 +32,7 @@ const DateBox = (props) => {
   }
 
   return (
-    <TouchableOpacity style={{flex: 1}} onPress={() => navigation.navigate({name: 'AdminAttendanceDetailScreen', params:{month: month, day: day, session_id: props.date.session_id}})}>
+    <TouchableOpacity style={{flex: 1, marginRight: 20}} onPress={() => navigation.navigate({name: 'AdminAttendanceDetailScreen', params:{month: month, day: day, session_id: props.date.session_id}})}>
       <DateContainer style={{ justifyContent:'center' }}>
         <StyledText content={month} fontSize={35} />
         <StyledText content={day} fontSize={35} />
@@ -47,22 +47,13 @@ const WeekContainer = (props) => {
       <View style={{ marginBottom: 5 }}>
         <StyledSubText content={`Week ${props.week}`}/>
       </View>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between', marginRight: -20}}>
         {props.item?.map((date, index) => {
-          if(index === 1) {
             return (
-              <>
-              <GapH />
-              <DateBox date={date} />
-              <GapH />
-              </>
-            )
-          } else {
-            return (
-              <DateBox date={date} />
+              <DateBox key={index} date={date} />
             )
           }
-        })}
+        )}
       </View>
     </View>
   )
