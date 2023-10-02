@@ -47,10 +47,9 @@ const AdminAssignmentScreen = ({route}) => {
   const [assigns, setAssigns] = useState([]);
   const isFocused = useIsFocused();
   const adminLevel = route.params.userLevel;
-  const nonAdminLevel = adminLevel + 1;
 
   const getAssigns = async () => {
-    const url = `/admin/assign/${nonAdminLevel}`;
+    const url = `/admin/assign/${adminLevel}`;
     try {
       const responseData = await fetchGet(url);
       // console.log('받아온 데이터:', responseData);
@@ -78,7 +77,7 @@ const AdminAssignmentScreen = ({route}) => {
       <MainButton
         content={'과제 등록하기'}
         onPress={() => {
-          navigation.navigate('AdminCreateAssignment', {level: nonAdminLevel});
+          navigation.navigate('AdminCreateAssignment', {level: adminLevel});
         }}
         height={60}
       />
