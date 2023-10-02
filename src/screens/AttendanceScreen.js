@@ -9,6 +9,8 @@ import { ProgressBar, RowView } from './HomeScreen';
 import { StyledSubText, StyledText } from '../components/Text';
 import { COLORS } from '../assets/Theme';
 import  Gap, { GapH } from '../components/Gap';
+import { MainButton } from '../components/Button';
+import Modal from 'react-native-modal';
 
 //데이터 날짜순으로 배열하기
 function compareDates(a, b) {
@@ -17,13 +19,13 @@ function compareDates(a, b) {
   return dateA - dateB; 
 }
 
-const AttenStatusCircle = ({grade = 4}) => {
+const AttenStatusCircle = ({type = null}) => {
   let imageSource;
-  if (grade == 0) {
+  if (type === '결석') {
     imageSource = require(`../assets/icons/circle_ex.png`);
-  } else if (grade == 3) {
+  } else if (type === '출석') {
     imageSource = require(`../assets/icons/circle_donggrami.png`);
-  } else if (grade == 1 || grade == 2) {
+  } else if (type === '지각') {
     imageSource = require(`../assets/icons/circle_semo.png`);
   } else {
     imageSource = require(`../assets/icons/circle_none.png`);
@@ -58,15 +60,16 @@ const IsFaceBox = (props) => {
 };
 
 const InProgressAttendBox = (props) => {
+  const today = new Date();
   const month = props.date.getMonth() + 1;
-  let day = props.date.getDate();
+  const day = props.date.getDate();
   const dayOfTheWeek = dayOfWeek(props.date.getDay());
   let hour = props.date.getUTCHours();
   const minute = props.date.getUTCMinutes();
-
+  let dayWithZero = day;
 
   if (day < 9) {
-    day = '0' + day;
+    dayWithZero = '0' + day;
   }
   // 1 -> 01, 2 -> 02 ...
   if (hour < 10) {
@@ -115,14 +118,18 @@ const InProgressAttendBox = (props) => {
           }}>
           <View style={{flex: 1}} />
           <View>
-            <Animated.Image
-              source={require('../assets/icons/circle_onair.png')}
-              style={{
-                width: 50,
-                height: 50,
-                transform: [{scale}], // 크기 애니메이션 적용
-              }}
-            />
+            {(today.getMonth() + 1) === month && today.getDate() === day ? (
+              <Animated.Image
+                source={require('../assets/icons/circle_onair.png')}
+                style={{
+                  width: 50,
+                  height: 50,
+                  transform: [{scale}], // 크기 애니메이션 적용
+                }}
+              />
+            ) : (
+              <AttenStatusCircle type={props.attenType} />
+            )}
           </View>
           <StatusLine />
         </View>
@@ -136,21 +143,23 @@ const InProgressAttendBox = (props) => {
         <Box>
           <View style={{paddingHorizontal: 17, paddingVertical: 10}}>
             <RowView style={{marginBottom: 10}}>
-              <StyledSubText content={`${month}.${day} ${dayOfTheWeek}`} />
+              <StyledSubText content={`${month}.${dayWithZero} ${dayOfTheWeek}`} />
               <IsFaceBox isFace={props.isFace} />
             </RowView>
             <StyledText content={props.title} fontSize={20} />
             <Gap height={14}/>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Image 
-                source={require('../assets/images/location_icon.png')} 
-                style={{width: 15, height: 15}}
-                resizeMode='contain' 
-              />
-              <GapH width={9} />
-              <StyledSubText content={props.location} />
-            </View>
-            <Gap height={8} />
+            {props.isFace === 1 ? (<>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image 
+                  source={require('../assets/images/location_icon.png')} 
+                  style={{width: 15, height: 15}}
+                  resizeMode='contain' 
+                />
+                <GapH width={9} />
+                <StyledSubText content={props.location} />
+              </View>
+              <Gap height={8} /></>
+            ) : null }
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Image 
                 source={require('../assets/images/time_icon.png')} 
@@ -194,7 +203,7 @@ const DoneAttendBox = (props) => {
             width: 50,
           }}>
           <StatusLine />
-          <AttenStatusCircle grade={1} />
+          <AttenStatusCircle type={props.attenType} />
           <StatusLine />
         </View>
       </View>
@@ -222,12 +231,12 @@ const DoneAttendBox = (props) => {
 
 const renderAttenItem = ({item}) => {
   const today = new Date();
+  const todayNoTime = today.setHours(0, 0, 0, 0);
   const sessionDate = new Date(item.date);
-  // console.log('today: ', today);
-  // console.log(sessionDate);
-  // console.log(typeof(sessionDate));
+  let sessionDateNoTime = new Date(sessionDate);
+  sessionDateNoTime.setHours(0, 0, 0, 0);
 
-  if (today <= sessionDate) { //현재+미래의 세션
+  if (todayNoTime <= sessionDateNoTime) { //현재+미래의 세션
     return (
       <InProgressAttendBox
         status={item.attend_id}
@@ -235,35 +244,40 @@ const renderAttenItem = ({item}) => {
         date={sessionDate}
         location={item.location}
         isFace={item.is_face}
+        attenType={item.type}
       />
     )
-  } else if (today > sessionDate) { //과거의 세션
+  } else if (todayNoTime > sessionDateNoTime) { //과거의 세션
     return (
       <DoneAttendBox
         status={item.attend_id}
         title={item.title}
         date={sessionDate}
+        attenType={item.type}
       />
     )
   }
-  return (
-    <>
-    </>
-  );
 };
 
 const AttendanceScreen = () => {
   const [attendance, setAttendance] = useState([]);
   const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
+  const [initialScrollIndex, setInitialScrollIndex] = useState(0);
+  const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const toggleBottomSheet = () => {
+    setBottomSheetVisible(!isBottomSheetVisible);
+  };
 
   useEffect(() => {
     getUserInfoFromServer();
   }, []);
-  // send user info
+
+  //현재 진행중인 세션 인덱스 찾기
+
 
   // const isFocused = useIsFocused();
 
-  const saveUserId = async userInfoFromServer => {
+  const userSessionInfo = async userInfoFromServer => {
     const userToken = await getData('user_token');
     const url = `/attend/getSessionAndAttend`;
     const body = {
@@ -271,17 +285,25 @@ const AttendanceScreen = () => {
     };
     try {
       const fetchAttenData = await fetchPost(url, body);
-      // const attendanceData = attendance["sessions"];
-      console.log('데이터: ', fetchAttenData.sessions);
       const sortedData = fetchAttenData.sessions.slice().sort(compareDates).reverse();
       setAttendance(sortedData);
+
+      //데이터 안 세션들 중에서 오늘 날짜와 동일한 날짜인 세션 인덱스 찾기
+      sortedData.map((item, index) => {
+        const today = new Date();
+        const sessionDate = new Date(item.date);
+        if (today.getMonth() === sessionDate.getMonth() && today.getDate() === sessionDate.getDate()) {
+          setInitialScrollIndex(index);
+        }
+      });
+      // setInitialScrollIndex(6);
       // console.log('받은 데이터: ', attendance);
     } catch (error) {
-      console.log('에러 발생!!');
+      console.log('에러 발생: ', error);
     }
   };
   useEffect(() => {
-    saveUserId(userInfoFromServer);
+    userSessionInfo(userInfoFromServer);
   }, [userInfoFromServer]);
 
 
@@ -293,9 +315,23 @@ const AttendanceScreen = () => {
         <FlatList
           data={attendance}
           renderItem={renderAttenItem}
-          // keyExtractor={item => item.AssignId}
+          keyExtractor={item => item.session_id}
+          initialScrollIndex={initialScrollIndex}
         />
       </View>
+      <View style={{ zIndex: 999, marginBottom: 20, marginHorizontal: 10 }}>
+        <MainButton height={60} content={'출석하기'} onPress={toggleBottomSheet}/>
+      </View>
+      {/* 출석코드입력 모달 */}
+      <Modal 
+        isVisible={isBottomSheetVisible}
+        onBackdropPress={toggleBottomSheet}
+        style={{ justifyContent: 'flex-end', margin: 0 }}
+        >
+          <View style={styles.modalContainer}>
+            
+          </View>
+        </Modal>
     </StyledContainer>
   );
 };
@@ -315,5 +351,13 @@ const styles = StyleSheet.create({
     isFaceText: {
       color: 'black',
       fontSize: 16,
-    }
+    },
+    modalContainer: {
+      backgroundColor: `${COLORS.gray}`,
+      padding: 16, 
+      minHeight: 500, 
+      borderTopRightRadius: 20, 
+      borderTopLeftRadius: 20,
+      paddingHorizontal: 30,
+    },
 });
