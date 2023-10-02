@@ -28,8 +28,8 @@ const ModalBtn = styled.TouchableOpacity`
 `;
 const AssignmentBox = ({title, due, level, assignLevel}) => {
   const navigation = useNavigation();
-  const dateString = due;
-  const formattedDate = dayjs(dateString).format('MM.DD ddd HH:mm');
+  // const dateString = due;
+  // const formattedDate = dayjs(dateString).format('MM.DD ddd HH:mm');
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -56,7 +56,7 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
         <ModalBox>
           <View style={{padding: 20, alignItems: 'center', gap: 5}}>
             <StyledText content={title} />
-            <StyledSubText content={formattedDate} />
+            <StyledSubText content={due} />
           </View>
           <View
             style={{
@@ -110,7 +110,7 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
           }}>
           <RowView>
             <View>
-              <StyledSubText content={`DUE ${formattedDate}`} />
+              <StyledSubText content={`DUE ${due}`} />
               <Gap height={5} />
               <StyledText content={title} fontSize={20} />
             </View>
@@ -129,13 +129,12 @@ const AdminAssignmentScreen = ({route}) => {
   const isFocused = useIsFocused();
   const getLevel = route.params.userLevel;
 
-
   const renderItem = ({item}) => {
     // console.log(item);
     return (
       <AssignmentBox
         title={item.title}
-        due={item.due_date}
+        due={item.dueDate}
         level={getLevel}
         assignLevel={item.assignschedule_id}
       />
