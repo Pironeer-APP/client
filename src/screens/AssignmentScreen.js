@@ -17,8 +17,7 @@ import {Box} from '../components/Box';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import HeaderDetail from '../components/Header';
-import {fetchGet, fetchPost} from '../utils';
-import useUserInfo from '../use-userInfo';
+import {fetchPost, getData} from '../utils';
 import {useIsFocused} from '@react-navigation/native';
 
 export const Assignmentdata = [
@@ -207,20 +206,13 @@ const renderItem = ({item}) => {
 
 const AssignmentScreen = () => {
   const [assignment, setAssignment] = useState([]);
-  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
+  const isFocused = useIsFocused(); // 일단 살립니다
 
-  useEffect(() => {
-    getUserInfoFromServer();
-  }, []);
-  // send user info
-
-  const isFocused = useIsFocused();
-
-  const saveUserId = async userInfoFromServer => {
+  const saveUserId = async () => {
+    const userToken = await getData('user_token');
     const url = `/assign`;
     const body = {
-      userId: userInfoFromServer.user_id,
-      userLevel: userInfoFromServer.level,
+      userToken: userToken
     };
     console.log('body: ', body);
     try {
@@ -232,9 +224,10 @@ const AssignmentScreen = () => {
       console.log('에러');
     }
   };
+
   useEffect(() => {
-    saveUserId(userInfoFromServer);
-  }, [userInfoFromServer]);
+    saveUserId();
+  }, []);
 
   return (
     <StyledContainer>
