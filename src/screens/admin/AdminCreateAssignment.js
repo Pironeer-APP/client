@@ -37,17 +37,19 @@ const AdminCreateAssignment = () => {
   const month = `${date.getMonth() + 1}`;
   const RenderMonth = month.padStart(2, '0');
   const level = route.params.level;
+  // const sendLevel = level - 1;
 
   //  보낼 값
 
   const dateData = `${date.getFullYear()}-${RenderMonth}-${date.getDate()} ${RenderHour}:${RenderMinutes}:00`;
   console.log(dateData);
   const createAssign = async () => {
-    const url = `/admin/assign/${level}/create`;
+    const url = `/admin/assign/create/${level}`;
     const body = {title, dateData};
+    console.log(level, body);
     try {
       await fetchPost(url, body);
-      navigation.goBack();
+      // navigation.goBack();
     } catch (error) {
       console.error('Error sending data:', error);
     }

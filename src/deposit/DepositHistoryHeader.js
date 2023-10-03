@@ -1,40 +1,45 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React, {useEffect} from 'react'
-import { StyledText } from '../components/Text'
-import CouponElement from './CouponElement'
+import {View, Text, StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
+import {StyledSubText, StyledText} from '../components/Text';
+import CouponElement from './CouponElement';
+import {RowView} from '../screens/HomeScreen';
+import {COLORS} from '../assets/Theme';
+import styled from 'styled-components';
+import Gap from '../components/Gap';
 
 export default function DepositHistoryHeader(props) {
-  
   return (
-    <View style={styles.center}>
-      <StyledText content="보증금 현황" fontSize={20} />
-      <View style={styles.row}>
+    <DepositHeaderContainer>
+      <StyledText content="보증금 현황" fontSize={16} />
+      <RowView>
         <StyledText
           content={props.userInfo?.deposit?.toLocaleString('en')}
-          fontSize={40} />
-        <StyledText
-          content="원"
-          fontSize={40} />
-      </View>
+          fontSize={40}
+          weight={600}
+        />
+        <StyledText content="원" fontSize={30} />
+      </RowView>
+      <Gap height={20} />
       {/* 뱃지 */}
-      <View style={styles.row}>
-        <Text>
-          <StyledText content="남은 쿠폰 수 : " fontSize={20} />
-          <StyledText
-          content={props.couponInfo.length}
-          fontSize={20} />
-        </Text>
-      </View>
-    </View>
-  )
+      <BadgeBox>
+        <StyledText
+          content={`보유 쿠폰: ${props.couponInfo.length}`}
+          fontSize={16}
+          color={'black'}
+          weight={900}
+        />
+      </BadgeBox>
+    </DepositHeaderContainer>
+  );
 }
-
-const styles = StyleSheet.create({
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-  }
-})
+const BadgeBox = styled.View`
+  background-color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+`;
+const DepositHeaderContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+  background-color: ${COLORS.deposit_header_blue};
+  padding: 40px 0 60px;
+`;

@@ -10,6 +10,8 @@ export default function HeaderDetail({
   title,
   button = false,
   buttonOnPress = false,
+  backgroundColor = 'transparent',
+  color,
 }) {
   const navigation = useNavigation();
 
@@ -17,10 +19,10 @@ export default function HeaderDetail({
     navigation.goBack();
   };
   return (
-    <View style={{paddingVertical: 20}}>
+    <View style={{paddingVertical: 20, backgroundColor: `${backgroundColor}`}}>
       <RowView>
-        <LeftArrowBtn onPress={handleGoBack} />
-        <StyledText content={title} fontSize={24} />
+        <LeftArrowBtn onPress={handleGoBack} color={color} />
+        <StyledText content={title} fontSize={20} />
         {button ? (
           <>
             <View style={{width: 20}} />

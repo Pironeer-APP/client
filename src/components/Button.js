@@ -40,22 +40,31 @@ export const LoginButton = ({onPress, children}) => {
   );
 };
 
-export const LeftArrowBtn = ({onPress}) => {
+export const LeftArrowBtn = ({onPress, size = 20, color}) => {
   return (
-    <TouchableOpacity onPress={onPress}>
-      <Image
-        source={require('../assets/icons/left-arrow.png')}
-        style={styles.arrow}
-      />
+    <TouchableOpacity
+      onPress={onPress}
+      hitSlop={{top: 20, bottom: 10, left: 20, right: 20}}>
+      {color === 'white' ? (
+        <Image
+          source={require('../assets/icons/left-arrow-white.png')}
+          style={[styles.arrow, {width: 14, height: 24}]}
+        />
+      ) : (
+        <Image
+          source={require('../assets/icons/left-arrow.png')}
+          style={[styles.arrow, {width: size}]}
+        />
+      )}
     </TouchableOpacity>
   );
 };
-export const RightArrowBtn = ({onPress}) => {
+export const RightArrowBtn = ({onPress, size = 10}) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <Image
         source={require('../assets/icons/right-arrow.png')}
-        style={styles.arrow}
+        style={[styles.arrow, {width: size}]}
       />
     </TouchableOpacity>
   );
