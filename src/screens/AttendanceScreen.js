@@ -10,6 +10,7 @@ import { StyledSubText, StyledText } from '../components/Text';
 import { COLORS } from '../assets/Theme';
 import  Gap, { GapH } from '../components/Gap';
 import { MainButton } from '../components/Button';
+import IsFaceBox from '../components/IsFaceBox';
 import Modal from 'react-native-modal';
 
 //데이터 날짜순으로 배열하기
@@ -41,22 +42,6 @@ const StatusLine = () => {
   return (
     <View style={{backgroundColor: `${COLORS.icon_gray}`, width: 1, flex: 1}} />
   );
-};
-
-const IsFaceBox = (props) => {
-  if (props.isFace === 0) {
-    return (
-      <View style={[styles.isFaceBox, {backgroundColor: COLORS.green}]}>
-        <Text style={styles.isFaceText}>ONLINE</Text>
-      </View>
-    )
-  } else if (props.isFace === 1) {
-    return (
-      <View style={[styles.isFaceBox, {backgroundColor: 'skyblue'}]}>
-        <Text style={styles.isFaceText}>OFFLINE</Text>
-      </View>
-    )
-  }
 };
 
 const InProgressAttendBox = (props) => {
