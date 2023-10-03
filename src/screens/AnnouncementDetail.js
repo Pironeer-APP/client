@@ -52,8 +52,6 @@ const AnnouncementDetail = ({navigation}) => {
   const getPost = async () => {
     const url = `/post/detail`;
     const userToken = await getData('user_token');
-    console.log('FE:', userToken);
-    console.log('FE:', post_id);
     const body = {userToken, post_id};
     const res = await fetchPost(url, body);
     setPost(res.post);
