@@ -11,7 +11,7 @@ import {StyledSubText, StyledText} from '../../components/Text';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {RowView} from '../HomeScreen';
 import Gap from '../../components/Gap';
-import {fetchPost} from '../../utils';
+import {fetchPost, getData} from '../../utils';
 
 const AdminCreateAssignment = () => {
   const navigation = useNavigation();
@@ -44,12 +44,13 @@ const AdminCreateAssignment = () => {
   const dateData = `${date.getFullYear()}-${RenderMonth}-${date.getDate()} ${RenderHour}:${RenderMinutes}:00`;
   console.log(dateData);
   const createAssign = async () => {
-    const url = `/admin/assign/create/${level}`;
-    const body = {title, dateData};
-    console.log(level, body);
+    const userToken = await getData('user_token');
+    const url = `/assign/createAssign`;
+    const body = {userToken, title, dateData};
+    // console.log(level, body);
     try {
       await fetchPost(url, body);
-      // navigation.goBack();
+      navigation.goBack();
     } catch (error) {
       console.error('Error sending data:', error);
     }

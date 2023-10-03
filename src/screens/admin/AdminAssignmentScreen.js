@@ -26,14 +26,34 @@ const ModalBtn = styled.TouchableOpacity`
   align-items: center;
   padding: 20px;
 `;
-const AssignmentBox = ({title, due, level, assignLevel}) => {
+const AssignmentBox = ({title, due, level, assignId, getAssigns}) => {
   const navigation = useNavigation();
-  // const dateString = due;
-  // const formattedDate = dayjs(dateString).format('MM.DD ddd HH:mm');
+  const dateString = due;
+  const formattedDate = dayjs(dateString).format('MM.DD ddd HH:mm');
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
+    getAssigns();
     setModalVisible(!modalVisible);
   };
+
+  const deleteAssign = async (deleteId) => {
+    const userToken = await getData('user_token');
+    const url = `/assign/deleteAssign`;
+    const body = {
+      userToken: userToken,
+      deleteId : deleteId
+    };
+    console.log('body: ', body);
+
+    try {
+      await fetchPost(url, body);
+      toggleModal(); // 재랜더링되어야 함
+    } catch (error) {
+      // 네트워크 오류 또는 예외 처리
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -56,7 +76,7 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
         <ModalBox>
           <View style={{padding: 20, alignItems: 'center', gap: 5}}>
             <StyledText content={title} />
-            <StyledSubText content={due} />
+            <StyledSubText content={formattedDate} />
           </View>
           <View
             style={{
@@ -71,8 +91,8 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
                 toggleModal();
                 navigation.navigate('AdminUpdateAssign', {
                   title,
-                  due,
-                  assignLevel,
+                  dateString,
+                  assignId,
                   level,
                 });
               }}>
@@ -89,7 +109,7 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
                 backgroundColor: `${COLORS.light_gray}`,
               }}
             />
-            <ModalBtn onPress={() => {}}>
+            <ModalBtn onPress={() => {deleteAssign(assignId)}}>
               <StyledText content={'삭제'} fontSize={20} color={'red'} />
             </ModalBtn>
           </RowView>
@@ -102,7 +122,7 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
             navigation.navigate('AdminGradingScreen', {
               title,
               level,
-              assignLevel,
+              assignId,
             })
           }
           onLongPress={() => {
@@ -110,7 +130,7 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
           }}>
           <RowView>
             <View>
-              <StyledSubText content={`DUE ${due}`} />
+              <StyledSubText content={`DUE ${formattedDate}`} />
               <Gap height={5} />
               <StyledText content={title} fontSize={20} />
             </View>
@@ -134,9 +154,10 @@ const AdminAssignmentScreen = ({route}) => {
     return (
       <AssignmentBox
         title={item.title}
-        due={item.dueDate}
+        due={item.due_date}
         level={getLevel}
-        assignLevel={item.assignschedule_id}
+        assignId={item.assignschedule_id}
+        getAssigns={getAssigns}
       />
     );
   };

@@ -18,7 +18,7 @@ import {StatusCircle} from '../AssignmentScreen'; // 0: x / 1, 2: semo / 3: O
 import Gap from '../../components/Gap';
 import {COLORS} from '../../assets/Theme';
 import {Image} from 'react-native-svg';
-import {fetchPost} from '../../utils';
+import {fetchPost, getData} from '../../utils';
 
 const StdGradingData = [
   {
@@ -134,17 +134,20 @@ const AdminGradingScreen = () => {
   const route = useRoute();
   const title = route.params?.title;
   const level = route.params.level;
-  const assignLevel = route.params.assignLevel;
+  const assignId = route.params.assignId;
   const [stdId, setStdId] = useState(0);
   const [stdGrade, setStdGrade] = useState(4);
+  const [stdInfo, setStdInfo ] = useState([]);
 
-  console.log(level, title, assignLevel);
+  console.log(level, title, assignId);
   const getStdsData = async () => {
-    const url = `/admin/assign/${level}/${assignLevel}`;
-    const body = {title};
+    const userToken = await getData('user_token');
+    const url = `/assign/readAssign/detail`;
+    const body = {assignId, userToken};
     try {
       const stdDatas = await fetchPost(url, body);
-      console.log('stdDatas: ', stdDatas);
+      console.log('stdDatas: ', stdDatas.data);
+      setStdInfo(stdDatas.data);
     } catch (error) {
       console.error('Error sending data:', error);
     }
@@ -155,7 +158,7 @@ const AdminGradingScreen = () => {
   const renderItem = ({item}) => {
     return (
       <Student
-        id={item.id}
+        id={item.studentId}
         name={item.name}
         grade={item.grade}
         stdId={stdId}
@@ -173,7 +176,7 @@ const AdminGradingScreen = () => {
       <HeaderDetail title={title} />
 
       <FlatList
-        data={StdGradingData}
+        data={stdInfo}
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
