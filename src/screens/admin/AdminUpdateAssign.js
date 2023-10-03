@@ -25,7 +25,6 @@ const AdminUpdateAssign = ({route}) => {
   const [title, setTitle] = useState(getTitle);
   const [date, setDate] = useState(new Date(getDue));
 
-  const updateAssign = async date => {
   const updateAssign = async () => {
     const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
 
