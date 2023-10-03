@@ -1,39 +1,76 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import styled from 'styled-components/native'
-import { useNavigation } from '@react-navigation/native';
+import {View, Text, TouchableOpacity, Image, Platform} from 'react-native';
+import React from 'react';
+import styled from 'styled-components/native';
+import {useNavigation} from '@react-navigation/native';
 
-import { COLORS } from '../assets/Theme'
-import { FontStyledText } from '../components/Text'
-import { RightArrowBtn } from '../components/Button'
+import {COLORS} from '../assets/Theme';
+import {FontStyledText, StyledSubText, StyledText} from '../components/Text';
+import {RightArrowBtn} from '../components/Button';
+import {Box} from '../components/Box';
+import Gap from '../components/Gap';
+import {RowView} from '../screens/HomeScreen';
+
+const DepositIcon = ({deposit}) => {
+  let iconSource;
+  if (deposit >= 100000) {
+    iconSource = require('../assets/icons/deposit-good.png');
+  } else if (deposit >= 50000) {
+    iconSource = require('../assets/icons/deposit-soso.png');
+  } else {
+    iconSource = require('../assets/icons/deposit-bad.png');
+  }
+  return (
+    <Image
+      source={iconSource}
+      style={{
+        resizeMode: 'contain',
+        width: 40,
+        height: 40,
+        marginRight: 20,
+      }}
+    />
+  );
+};
 
 export default function AdminDepositElement({userInfo}) {
-  const navigation = useNavigation();     
+  const navigation = useNavigation();
+
   return (
-    // navigate로 스크린에 파라미터 보내는 방법
-    <DepositContainer onPress={() => navigation.navigate({name: 'AdminDepositDetail', params: {userInfo: userInfo}})}>
-      <FontStyledText style={{fontSize: 20}}>{userInfo.name}</FontStyledText>
-      <AmountContainer>
-        <FontStyledText style={{fontSize: 20, color: COLORS.green, marginHorizontal: 20}}>{userInfo.deposit.toLocaleString('en')}</FontStyledText>
-        <RightArrowBtn />
-      </AmountContainer>
-    </DepositContainer> 
-  )
+    <>
+      <Box>
+        <DepositContainer
+          onPress={() =>
+            navigation.navigate({
+              name: 'AdminDepositDetail',
+              params: {userInfo: userInfo},
+            })
+          }>
+          <RowView>
+            <DepositIcon deposit={userInfo.deposit} />
+
+            <View>
+              <StyledText
+                content={`${userInfo.deposit.toLocaleString('en')}원`}
+                fontSize={14}
+                color={COLORS.green}
+              />
+              {Platform.OS === 'ios' ? <Gap height={5} /> : null}
+
+              <StyledText content={userInfo.name} fontSize={20} />
+            </View>
+          </RowView>
+
+          <RightArrowBtn />
+        </DepositContainer>
+      </Box>
+      <Gap height={10} />
+    </>
+  );
 }
 
 const DepositContainer = styled.TouchableOpacity`
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-direction: row;
-background: ${COLORS.gray};
-border-radius: 15px;
-padding: 25px 30px;
-margin: 10px;
-`
-const AmountContainer = styled.View`
-display: flex;
-justify-content: center;
-align-items: center;
-flex-direction: row;
-`
+  padding: 20px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;

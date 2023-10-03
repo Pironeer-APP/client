@@ -7,9 +7,15 @@ const TextCSS = styled.Text`
   font-size: ${props => props.fontSize}px;
   color: ${props => (props.color ? props.color : 'white')};
   font-family: 'Interop-Medium';
+  font-weight: ${props => props.weight};
 `;
-export const StyledText = ({content, fontSize = 24, color = false}) => (
-  <TextCSS fontSize={fontSize} color={color}>
+export const StyledText = ({
+  content,
+  fontSize = 24,
+  color = false,
+  weight = 400,
+}) => (
+  <TextCSS fontSize={fontSize} color={color} weight={weight}>
     {content}
   </TextCSS>
 );

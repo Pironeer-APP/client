@@ -1,22 +1,39 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
-import { StyledText } from '../components/Text'
+import {View, Text, StyleSheet} from 'react-native';
+import React from 'react';
+import {StyledSubText, StyledText} from '../components/Text';
+import {RowView} from '../screens/HomeScreen';
+import {GapH} from '../components/Gap';
+import {COLORS} from '../assets/Theme';
+import styled from 'styled-components';
 
 export default function HistoryElement({history}) {
   console.log(history);
   return (
-    <View style={styles.historyElement}>
-      <StyledText content={`${history.monthDay} ${history.type}`} fontSize={20} />
-      <StyledText content={history.price} fontSize={20} />
-    </View>
-  )
+    <HistoryElementBox>
+      <RowView>
+        {/* <StyledSubText content={`${history.monthDay}`} /> */}
+        <StyledSubText content={`03.04`} />
+        <GapH />
+        <StyledText content={`${history.type}`} fontSize={18} />
+      </RowView>
+      <View style={{alignItems: 'flex-end'}}>
+        <StyledText
+          content={`${history.price.toLocaleString('en')}원`}
+          fontSize={20}
+          weight={600}
+        />
+        <StyledSubText content={'11,0000원'} />
+      </View>
+    </HistoryElementBox>
+  );
 }
 
-const styles = StyleSheet.create({
-  historyElement: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingVertical: 30,
-  }
-})
+const HistoryElementBox = styled.View`
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: row;
+  padding: 30px 20px;
+  border-bottom-width: 1px;
+  border-bottom-color: ${COLORS.icon_gray};
+  /* background-color: white; */
+`;
