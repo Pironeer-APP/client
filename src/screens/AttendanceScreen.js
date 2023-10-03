@@ -11,6 +11,7 @@ import { COLORS } from '../assets/Theme';
 import  Gap, { GapH } from '../components/Gap';
 import { MainButton } from '../components/Button';
 import Modal from 'react-native-modal';
+import Codepad from '../components/Codepad';
 
 //데이터 날짜순으로 배열하기
 function compareDates(a, b) {
@@ -329,7 +330,7 @@ const AttendanceScreen = () => {
         style={{ justifyContent: 'flex-end', margin: 0 }}
         >
           <View style={styles.modalContainer}>
-            
+            <Codepad />
           </View>
         </Modal>
     </StyledContainer>
