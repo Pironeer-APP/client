@@ -22,11 +22,6 @@ export default function AdminDepositDetail() {
   const route = useRoute();
   const userInfo = route.params.userInfo;
   const adminInfo = route.params.adminInfo;
-  // console.log('userInfo', userInfo);
-  const [selected, setSelected] = useState(false);
-  const onPressSelectCoupon = () => {
-    setSelected(!selected);
-  };
 
   const {depositHistory, couponInfo, getDepositHistory, getCouponInfo} =
     useDepositDetail();
@@ -46,16 +41,15 @@ export default function AdminDepositDetail() {
   }, []);
 
   const deleteCoupon = async () => {
-    // console.log(coupon_id);
     const url = '/deposit/deleteCoupon';
-    console.log('발급 취소');
-    // const body = {
-    //   adminToken: userToken,
-    //   coupon_id: coupon_id,
-    // };
-    // const res = await fetchPost(url, body);
-    // console.log(res);
-    // getCouponInfo(userInfo);
+
+    const body = {
+      adminToken: userToken,
+      coupon_id: coupon_id,
+    };
+    const res = await fetchPost(url, body);
+    console.log(res);
+    getCouponInfo(userInfo);
   };
 
   const onPressDeleteBadge = () => {
@@ -73,13 +67,12 @@ export default function AdminDepositDetail() {
   };
   const AddCoupon = async () => {
     const url = '/deposit/addCoupon';
-    console.log('발급');
-    // const body = {
-    //   user_id: userInfo.user_id,
-    // };
-    // const res = await fetchPost(url, body);
-    // getCouponInfo(userInfo);
-    // console.log(res);
+    const body = {
+      user_id: userInfo.user_id,
+    };
+    const res = await fetchPost(url, body);
+    getCouponInfo(userInfo);
+    console.log(res);
   };
   const onPressAddCoupon = async () => {
     Alert.alert(`${userInfo.name}에게 보증금 방어권을 발급하시겠습니까?`, '', [
@@ -132,7 +125,6 @@ export default function AdminDepositDetail() {
           <Gap height={20} />
           <View style={styles.couponContainer}>
             <CouponButton
-              selected={selected}
               content="보증금 방어권 발급"
               onPress={() => {
                 onPressAddCoupon();
@@ -143,7 +135,6 @@ export default function AdminDepositDetail() {
           <Gap height={10} />
           <View style={styles.couponContainer}>
             <CouponButton
-              selected={selected}
               content="보증금 방어권 발급 취소"
               onPress={() => {
                 onPressDeleteBadge();

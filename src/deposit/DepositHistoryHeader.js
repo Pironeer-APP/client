@@ -12,6 +12,7 @@ export default function DepositHistoryHeader({
   adminInfo,
   couponInfo,
   toggleModal,
+  onPressUseCoupon,
   onPressDeleteBadge,
 }) {
   return (
@@ -34,7 +35,7 @@ export default function DepositHistoryHeader({
           color={'black'}
           weight={900}
         />
-        {!!adminInfo && (
+        {!!adminInfo ? (
           <Pressable
             style={{
               paddingVertical: 7,
@@ -44,6 +45,17 @@ export default function DepositHistoryHeader({
             }}
             onPress={toggleModal}>
             <StyledText content={'관리'} fontSize={16} weight={900} />
+          </Pressable>
+        ) : (
+          <Pressable
+            style={{
+              paddingVertical: 7,
+              paddingHorizontal: 12,
+              backgroundColor: `${COLORS.deposit_header_blue}`,
+              borderRadius: 10,
+            }}
+            onPress={onPressUseCoupon}>
+            <StyledText content={'사용'} fontSize={16} weight={900} />
           </Pressable>
         )}
       </BadgeBox>
