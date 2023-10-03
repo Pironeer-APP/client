@@ -65,7 +65,16 @@ const UnSelectedBtn = () => (
   />
 );
 
-const Student = ({id, name, grade, stdId, setStdId, stdGrade, setStdGrade}) => {
+const Student = ({
+  id,
+  name,
+  grade,
+  stdId,
+  setStdId,
+  stdGrade,
+  setStdGrade,
+  isLastItem,
+}) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
@@ -82,14 +91,8 @@ const Student = ({id, name, grade, stdId, setStdId, stdGrade, setStdGrade}) => {
         isVisible={modalVisible}
         animationIn={'fadeIn'}
         animationOut={'fadeOut'}
-        style={styles.centeredView}>
-        <Pressable
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          onPress={toggleModal}
-        />
+        style={styles.centeredView}
+        onBackdropPress={toggleModal}>
         <View style={styles.modalView}>
           <StyledText content={`${name}`} fontSize={20} />
           <RowView style={{gap: 20}}>
@@ -126,7 +129,8 @@ const Student = ({id, name, grade, stdId, setStdId, stdGrade, setStdGrade}) => {
           </RowView>
         </TouchableOpacity>
       </Box>
-      <Gap height={10} />
+
+      <Gap height={isLastItem ? 200 : 10} />
     </>
   );
 };
@@ -137,9 +141,9 @@ const AdminGradingScreen = () => {
   const assignId = route.params.assignId;
   const [stdId, setStdId] = useState(0);
   const [stdGrade, setStdGrade] = useState(4);
-  const [stdInfo, setStdInfo ] = useState([]);
+  const [stdInfo, setStdInfo] = useState([]);
 
-  console.log(level, title, assignId);
+  // console.log(level, title, assignId);
   const getStdsData = async () => {
     const userToken = await getData('user_token');
     const url = `/assign/readAssign/detail`;
@@ -155,7 +159,10 @@ const AdminGradingScreen = () => {
   useEffect(() => {
     getStdsData();
   }, []);
-  const renderItem = ({item}) => {
+  const renderItem = ({item, index}) => {
+    // 마지막 항목이라면 marginBottom을 적용하기 위해
+    const isLastItem = index === stdInfo.length - 1;
+
     return (
       <Student
         id={item.studentId}
@@ -165,21 +172,24 @@ const AdminGradingScreen = () => {
         setStdId={setStdId}
         stdGrade={stdGrade}
         setStdGrade={setStdGrade}
+        isLastItem={isLastItem}
       />
     );
   };
 
   //   보낼 값
-  console.log(stdId, stdGrade);
+  // console.log(stdId, stdGrade);
   return (
     <StyledContainer>
       <HeaderDetail title={title} />
 
-      <FlatList
-        data={stdInfo}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-      />
+      <View style={{padding: 20}}>
+        <FlatList
+          data={stdInfo}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+        />
+      </View>
     </StyledContainer>
   );
 };

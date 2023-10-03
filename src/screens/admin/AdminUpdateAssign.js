@@ -25,7 +25,7 @@ const AdminUpdateAssign = ({route}) => {
   const [title, setTitle] = useState(getTitle);
   const [date, setDate] = useState(new Date(getDue));
 
-  const updateAssign = async (date) => {
+  const updateAssign = async date => {
     const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
 
     const userToken = await getData('user_token');
@@ -47,40 +47,42 @@ const AdminUpdateAssign = ({route}) => {
         button={'완료'}
         buttonOnPress={() => updateAssign(date)}
       />
-      <Box>
-        <CustomTextInput
-          placeholder={'과제명'}
-          title={title}
-          setTitle={setTitle}
-          autoFocus={true}
-        />
-      </Box>
-      <Gap height={10} />
-      <Box>
-        <View style={{padding: 20}}>
-          <StyledText content={'마감 기한 설정'} fontSize={18} />
-          <Gap height={10} />
-          <View
-            style={{
-              backgroundColor: `${COLORS.light_gray}`,
-              height: 1,
-              marginBottom: 10,
-            }}
+      <View style={{paddingHorizontal: 20}}>
+        <Box>
+          <CustomTextInput
+            placeholder={'과제명'}
+            title={title}
+            setTitle={setTitle}
+            autoFocus={true}
           />
-          <View style={{alignItems: 'center'}}>
-            <DatePicker
-              date={date}
-              onDateChange={setDate}
-              androidVariant="iosClone"
-              locale="ko-kr"
-              textColor={COLORS.textColor}
-              theme="dark"
-              minuteInterval={5}
-              fadeToColor="none"
+        </Box>
+        <Gap height={10} />
+        <Box>
+          <View style={{padding: 20}}>
+            <StyledText content={'마감 기한 설정'} fontSize={18} />
+            <Gap height={10} />
+            <View
+              style={{
+                backgroundColor: `${COLORS.light_gray}`,
+                height: 1,
+                marginBottom: 10,
+              }}
             />
+            <View style={{alignItems: 'center'}}>
+              <DatePicker
+                date={date}
+                onDateChange={setDate}
+                androidVariant="iosClone"
+                locale="ko-kr"
+                textColor={COLORS.textColor}
+                theme="dark"
+                minuteInterval={5}
+                fadeToColor="none"
+              />
+            </View>
           </View>
-        </View>
-      </Box>
+        </Box>
+      </View>
     </StyledContainer>
   );
 };

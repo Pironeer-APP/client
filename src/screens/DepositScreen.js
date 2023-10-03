@@ -11,18 +11,11 @@ import {COLORS} from '../assets/Theme';
 import {StatusBar} from 'react-native';
 
 const DepositScreen = () => {
-  const {
-    userInfoFromServer,
-    getUserInfoFromServer
-  } = useUserInfo();
-  
-  const {
-    depositHistory,
-    couponInfo,
-    getDepositHistory,
-    getCouponInfo,
-  } = useDepositDetail();
-  
+  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
+
+  const {depositHistory, couponInfo, getDepositHistory, getCouponInfo} =
+    useDepositDetail();
+
   useEffect(() => {
     getUserInfoFromServer();
   }, []);
@@ -69,7 +62,7 @@ const DepositScreen = () => {
         <AdminDepositList adminInfo={userInfoFromServer} />
       )}
       {!userInfoFromServer.is_admin && (
-        <StyledContainer>
+        <StyledContainer style={{backgroundColor: 'red'}}>
           <DepositHistoryHeader
             userInfo={userInfoFromServer}
             couponInfo={couponInfo}

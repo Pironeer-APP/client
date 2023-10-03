@@ -21,8 +21,7 @@ export default function HeaderDetail({
   return (
     <View
       style={{
-        paddingHorizontal: 10,
-        paddingVertical: 20,
+        padding: 20,
         backgroundColor: `${backgroundColor}`,
         zIndex: 50,
       }}>
