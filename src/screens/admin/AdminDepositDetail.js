@@ -45,7 +45,7 @@ export default function AdminDepositDetail() {
       ]);
       return;
     }
-    const url = '/admin/addCoupon';
+    const url = '/deposit/addCoupon';
     const body = {
       user_id: userInfo.user_id,
     };
@@ -65,7 +65,7 @@ export default function AdminDepositDetail() {
 
   const deleteCoupon = async (coupon_id) => {
     console.log(coupon_id);
-    const url = '/admin/deleteCoupon';
+    const url = '/deposit/deleteCoupon';
     const body = {
       adminToken: userToken,
       coupon_id: coupon_id
