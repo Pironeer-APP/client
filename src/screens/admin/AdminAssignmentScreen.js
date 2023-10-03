@@ -26,10 +26,10 @@ const ModalBtn = styled.TouchableOpacity`
   align-items: center;
   padding: 20px;
 `;
-const AssignmentBox = ({title, due, level, assignLevel}) => {
+const AssignmentBox = ({title, due, level, assignId}) => {
   const navigation = useNavigation();
-  // const dateString = due;
-  // const formattedDate = dayjs(dateString).format('MM.DD ddd HH:mm');
+  const dateString = due;
+  const formattedDate = dayjs(dateString).format('MM.DD ddd HH:mm');
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -56,7 +56,7 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
         <ModalBox>
           <View style={{padding: 20, alignItems: 'center', gap: 5}}>
             <StyledText content={title} />
-            <StyledSubText content={due} />
+            <StyledSubText content={formattedDate} />
           </View>
           <View
             style={{
@@ -71,8 +71,8 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
                 toggleModal();
                 navigation.navigate('AdminUpdateAssign', {
                   title,
-                  due,
-                  assignLevel,
+                  dateString,
+                  assignId,
                   level,
                 });
               }}>
@@ -102,7 +102,7 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
             navigation.navigate('AdminGradingScreen', {
               title,
               level,
-              assignLevel,
+              assignId,
             })
           }
           onLongPress={() => {
@@ -110,7 +110,7 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
           }}>
           <RowView>
             <View>
-              <StyledSubText content={`DUE ${due}`} />
+              <StyledSubText content={`DUE ${formattedDate}`} />
               <Gap height={5} />
               <StyledText content={title} fontSize={20} />
             </View>
@@ -134,9 +134,9 @@ const AdminAssignmentScreen = ({route}) => {
     return (
       <AssignmentBox
         title={item.title}
-        due={item.dueDate}
+        due={item.due_date}
         level={getLevel}
-        assignLevel={item.assignschedule_id}
+        assignId={item.assignschedule_id}
       />
     );
   };
