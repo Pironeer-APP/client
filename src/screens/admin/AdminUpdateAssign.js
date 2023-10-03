@@ -26,6 +26,7 @@ const AdminUpdateAssign = ({route}) => {
   const [date, setDate] = useState(new Date(getDue));
 
   const updateAssign = async date => {
+  const updateAssign = async () => {
     const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
 
     const userToken = await getData('user_token');
@@ -45,7 +46,7 @@ const AdminUpdateAssign = ({route}) => {
       <HeaderDetail
         title={'과제 수정'}
         button={'완료'}
-        buttonOnPress={() => updateAssign(date)}
+        buttonOnPress={() => updateAssign()}
       />
       <View style={{paddingHorizontal: 20}}>
         <Box>

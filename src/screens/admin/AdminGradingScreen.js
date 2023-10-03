@@ -20,38 +20,38 @@ import {COLORS} from '../../assets/Theme';
 import {Image} from 'react-native-svg';
 import {fetchPost, getData} from '../../utils';
 
-const StdGradingData = [
-  {
-    id: 1,
-    name: '정환희',
-    grade: 4,
-  },
-  {
-    id: 2,
-    name: '장민서',
-    grade: 4,
-  },
-  {
-    id: 3,
-    name: '양원채',
-    grade: 4,
-  },
-  {
-    id: 4,
-    name: '민세원',
-    grade: 4,
-  },
-  {
-    id: 5,
-    name: '박석류',
-    grade: 4,
-  },
-  {
-    id: 6,
-    name: '김정곤',
-    grade: 4,
-  },
-];
+// const StdGradingData = [
+//   {
+//     id: 1,
+//     name: '정환희',
+//     grade: 4,
+//   },
+//   {
+//     id: 2,
+//     name: '장민서',
+//     grade: 4,
+//   },
+//   {
+//     id: 3,
+//     name: '양원채',
+//     grade: 4,
+//   },
+//   {
+//     id: 4,
+//     name: '민세원',
+//     grade: 4,
+//   },
+//   {
+//     id: 5,
+//     name: '박석류',
+//     grade: 4,
+//   },
+//   {
+//     id: 6,
+//     name: '김정곤',
+//     grade: 4,
+//   },
+// ];
 const UnSelectedBtn = () => (
   <View
     style={{
@@ -80,9 +80,47 @@ const Student = ({
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
-  const gradeAndClose = grade => {
-    setModalVisible(!modalVisible);
-    setStdGrade(grade);
+  // const gradeAndClose = grade => {
+  //   setModalVisible(!modalVisible);
+  //   setStdGrade(grade);
+  // };
+  const createGrade = async (grade, assignScheduleId) => {
+    const userToken = await getData('user_token');
+    const url = `/assign/createAssignGrade`;
+    const body = {
+      userToken: userToken,
+      userId: realStdId,
+      assignScheduleId: assignScheduleId,
+      inputGrade: grade,
+    };
+    try {
+      console.log(body);
+      await fetchPost(url, body);
+      setModalVisible(!modalVisible);
+      setStdGrade(grade);
+      getStdsData();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const updateGrade = async (grade, assignScheduleId) => {
+    const userToken = await getData('user_token');
+    const url = `/assign/updateAssignGrade`;
+    const body = {
+      userToken: userToken,
+      userId: realStdId,
+      assignScheduleId: assignScheduleId,
+      updateGrade: grade,
+    };
+    try {
+      console.log(body);
+      await fetchPost(url, body);
+      setModalVisible(!modalVisible);
+      setStdGrade(grade);
+      getStdsData();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -96,19 +134,39 @@ const Student = ({
         <View style={styles.modalView}>
           <StyledText content={`${name}`} fontSize={20} />
           <RowView style={{gap: 20}}>
-            <TouchableOpacity onPress={() => gradeAndClose(4)}>
+            <TouchableOpacity
+              onPress={
+                grade == null
+                  ? () => createGrade(4, assignScheduleId)
+                  : () => updateGrade(4, assignScheduleId)
+              }>
               <StatusCircle grade={4} />
-              {grade == 4 || grade === undefined ? null : <UnSelectedBtn />}
+              {grade == undefined ? null : <UnSelectedBtn />}
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => gradeAndClose(0)}>
+            <TouchableOpacity
+              onPress={
+                grade == null
+                  ? () => createGrade(0, assignScheduleId)
+                  : () => updateGrade(0, assignScheduleId)
+              }>
               <StatusCircle grade={0} />
               {grade == 0 ? null : <UnSelectedBtn />}
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => gradeAndClose(1)}>
+            <TouchableOpacity
+              onPress={
+                grade == null
+                  ? () => createGrade(1, assignScheduleId)
+                  : () => updateGrade(1, assignScheduleId)
+              }>
               <StatusCircle grade={1} />
               {grade == 1 ? null : <UnSelectedBtn />}
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => gradeAndClose(3)}>
+            <TouchableOpacity
+              onPress={
+                grade == null
+                  ? () => createGrade(3, assignScheduleId)
+                  : () => updateGrade(3, assignScheduleId)
+              }>
               <StatusCircle grade={3} />
               {grade == 3 ? null : <UnSelectedBtn />}
             </TouchableOpacity>
@@ -142,6 +200,8 @@ const AdminGradingScreen = () => {
   const [stdId, setStdId] = useState(0);
   const [stdGrade, setStdGrade] = useState(4);
   const [stdInfo, setStdInfo] = useState([]);
+  const [stdGrade, setStdGrade] = useState(null);
+  const [stdInfo, setStdInfo] = useState([]);
 
   // console.log(level, title, assignId);
   const getStdsData = async () => {
@@ -168,11 +228,14 @@ const AdminGradingScreen = () => {
         id={item.studentId}
         name={item.name}
         grade={item.grade}
+        realStdId={item.user_id}
         stdId={stdId}
         setStdId={setStdId}
         stdGrade={stdGrade}
         setStdGrade={setStdGrade}
         isLastItem={isLastItem}
+        assignScheduleId={assignId}
+        getStdsData={getStdsData}
       />
     );
   };
