@@ -8,25 +8,33 @@ import DatePicker from 'react-native-date-picker';
 import {CustomTextInput} from '../../components/Input';
 import {StyledText} from '../../components/Text';
 import {COLORS} from '../../assets/Theme';
-import {fetchPost} from '../../utils';
+import {fetchPost, getData} from '../../utils';
+import {useNavigation} from '@react-navigation/native';
+import dayjs from 'dayjs';
 
 const AdminUpdateAssign = ({route}) => {
+  const navigation = useNavigation();
+
   const {
     title: getTitle,
-    due: getDue,
-    assignLevel: assignId,
+    dateString: getDue,
+    assignId: assignId,
     level,
   } = route.params;
 
   const [title, setTitle] = useState(getTitle);
   const [date, setDate] = useState(new Date(getDue));
 
-  const updateAssign = async () => {
-    const url = `/admin/assign/${level}/update`;
-    const body = {assignId, title, date};
+  const updateAssign = async (date) => {
+    const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
+
+    const userToken = await getData('user_token');
+    const url = `/assign/updateAssign`;
+    const body = {userToken, assignId, title, formattedDate};
     console.log('body: ', body);
     try {
       await fetchPost(url, body);
+      navigation.goBack();
     } catch (error) {
       console.error('Error sending data:', error);
     }
@@ -37,7 +45,7 @@ const AdminUpdateAssign = ({route}) => {
       <HeaderDetail
         title={'과제 수정'}
         button={'완료'}
-        buttonOnPress={() => updateAssign()}
+        buttonOnPress={() => updateAssign(date)}
       />
       <Box>
         <CustomTextInput
