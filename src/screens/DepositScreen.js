@@ -10,9 +10,7 @@ import AdminDepositList from '../deposit/AdminDepositList';
 
 const DepositScreen = () => {
   const {
-    userToken,
     userInfoFromServer,
-    getUserToken,
     getUserInfoFromServer
   } = useUserInfo();
   
@@ -24,17 +22,14 @@ const DepositScreen = () => {
   } = useDepositDetail();
   
   useEffect(() => {
-    getUserToken();
+    getUserInfoFromServer();
   }, []);
-  useEffect(() => {
-    getUserInfoFromServer(userToken);
-  }, [userToken]);
 
   useEffect(() => {
-    getDepositHistory(userToken);
+    getDepositHistory();
   }, []);
   useEffect(() => {
-    getCouponInfo(userToken);
+    getCouponInfo();
   }, []);
 
   return (
