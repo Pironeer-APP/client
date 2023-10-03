@@ -32,7 +32,7 @@ const DepositIcon = ({deposit}) => {
   );
 };
 
-export default function AdminDepositElement({userInfo}) {
+export default function AdminDepositElement({userInfo, adminInfo}) {
   const navigation = useNavigation();
 
   return (
@@ -42,7 +42,7 @@ export default function AdminDepositElement({userInfo}) {
           onPress={() =>
             navigation.navigate({
               name: 'AdminDepositDetail',
-              params: {userInfo: userInfo},
+              params: {userInfo: userInfo, adminInfo: adminInfo},
             })
           }>
           <RowView>

@@ -1,13 +1,10 @@
-import { View, Text, ScrollView } from 'react-native'
-import React, { useEffect } from 'react'
-import useAdminDeposit from './use-adminDeposit'
+import {View, Text, ScrollView} from 'react-native';
+import React, {useEffect} from 'react';
+import useAdminDeposit from './use-adminDeposit';
 import AdminDepositElement from './AdminDepositElement';
 
-export default function AdminDepositList() {
-  const {
-    userList,
-    fetchData
-  } = useAdminDeposit();
+export default function AdminDepositList({adminInfo}) {
+  const {userList, fetchData} = useAdminDeposit();
 
   useEffect(() => {
     fetchData();
@@ -15,12 +12,13 @@ export default function AdminDepositList() {
 
   return (
     <ScrollView>
-      {userList?.map((user) => (
+      {userList?.map(user => (
         <AdminDepositElement
           key={user.user_id}
           userInfo={user}
+          adminInfo={adminInfo}
         />
       ))}
     </ScrollView>
-  )
+  );
 }

@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Alert} from 'react-native';
+import Modal from 'react-native-modal';
 import {useRoute} from '@react-navigation/native';
-
+import styled from 'styled-components';
 import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import BottomSheetModal from '../../components/BottomSheetModal';
@@ -14,11 +15,14 @@ import useDepositDetail from '../../deposit/use-depositDetail';
 import DepositHistoryHeader from '../../deposit/DepositHistoryHeader';
 import useUserInfo from '../../use-userInfo';
 import {COLORS} from '../../assets/Theme';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function AdminDepositDetail() {
   const route = useRoute();
   const userInfo = route.params.userInfo;
-
+  const adminInfo = route.params.adminInfo;
+  // console.log('userInfo', userInfo);
   const [selected, setSelected] = useState(false);
   const onPressSelectCoupon = () => {
     setSelected(!selected);
@@ -35,39 +39,26 @@ export default function AdminDepositDetail() {
     getCouponInfo(userInfo);
   }, []);
 
-  const onPressAddCoupon = async () => {
-    if (!selected) {
-      Alert.alert('방어권을 선택해 주세요', '', [{text: '확인'}]);
-      return;
-    }
-    const url = '/deposit/addCoupon';
-    const body = {
-      user_id: userInfo.user_id,
-    };
-    const res = await fetchPost(url, body);
-    getCouponInfo(userInfo);
-    console.log(res);
-  };
-
   const {userToken, getUserToken} = useUserInfo();
 
   useEffect(() => {
     getUserToken();
   }, []);
 
-  const deleteCoupon = async coupon_id => {
-    console.log(coupon_id);
+  const deleteCoupon = async () => {
+    // console.log(coupon_id);
     const url = '/deposit/deleteCoupon';
-    const body = {
-      adminToken: userToken,
-      coupon_id: coupon_id,
-    };
-    const res = await fetchPost(url, body);
-    console.log(res);
-    getCouponInfo(userInfo);
+    console.log('발급 취소');
+    // const body = {
+    //   adminToken: userToken,
+    //   coupon_id: coupon_id,
+    // };
+    // const res = await fetchPost(url, body);
+    // console.log(res);
+    // getCouponInfo(userInfo);
   };
 
-  const onPressDeleteBadge = coupon_id => {
+  const onPressDeleteBadge = () => {
     Alert.alert(
       `${userInfo.name}의 보증금 방어권 하나를 삭제하시겠습니까?`,
       '',
@@ -76,47 +67,119 @@ export default function AdminDepositDetail() {
           text: '취소',
           style: 'cancel',
         },
-        {text: 'OK', onPress: () => deleteCoupon(coupon_id)},
+        {text: 'OK', onPress: () => deleteCoupon()},
       ],
     );
   };
-
+  const AddCoupon = async () => {
+    const url = '/deposit/addCoupon';
+    console.log('발급');
+    // const body = {
+    //   user_id: userInfo.user_id,
+    // };
+    // const res = await fetchPost(url, body);
+    // getCouponInfo(userInfo);
+    // console.log(res);
+  };
+  const onPressAddCoupon = async () => {
+    Alert.alert(`${userInfo.name}에게 보증금 방어권을 발급하시겠습니까?`, '', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => AddCoupon()},
+    ]);
+  };
+  const [modalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
   return (
     <>
-      <StyledContainer
-        style={{backgroundColor: `${COLORS.deposit_header_blue}`}}>
+      <SafeAreaView style={{backgroundColor: COLORS.deposit_header_blue}} />
+      <SafeAreaView
+        style={{
+          flex: 1,
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          // backgroundColor: COLORS.gray,
+        }}>
         <HeaderDetail
           title={`${userInfo.name}님의 보증금 관리`}
           backgroundColor={COLORS.deposit_header_blue}
           color={'white'}
         />
         <DepositHistoryHeader
+          adminInfo={adminInfo}
           userInfo={userInfo}
           couponInfo={couponInfo}
+          toggleModal={toggleModal}
           onPressDeleteBadge={onPressDeleteBadge}
         />
 
         <DepositHistory depositHistory={depositHistory} />
-      </StyledContainer>
-      <BottomSheetModal>
-        {/* 여기에 모달 내용 담기 */}
-        <StyledText content="직접 관리하기" fontSize={18} />
-        <View style={styles.couponContainer}>
-          <CouponButton
-            selected={selected}
-            content="보증금 방어권"
-            onPress={onPressSelectCoupon}
-          />
+      </SafeAreaView>
+      <SafeAreaView
+        style={{backgroundColor: COLORS.gray, position: 'absolute', bottom: 0}}
+      />
+      <Modal
+        isVisible={modalVisible}
+        onBackdropPress={toggleModal}
+        style={{justifyContent: 'flex-end', margin: 0}}>
+        <View style={styles.modalContainer}>
+          <ModalBar />
+          <Gap height={20} />
+          <View style={styles.couponContainer}>
+            <CouponButton
+              selected={selected}
+              content="보증금 방어권 발급"
+              onPress={() => {
+                onPressAddCoupon();
+                toggleModal();
+              }}
+            />
+          </View>
+          <Gap height={10} />
+          <View style={styles.couponContainer}>
+            <CouponButton
+              selected={selected}
+              content="보증금 방어권 발급 취소"
+              onPress={() => {
+                onPressDeleteBadge();
+                toggleModal();
+              }}
+            />
+          </View>
+          <Gap height={20} />
+          {/* <MainButton
+            height={60}
+            content="추가하기"
+            onPress={onPressAddCoupon}
+          /> */}
         </View>
-        <MainButton height={60} content="추가하기" onPress={onPressAddCoupon} />
-      </BottomSheetModal>
+      </Modal>
     </>
   );
 }
+const ModalBar = styled.View`
+  height: 5px;
+  width: 15%;
+  border-radius: 10px;
+  background-color: ${COLORS.lightTheme_btn};
+`;
 
 const styles = StyleSheet.create({
   couponContainer: {
     width: '100%',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    paddingHorizontal: 30,
     alignItems: 'center',
   },
 });
