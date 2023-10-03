@@ -12,13 +12,9 @@ import  Gap, { GapH } from '../components/Gap';
 import { MainButton } from '../components/Button';
 import IsFaceBox from '../components/IsFaceBox';
 import Modal from 'react-native-modal';
+import useProgress from '../use-progress';
 
 //데이터 날짜순으로 배열하기
-function compareDates(a, b) {
-  const dateA = new Date(a.date);
-  const dateB = new Date(b.date);
-  return dateA - dateB; 
-}
 
 const AttenStatusCircle = ({type = null}) => {
   let imageSource;
@@ -246,23 +242,17 @@ const renderAttenItem = ({item}) => {
 
 const AttendanceScreen = () => {
   const [attendance, setAttendance] = useState([]);
-  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
   const [initialScrollIndex, setInitialScrollIndex] = useState(0);
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const toggleBottomSheet = () => {
     setBottomSheetVisible(!isBottomSheetVisible);
   };
 
-  useEffect(() => {
-    getUserInfoFromServer();
-  }, []);
-
   //현재 진행중인 세션 인덱스 찾기
-
 
   // const isFocused = useIsFocused();
 
-  const userSessionInfo = async userInfoFromServer => {
+  const userSessionInfo = async () => {
     const userToken = await getData('user_token');
     const url = `/attend/getSessionAndAttend`;
     const body = {
@@ -270,28 +260,19 @@ const AttendanceScreen = () => {
     };
     try {
       const fetchAttenData = await fetchPost(url, body);
-      const sortedData = fetchAttenData.sessions.slice().sort(compareDates).reverse();
-      setAttendance(sortedData);
-
-      //데이터 안 세션들 중에서 오늘 날짜와 동일한 날짜인 세션 인덱스 찾기
-      sortedData.map((item, index) => {
-        const today = new Date();
-        const sessionDate = new Date(item.date);
-        if (today.getMonth() === sessionDate.getMonth() && today.getDate() === sessionDate.getDate()) {
-          setInitialScrollIndex(index);
-        }
-      });
+      setAttendance(fetchAttenData.sessions);
       // setInitialScrollIndex(6);
       // console.log('받은 데이터: ', attendance);
+
+      //데이터 안 세션들 중에서 오늘 날짜와 동일한 날짜인 세션 인덱스 찾기
+      setInitialScrollIndex(fetchAttenData.nextSessionIdx);
     } catch (error) {
       console.log('에러 발생: ', error);
     }
   };
   useEffect(() => {
-    userSessionInfo(userInfoFromServer);
-  }, [userInfoFromServer]);
-
-
+    userSessionInfo();
+  }, []);
 
   return (
     <StyledContainer>
