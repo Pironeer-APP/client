@@ -13,6 +13,7 @@ import { MainButton } from '../components/Button';
 import IsFaceBox from '../components/IsFaceBox';
 import Modal from 'react-native-modal';
 import useProgress from '../use-progress';
+import Codepad from '../components/Codepad';
 
 //데이터 날짜순으로 배열하기
 
@@ -295,7 +296,7 @@ const AttendanceScreen = () => {
         style={{ justifyContent: 'flex-end', margin: 0 }}
         >
           <View style={styles.modalContainer}>
-            
+            <Codepad />
           </View>
         </Modal>
     </StyledContainer>
