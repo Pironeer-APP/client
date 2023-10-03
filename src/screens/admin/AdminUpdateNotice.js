@@ -14,7 +14,7 @@ import HeaderDetail from '../../components/Header';
 import {COLORS} from '../../assets/Theme';
 import {Camera, ChooseCategory, ImagesContainer} from './AdminCreateNotice';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {fetchPost, getAPIHost} from '../../utils';
+import {fetchPost, getAPIHost, getData} from '../../utils';
 
 const AdminUpdateNotice = () => {
   const route = useRoute();
@@ -32,8 +32,10 @@ const AdminUpdateNotice = () => {
     console.log('받은 이미지: ', getImages);
   }, []);
   const updatePost = async () => {
-    const url = `/post/update/${post.post_id}`;
-    const body = {title, content, category};
+    const url = `/post/update`;
+    const userToken = await getData('user_token');
+    const post_id = post.post_id;
+    const body = {title, content, category, userToken, post_id};
     try {
       await fetchPost(url, body);
       if (imgsIsChanged) {

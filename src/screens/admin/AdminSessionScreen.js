@@ -24,6 +24,7 @@ import { MainButton } from '../../components/Button';
 import useUserInfo from '../../use-userInfo';
 import { fetchPost, getData } from '../../utils';
 import useProgress from '../../use-progress';
+import IsFaceBox from '../../components/IsFaceBox';
 
 const StatusCircle = () => {
   return (
@@ -82,6 +83,7 @@ const InProgressAsgBox = (props) => {
     ).start();
   }, []);
 
+  // 다음 스케줄인 경우에만 프로그레스
   const timeStatus = Math.trunc(props.status / props.limit * 100);
 
   const timeLimitSec = Math.trunc(props.status / 1000);
@@ -95,6 +97,7 @@ const InProgressAsgBox = (props) => {
     sec,
   } = convertTime(timeLimitSec);
 
+
   return (
     <Pressable
       onLongPress={() => onLongPressDelete(props.item.session_id)}
@@ -102,6 +105,7 @@ const InProgressAsgBox = (props) => {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 20,
+        marginVertical: 15,
       }}>
       <View
         style={{
@@ -116,14 +120,18 @@ const InProgressAsgBox = (props) => {
           }}>
           <View style={{ flex: 1 }} />
           <View>
-            <Animated.Image
-              source={require('../../assets/icons/circle_onair.png')}
-              style={{
-                width: 50,
-                height: 50,
-                transform: [{ scale }], // 크기 애니메이션 적용
-              }}
-            />
+            {props.isNextSchedule ? (
+              <Animated.Image
+                source={require('../../assets/icons/circle_onair.png')}
+                style={{
+                  width: 50,
+                  height: 50,
+                  transform: [{scale}], // 크기 애니메이션 적용
+                }}
+              />
+            ) : (
+              <Image source={require(`../../assets/icons/circle_none.png`)} style={{width: 30, height: 30}} />
+            )}
           </View>
           <StatusLine />
         </View>
@@ -138,15 +146,16 @@ const InProgressAsgBox = (props) => {
           <View style={{ padding: 20 }}>
             <RowView style={{ marginBottom: 10 }}>
               <StyledSubText content={`${props.item.month}.${props.item.day} ${props.item.day_en}`} />
-              <StyledSubText content={props.item.is_face ? null : 'ONLINE'} />
+              <IsFaceBox isFace={props.item.is_face} />
             </RowView>
             <StyledText content={props.item.title} fontSize={20} />
+            {props.isNextSchedule &&
             <RowView style={{ marginTop: 10 }}>
               <View style={{ width: '70%' }}>
                 <ProgressBar status={`${timeStatus}%`} />
               </View>
               <StyledText content={props.status === 0 ? 'CLEAR' : `${hour}:${min}:${sec}`} fontSize={16} />
-            </RowView>
+            </RowView>}
           </View>
         </Box>
       </View>
@@ -200,13 +209,24 @@ const DoneAsgBox = ({ item }) => {
     </Pressable>
   );
 }
-const Item = (props) => { 
-  const isTodaySchedule = props.item.session_id === props.nextSessionId;
+const Item = (props) => {
+  let isFutureSchedule = false;
+  let isNextSchedule = false;
+  const itemDate = new Date(props.item.date);
+  const itemDateTime = itemDate.getTime();
+  const now = new Date();
+  if(props.item.session_id === props.nextSessionId) {
+    isFutureSchedule = true;
+    isNextSchedule = true;
+  } else if(itemDateTime >= now.getTime()) {
+    isFutureSchedule = true;
+    isNextSchedule = false;
+  }
 
   return (
     <>
-      {isTodaySchedule ? (
-        <InProgressAsgBox item={props.item} limit={props.limit} status={props.status} />
+      {isFutureSchedule ? (
+        <InProgressAsgBox isNextSchedule={isNextSchedule} item={props.item} limit={props.limit} status={props.status} />
       ) : (
         <DoneAsgBox item={props.item} />
       )}
@@ -216,6 +236,7 @@ const Item = (props) => {
 
 const AssignmentScreen = ({ navigation }) => {
   const [sessionData, setSessionData] = useState([]);
+  const [initialScrollIndex, setInitialScrollIndex] = useState(0);
   const isFocused = useIsFocused();
 
   const getSessions = async () => {
@@ -227,6 +248,8 @@ const AssignmentScreen = ({ navigation }) => {
     const res = await fetchPost(url, body);
 
     setSessionData(res.sessions);
+    setInitialScrollIndex(res.nextSessionIdx);
+    console.log(res.nextSessionIdx);
   }
 
   useEffect(() => {
@@ -258,8 +281,15 @@ const AssignmentScreen = ({ navigation }) => {
         <FlatList
           data={sessionData}
           renderItem={
-            ({item}) => <Item item={item} lastSessionId={lastScheduleId} nextSessionId={nextScheduleId} limit={limit} status={status} />}
+            ({item}) =>
+            <Item
+              item={item}
+              lastSessionId={lastScheduleId}
+              nextSessionId={nextScheduleId}
+              limit={limit}
+              status={status} />}
           keyExtractor={item => item.session_id}
+          initialScrollIndex={initialScrollIndex}
         />
         <MainButton content="일정 추가하기" onPress={onPressAddSchedule} />
       </View>

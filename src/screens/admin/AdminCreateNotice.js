@@ -19,7 +19,7 @@ import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import {StyledText} from '../../components/Text';
 import {COLORS} from '../../assets/Theme';
-import {fetchPost, getAPIHost} from '../../utils';
+import {fetchPost, getAPIHost, getData} from '../../utils';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -71,8 +71,10 @@ const AdminCreateNotice = () => {
   const navigation = useNavigation();
 
   const sendDataToServer = async () => {
-    const url = '/post/create/20';
-    const body = {title, content, category};
+    const url = '/post/create';
+    const userToken = await getData('user_token')
+    const body = {title, content, category, userToken};
+    console.log('FE:', body);
     try {
       const result = await fetchPost(url, body); //서버에서 result.insertId return
       if (result.createdPostId && selectedImages.length > 0) {

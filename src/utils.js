@@ -86,3 +86,10 @@ export const removeData = async (key) => {
     return false;
   }
 }
+
+//요일 리턴해주는 함수
+export const dayOfWeek = (num) => {
+  const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  
+  return days[num];
+}
