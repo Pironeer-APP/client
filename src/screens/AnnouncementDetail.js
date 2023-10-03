@@ -7,7 +7,7 @@ import {useRoute, useIsFocused} from '@react-navigation/native';
 import {StyledSubText, StyledText} from '../components/Text';
 import useUserInfo from '../use-userInfo';
 import {MainButton} from '../components/Button';
-import {fetchGet, fetchPost, getAPIHost} from '../utils';
+import {fetchGet, fetchPost, getAPIHost, getData} from '../utils';
 import {Badge} from './AnnouncementScreen';
 import {RowView} from './HomeScreen';
 import Gap from '../components/Gap';
@@ -35,8 +35,12 @@ const AnnouncementDetail = ({navigation}) => {
 
   const isFocused = useIsFocused();
   const getPost = async () => {
-    const url = `/post/20/${post_id}`;
-    const res = await fetchGet(url);
+    const url = `/post/detail`;
+    const userToken = await getData('user_token');
+    console.log('FE:', userToken);
+    console.log('FE:', post_id);
+    const body = {userToken, post_id};
+    const res = await fetchPost(url, body);
     setPost(res.post);
     setImages(res.result);
   };
