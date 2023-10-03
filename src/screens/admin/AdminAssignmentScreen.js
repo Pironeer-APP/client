@@ -11,7 +11,7 @@ import {Box} from '../../components/Box';
 import {MainButton, RightArrowBtn} from '../../components/Button';
 import Gap from '../../components/Gap';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {fetchGet} from '../../utils';
+import {fetchPost, getData} from '../../utils';
 import dayjs from 'dayjs';
 
 const ModalBox = styled.View`
@@ -28,8 +28,8 @@ const ModalBtn = styled.TouchableOpacity`
 `;
 const AssignmentBox = ({title, due, level, assignLevel}) => {
   const navigation = useNavigation();
-  const dateString = due;
-  const formattedDate = dayjs(dateString).format('MM.DD ddd HH:mm');
+  // const dateString = due;
+  // const formattedDate = dayjs(dateString).format('MM.DD ddd HH:mm');
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -56,7 +56,7 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
         <ModalBox>
           <View style={{padding: 20, alignItems: 'center', gap: 5}}>
             <StyledText content={title} />
-            <StyledSubText content={formattedDate} />
+            <StyledSubText content={due} />
           </View>
           <View
             style={{
@@ -110,7 +110,7 @@ const AssignmentBox = ({title, due, level, assignLevel}) => {
           }}>
           <RowView>
             <View>
-              <StyledSubText content={`DUE ${formattedDate}`} />
+              <StyledSubText content={`DUE ${due}`} />
               <Gap height={5} />
               <StyledText content={title} fontSize={20} />
             </View>
@@ -129,25 +129,27 @@ const AdminAssignmentScreen = ({route}) => {
   const isFocused = useIsFocused();
   const getLevel = route.params.userLevel;
 
-
   const renderItem = ({item}) => {
     // console.log(item);
     return (
       <AssignmentBox
         title={item.title}
-        due={item.due_date}
+        due={item.dueDate}
         level={getLevel}
         assignLevel={item.assignschedule_id}
       />
     );
   };
   const getAssigns = async () => {
-
-    const url = `/admin/assign/${getLevel}`;
-
+    const userToken = await getData('user_token');
+    const url = `/assign/readAssign/all`;
+    const body = {
+      userToken: userToken
+    };
+    console.log('body: ', body);
     try {
-      const responseData = await fetchGet(url);
-      // console.log('받아온 데이터:', responseData);
+      const responseData = await fetchPost(url, body);
+      console.log('받아온 데이터: ', responseData);
       setAssigns(responseData.data);
     } catch (error) {
       // 네트워크 오류 또는 예외 처리

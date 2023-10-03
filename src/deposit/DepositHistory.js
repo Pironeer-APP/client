@@ -16,6 +16,7 @@ export default function DepositHistory(props) {
   // 출결 이력과 과제 이력을 합쳐야 함
 
   return (
+
     <DepositHistoryBox>
       {/* 이력 */}
       <ScrollView>
@@ -25,6 +26,7 @@ export default function DepositHistory(props) {
       </ScrollView>
     </DepositHistoryBox>
   );
+
 }
 const DepositHistoryBox = styled.View`
   flex: 1;

@@ -59,29 +59,9 @@ const onLongPressDelete = (session_id) => {
   ]);
 }
 
-const InProgressAsgBox = ({ item }) => {
+const InProgressAsgBox = (props) => {
   const [scale] = useState(new Animated.Value(1)); // 초기 크기 1
   
-  const {
-    convertDateTime,
-    timeLimit,
-    timeStatus,
-    getTimeLimit,
-  } = useProgress();
-
-  const {
-    itemDateTime,
-    itemMonth,
-    itemDate,
-    itemDayEn
-  } = convertDateTime(item.date);
-
-  useEffect(() => {
-    setTimeout(() => {
-      getTimeLimit(itemDateTime);
-    }, 1000);
-  });
-
   useEffect(() => {
     // 크기 애니메이션 설정
     Animated.loop(
@@ -102,9 +82,22 @@ const InProgressAsgBox = ({ item }) => {
     ).start();
   }, []);
 
+  const timeStatus = Math.trunc(props.status / props.limit * 100);
+
+  const timeLimitSec = Math.trunc(props.status / 1000);
+  const {
+    convertTime
+  } = useProgress();
+  
+  const {
+    hour,
+    min,
+    sec,
+  } = convertTime(timeLimitSec);
+
   return (
     <Pressable
-      onLongPress={() => onLongPressDelete(item.session_id)}
+      onLongPress={() => onLongPressDelete(props.item.session_id)}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -144,15 +137,15 @@ const InProgressAsgBox = ({ item }) => {
         <Box>
           <View style={{ padding: 20 }}>
             <RowView style={{ marginBottom: 10 }}>
-              <StyledSubText content={`${itemMonth}.${itemDate} ${itemDayEn}`} />
-              <StyledSubText content={item.is_face ? null : 'ONLINE'} />
+              <StyledSubText content={`${props.item.month}.${props.item.day} ${props.item.day_en}`} />
+              <StyledSubText content={props.item.is_face ? null : 'ONLINE'} />
             </RowView>
-            <StyledText content={item.title} fontSize={20} />
+            <StyledText content={props.item.title} fontSize={20} />
             <RowView style={{ marginTop: 10 }}>
               <View style={{ width: '70%' }}>
                 <ProgressBar status={`${timeStatus}%`} />
               </View>
-              <StyledText content={timeLimit === 0 ? 'CLEAR' : `${Math.trunc(timeLimit / 60 / 60)}:${Math.trunc(timeLimit / 60 % 60)}:${Math.trunc(timeLimit % 60)}`} fontSize={16} />
+              <StyledText content={props.status === 0 ? 'CLEAR' : `${hour}:${min}:${sec}`} fontSize={16} />
             </RowView>
           </View>
         </Box>
@@ -161,16 +154,6 @@ const InProgressAsgBox = ({ item }) => {
   );
 };
 const DoneAsgBox = ({ item }) => {
-  const {
-    convertDateTime,
-  } = useProgress();
-
-  const {
-    itemMonth,
-    itemDate,
-    itemDayEn
-  } = convertDateTime(item.date);
-
   return (
     <Pressable
       onLongPress={() => onLongPressDelete(item.session_id)}
@@ -205,8 +188,8 @@ const DoneAsgBox = ({ item }) => {
           <RowView style={{ marginBottom: 10 }}>
             <View style={{ alignItems: 'center' }}>
               <StyledText
-                content={`${itemMonth}.${itemDate}`} fontSize={20} />
-              <StyledText content={itemDayEn} fontSize={20} />
+                content={`${item.month}.${item.day}`} fontSize={20} />
+              <StyledText content={item.day_en} fontSize={20} />
             </View>
             <View style={{ flex: 1, marginLeft: 20 }}>
               <StyledText content={item.title} fontSize={20} />
@@ -217,22 +200,15 @@ const DoneAsgBox = ({ item }) => {
     </Pressable>
   );
 }
-const renderItem = ({ item }) => {
-  const today = new Date();
-
-  let isTodaySchedule = false;
-  if (today.getDate().toLocaleString() === new Date(item.date).getDate().toLocaleString()
-    && today.getMonth().toLocaleString() === new Date(item.date).getMonth().toLocaleString()
-    && today.getFullYear().toLocaleString() === new Date(item.date).getFullYear().toLocaleString()) {
-    isTodaySchedule = true;
-  }
+const Item = (props) => { 
+  const isTodaySchedule = props.item.session_id === props.nextSessionId;
 
   return (
     <>
       {isTodaySchedule ? (
-        <InProgressAsgBox item={item} />
+        <InProgressAsgBox item={props.item} limit={props.limit} status={props.status} />
       ) : (
-        <DoneAsgBox item={item} />
+        <DoneAsgBox item={props.item} />
       )}
     </>
   );
@@ -249,7 +225,6 @@ const AssignmentScreen = ({ navigation }) => {
       userToken: userToken
     }
     const res = await fetchPost(url, body);
-    console.log(res);
 
     setSessionData(res.sessions);
   }
@@ -262,13 +237,28 @@ const AssignmentScreen = ({ navigation }) => {
     navigation.navigate('AdminAddSessionScreen');
   }
 
+  const {
+    lastScheduleId,
+    nextScheduleId,
+    limit,
+    status,
+    getTimeLimit,
+  } = useProgress();
+  
+  useEffect(() => {
+    setTimeout(() => {
+      getTimeLimit(sessionData);
+    }, 1000);
+  });
+
   return (
     <StyledContainer>
       <HeaderDetail title={'세션'} />
       <View style={{ flex: 1 }}>
         <FlatList
           data={sessionData}
-          renderItem={renderItem}
+          renderItem={
+            ({item}) => <Item item={item} lastSessionId={lastScheduleId} nextSessionId={nextScheduleId} limit={limit} status={status} />}
           keyExtractor={item => item.session_id}
         />
         <MainButton content="일정 추가하기" onPress={onPressAddSchedule} />
