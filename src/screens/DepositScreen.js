@@ -12,24 +12,27 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {StatusBar} from 'react-native';
 
 const DepositScreen = () => {
-  const {userToken, userInfoFromServer, getUserToken, getUserInfoFromServer} =
-    useUserInfo();
-
-  const {depositHistory, couponInfo, getDepositHistory, getCouponInfo} =
-    useDepositDetail();
+  const {
+    userInfoFromServer,
+    getUserInfoFromServer
+  } = useUserInfo();
+  
+  const {
+    depositHistory,
+    couponInfo,
+    getDepositHistory,
+    getCouponInfo,
+  } = useDepositDetail();
+  
+  useEffect(() => {
+    getUserInfoFromServer();
+  }, []);
 
   useEffect(() => {
-    getUserToken();
+    getDepositHistory();
   }, []);
   useEffect(() => {
-    getUserInfoFromServer(userToken);
-  }, [userToken]);
-
-  useEffect(() => {
-    getDepositHistory(userToken);
-  }, []);
-  useEffect(() => {
-    getCouponInfo(userToken);
+    getCouponInfo();
   }, []);
 
   StatusBar.setBackgroundColor('yellow');
