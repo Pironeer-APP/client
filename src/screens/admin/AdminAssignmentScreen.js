@@ -26,14 +26,34 @@ const ModalBtn = styled.TouchableOpacity`
   align-items: center;
   padding: 20px;
 `;
-const AssignmentBox = ({title, due, level, assignId}) => {
+const AssignmentBox = ({title, due, level, assignId, getAssigns}) => {
   const navigation = useNavigation();
   const dateString = due;
   const formattedDate = dayjs(dateString).format('MM.DD ddd HH:mm');
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
+    getAssigns();
     setModalVisible(!modalVisible);
   };
+
+  const deleteAssign = async (deleteId) => {
+    const userToken = await getData('user_token');
+    const url = `/assign/deleteAssign`;
+    const body = {
+      userToken: userToken,
+      deleteId : deleteId
+    };
+    console.log('body: ', body);
+
+    try {
+      await fetchPost(url, body);
+      toggleModal(); // 재랜더링되어야 함
+    } catch (error) {
+      // 네트워크 오류 또는 예외 처리
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -89,7 +109,7 @@ const AssignmentBox = ({title, due, level, assignId}) => {
                 backgroundColor: `${COLORS.light_gray}`,
               }}
             />
-            <ModalBtn onPress={() => {}}>
+            <ModalBtn onPress={() => {deleteAssign(assignId)}}>
               <StyledText content={'삭제'} fontSize={20} color={'red'} />
             </ModalBtn>
           </RowView>
@@ -137,6 +157,7 @@ const AdminAssignmentScreen = ({route}) => {
         due={item.due_date}
         level={getLevel}
         assignId={item.assignschedule_id}
+        getAssigns={getAssigns}
       />
     );
   };
