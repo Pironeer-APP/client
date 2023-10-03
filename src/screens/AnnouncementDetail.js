@@ -52,8 +52,6 @@ const AnnouncementDetail = ({navigation}) => {
   const getPost = async () => {
     const url = `/post/detail`;
     const userToken = await getData('user_token');
-    console.log('FE:', userToken);
-    console.log('FE:', post_id);
     const body = {userToken, post_id};
     const res = await fetchPost(url, body);
     setPost(res.post);
@@ -68,8 +66,10 @@ const AnnouncementDetail = ({navigation}) => {
 
   // delete fetch
   const deletePost = async () => {
-    const url = `/post/delete/${post_id}`;
-    const body = {post_id};
+    const url = `/post/delete/`;
+    const userToken = await getData('user_token');
+    const body = {post_id, userToken};
+
     try {
       await fetchPost(url, body);
       navigation.navigate('AnnouncementScreen');
