@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styled from "styled-components/native";
 import { COLORS } from "../../assets/Theme";
@@ -11,9 +11,9 @@ import AdminAttendanceDetailScreen from './AdminAttendanceDetailScreen';
 import Gap, { GapH } from '../../components/Gap';
 import useUserInfo from '../../use-userInfo';
 import { fetchPost, getData } from '../../utils';
+import { MainButton } from '../../components/Button';
 
 const DateContainer = styled.View`
-  background-color: ${COLORS.gray};
   border-radius: 12px;
   padding: 10px;
 `;
@@ -33,9 +33,9 @@ const DateBox = (props) => {
 
   return (
     <TouchableOpacity style={{flex: 1, marginRight: 20}} onPress={() => navigation.navigate({name: 'AdminAttendanceDetailScreen', params:{month: month, day: day, session_id: props.date.session_id}})}>
-      <DateContainer style={{ justifyContent:'center' }}>
-        <StyledText content={month} fontSize={35} />
-        <StyledText content={day} fontSize={35} />
+      <DateContainer style={{ justifyContent:'center', backgroundColor: isToday ? COLORS.green : COLORS.gray}}>
+        <StyledText content={month} fontSize={35} color={isToday ? 'black' : 'white'}/>
+        <StyledText content={day} fontSize={35} color={isToday ? 'black' : 'white'}/>
       </DateContainer>
     </TouchableOpacity>
   )
@@ -76,12 +76,27 @@ const AdminAttendanceScreen = () => {
     getSessions();
   }, []);
 
+  const onPressGenerateCode = async () => {
+    const userToken = await getData('user_token');
+    const url = '/attend/generateCode';
+    const body = {
+      token: userToken,
+    }
+    const code = await fetchPost(url, body);
+    console.log(code);
+  }
+
   return (
     <StyledContainer>
       <HeaderDetail title={'출석'} />
-      {sessions?.map((item, index) => (
-        <WeekContainer key={index} week={index + 1} item={item} />
-      ))}
+      <ScrollView>
+        {sessions?.map((item, index) => (
+          <WeekContainer key={index} week={index + 1} item={item} />
+        ))}
+      </ScrollView>
+      <View style={{ zIndex: 999, marginBottom: 20, marginHorizontal: 10 }}>
+        <MainButton height={60} content={'출석코드 생성'} onPress={onPressGenerateCode}/>
+      </View>
     </StyledContainer>
   )
 }
