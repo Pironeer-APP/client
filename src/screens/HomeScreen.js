@@ -19,6 +19,8 @@ import {RightArrowBtn} from '../components/Button';
 import StyledContainer from '../components/StyledContainer';
 import Gap from '../components/Gap';
 import useUserInfo from '../use-userInfo';
+import { fetchPost, getData } from '../utils';
+import useProgress from '../use-progress';
 
 const Header = () => (
   <View>
@@ -63,12 +65,8 @@ const HomeScreen = ({navigation}) => {
   StatusBar.setBarStyle('light-content');
   const isFocused = useIsFocused();
 
-  const {userToken, userInfoFromServer, getUserToken, getUserInfoFromServer} =
-    useUserInfo();
+  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
 
-  useEffect(() => {
-    getUserToken();
-  }, []);
   useEffect(() => {
     getUserInfoFromServer();
   }, [isFocused]);
@@ -103,6 +101,59 @@ const HomeScreen = ({navigation}) => {
     navigation.navigate('AdminSessionScreen');
   };
 
+  const [curAssign, setCurAssign] = useState();
+  const [curAssignCnt, setCurAssignCnt] = useState();
+  const [recentAssign, setRecentAssign] = useState();
+  // 다가오는 과제
+  // 지나간 과제 하나
+  const getCurrentRecentAssigns = async () => {
+    const userToken = await getData('user_token');
+    const cUrl = '/assign/getCurrentAssigns';
+    const body = {userToken};
+    const cRes = await fetchPost(cUrl, body);
+    
+    setCurAssign(cRes.currentAssign);
+    setCurAssignCnt(cRes.currentAssignCnt);
+    
+    const rUrl = '/assign/getRecentAssign';
+    const rRes = await fetchPost(rUrl, body);
+
+    setRecentAssign(rRes.recentAssign);
+  }
+  useEffect(() => {
+    getCurrentRecentAssigns();
+  }, []);
+
+  // 프로그레스 계산
+  const [assignLimit, setAssignLimit] = useState();
+  const [assignProgress, setAssignProgress] = useState();
+  const [homeProgress, setHomeProgress] = useState();
+  const getProgress = () => {
+    const now = new Date();
+    const cAssign = new Date(curAssign?.due_date);
+    const rAssign = new Date(recentAssign?.due_date);
+
+    setAssignLimit(cAssign.getTime() - rAssign.getTime());
+    setAssignProgress(cAssign.getTime() - now.getTime());
+
+    setHomeProgress(Math.trunc(assignProgress / assignLimit * 100));
+  }
+  useEffect(() => {
+    setTimeout(() => {
+      getProgress();
+    }, 1000);
+  });
+
+  const {convertTime} = useProgress();
+
+  const {
+    hour,
+    min,
+    sec
+  } = convertTime(Math.trunc(assignProgress / 1000));
+
+  const curTitle = curAssignCnt > 1 ? `${curAssign?.title} 외 ${curAssignCnt - 1}개` : curAssign?.title;
+
   return (
     <StyledContainer>
       <ScrollView>
@@ -122,12 +173,12 @@ const HomeScreen = ({navigation}) => {
               />
               <RightArrowBtn />
             </RowView>
-            <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
+            <StyledText content={curTitle} fontSize={20} />
             <RowView style={{marginTop: 10}}>
               <View style={{width: '50%'}}>
-                <ProgressBar status={'30%'} />
+                <ProgressBar status={`${homeProgress ? homeProgress : 100}%`} />
               </View>
-              <StyledText content={'남은 시간 18:38:43'} fontSize={16} />
+              <StyledText content={`남은 시간 ${hour}:${min}:${sec}`} fontSize={16} />
             </RowView>
           </TouchableOpacity>
         </Box>
