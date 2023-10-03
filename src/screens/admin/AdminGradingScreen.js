@@ -198,8 +198,6 @@ const AdminGradingScreen = () => {
   const level = route.params.level;
   const assignId = route.params.assignId;
   const [stdId, setStdId] = useState(0);
-  const [stdGrade, setStdGrade] = useState(4);
-  const [stdInfo, setStdInfo] = useState([]);
   const [stdGrade, setStdGrade] = useState(null);
   const [stdInfo, setStdInfo] = useState([]);
 
@@ -250,7 +248,7 @@ const AdminGradingScreen = () => {
         <FlatList
           data={stdInfo}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.studentId}
         />
       </View>
     </StyledContainer>
