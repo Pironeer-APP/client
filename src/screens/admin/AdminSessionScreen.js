@@ -236,6 +236,7 @@ const Item = (props) => {
 
 const AssignmentScreen = ({ navigation }) => {
   const [sessionData, setSessionData] = useState([]);
+  const [initialScrollIndex, setInitialScrollIndex] = useState(0);
   const isFocused = useIsFocused();
 
   const getSessions = async () => {
@@ -247,6 +248,8 @@ const AssignmentScreen = ({ navigation }) => {
     const res = await fetchPost(url, body);
 
     setSessionData(res.sessions);
+    setInitialScrollIndex(res.nextSessionIdx);
+    console.log(res.nextSessionIdx);
   }
 
   useEffect(() => {
@@ -286,6 +289,7 @@ const AssignmentScreen = ({ navigation }) => {
               limit={limit}
               status={status} />}
           keyExtractor={item => item.session_id}
+          initialScrollIndex={initialScrollIndex}
         />
         <MainButton content="일정 추가하기" onPress={onPressAddSchedule} />
       </View>
