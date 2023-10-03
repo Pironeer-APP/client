@@ -9,6 +9,7 @@ export const COLORS = {
   badge_green: '#35A67B',
   badge_skyblue: '#2188B6',
   deposit_header_blue: '#3C64BC',
+  lightTheme_btn: '#E6E6E6',
 };
 
 // theme 설정

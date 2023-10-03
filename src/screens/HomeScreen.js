@@ -7,6 +7,7 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
@@ -55,14 +56,15 @@ export const ProgressBar = props => (
 );
 
 const HomeScreen = ({navigation}) => {
+  // status bar 색상설정
+  if (Platform.OS === 'android') {
+    StatusBar.setBackgroundColor('black');
+  }
+  StatusBar.setBarStyle('light-content');
   const isFocused = useIsFocused();
 
-  const {
-    userToken,
-    userInfoFromServer,
-    getUserToken,
-    getUserInfoFromServer
-  } = useUserInfo();
+  const {userToken, userInfoFromServer, getUserToken, getUserInfoFromServer} =
+    useUserInfo();
 
   useEffect(() => {
     getUserToken();
@@ -100,7 +102,7 @@ const HomeScreen = ({navigation}) => {
   const goToSession = () => {
     navigation.navigate('AdminSessionScreen');
   };
-  
+
   return (
     <StyledContainer>
       <ScrollView>
@@ -122,8 +124,8 @@ const HomeScreen = ({navigation}) => {
             </RowView>
             <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
             <RowView style={{marginTop: 10}}>
-              <View style={{ width: '50%' }}>
-              <ProgressBar status={'30%'} />
+              <View style={{width: '50%'}}>
+                <ProgressBar status={'30%'} />
               </View>
               <StyledText content={'남은 시간 18:38:43'} fontSize={16} />
             </RowView>
