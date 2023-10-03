@@ -20,38 +20,38 @@ import {COLORS} from '../../assets/Theme';
 import {Image} from 'react-native-svg';
 import {fetchPost, getData} from '../../utils';
 
-const StdGradingData = [
-  {
-    id: 1,
-    name: '정환희',
-    grade: 4,
-  },
-  {
-    id: 2,
-    name: '장민서',
-    grade: 4,
-  },
-  {
-    id: 3,
-    name: '양원채',
-    grade: 4,
-  },
-  {
-    id: 4,
-    name: '민세원',
-    grade: 4,
-  },
-  {
-    id: 5,
-    name: '박석류',
-    grade: 4,
-  },
-  {
-    id: 6,
-    name: '김정곤',
-    grade: 4,
-  },
-];
+// const StdGradingData = [
+//   {
+//     id: 1,
+//     name: '정환희',
+//     grade: 4,
+//   },
+//   {
+//     id: 2,
+//     name: '장민서',
+//     grade: 4,
+//   },
+//   {
+//     id: 3,
+//     name: '양원채',
+//     grade: 4,
+//   },
+//   {
+//     id: 4,
+//     name: '민세원',
+//     grade: 4,
+//   },
+//   {
+//     id: 5,
+//     name: '박석류',
+//     grade: 4,
+//   },
+//   {
+//     id: 6,
+//     name: '김정곤',
+//     grade: 4,
+//   },
+// ];
 const UnSelectedBtn = () => (
   <View
     style={{
@@ -71,10 +71,10 @@ const Student = ({id, name, grade, realStdId, stdId, setStdId, stdGrade, setStdG
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
-  const gradeAndClose = grade => {
-    setModalVisible(!modalVisible);
-    setStdGrade(grade);
-  };
+  // const gradeAndClose = grade => {
+  //   setModalVisible(!modalVisible);
+  //   setStdGrade(grade);
+  // };
   const createGrade = async (grade, assignScheduleId) => {
     const userToken = await getData('user_token');
     const url = `/assign/createAssignGrade`;
