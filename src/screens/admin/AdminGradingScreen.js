@@ -94,9 +94,24 @@ const Student = ({id, name, grade, realStdId, stdId, setStdId, stdGrade, setStdG
       console.log(error);
     }
   };
-  const updateGrade = grade => {
-    setModalVisible(!modalVisible);
-    setStdGrade(grade);
+  const updateGrade = async (grade, assignScheduleId) => {
+    const userToken = await getData('user_token');
+    const url = `/assign/updateAssignGrade`;
+    const body = {
+      userToken: userToken,
+      userId: realStdId,
+      assignScheduleId: assignScheduleId,
+      updateGrade: grade
+    }
+    try {
+      console.log(body);
+      await fetchPost(url, body);
+      setModalVisible(!modalVisible);
+      setStdGrade(grade);
+      getStdsData();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -116,19 +131,19 @@ const Student = ({id, name, grade, realStdId, stdId, setStdId, stdGrade, setStdG
         <View style={styles.modalView}>
           <StyledText content={`${name}`} fontSize={20} />
           <RowView style={{gap: 20}}>
-            <TouchableOpacity onPress={grade == null ? () => createGrade(4, assignScheduleId) : () => updateGrade()}>
+            <TouchableOpacity onPress={grade == null ? () => createGrade(4, assignScheduleId) : () => updateGrade(4, assignScheduleId)}>
               <StatusCircle grade={4} />
               {grade == undefined ? null : <UnSelectedBtn />}
             </TouchableOpacity>
-            <TouchableOpacity onPress={grade == null ? () => createGrade(0, assignScheduleId) : () => updateGrade()}>
+            <TouchableOpacity onPress={grade == null ? () => createGrade(0, assignScheduleId) : () => updateGrade(0, assignScheduleId)}>
               <StatusCircle grade={0} />
               {grade == 0 ? null : <UnSelectedBtn />}
             </TouchableOpacity>
-            <TouchableOpacity onPress={grade == null ? () => createGrade(1, assignScheduleId) : () => updateGrade()}>
+            <TouchableOpacity onPress={grade == null ? () => createGrade(1, assignScheduleId) : () => updateGrade(1, assignScheduleId)}>
               <StatusCircle grade={1} />
               {grade == 1 ? null : <UnSelectedBtn />}
             </TouchableOpacity>
-            <TouchableOpacity onPress={grade == null ? () => createGrade(3, assignScheduleId) : () => updateGrade()}>
+            <TouchableOpacity onPress={grade == null ? () => createGrade(3, assignScheduleId) : () => updateGrade(3, assignScheduleId)}>
               <StatusCircle grade={3} />
               {grade == 3 ? null : <UnSelectedBtn />}
             </TouchableOpacity>
