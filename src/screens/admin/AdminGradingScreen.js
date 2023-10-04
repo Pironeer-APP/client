@@ -69,10 +69,13 @@ const Student = ({
   id,
   name,
   grade,
+  realStdId,
   stdId,
   setStdId,
   stdGrade,
   setStdGrade,
+  assignScheduleId,
+  getStdsData,
   isLastItem,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -231,9 +234,9 @@ const AdminGradingScreen = () => {
         setStdId={setStdId}
         stdGrade={stdGrade}
         setStdGrade={setStdGrade}
-        isLastItem={isLastItem}
         assignScheduleId={assignId}
         getStdsData={getStdsData}
+        isLastItem={isLastItem}
       />
     );
   };
