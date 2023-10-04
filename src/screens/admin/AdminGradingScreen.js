@@ -19,6 +19,7 @@ import Gap from '../../components/Gap';
 import {COLORS} from '../../assets/Theme';
 import {Image} from 'react-native-svg';
 import {fetchPost, getData} from '../../utils';
+import {MediumLoader} from '../../components/Loader';
 
 // const StdGradingData = [
 //   {
@@ -200,6 +201,7 @@ const AdminGradingScreen = () => {
   const [stdId, setStdId] = useState(0);
   const [stdGrade, setStdGrade] = useState(null);
   const [stdInfo, setStdInfo] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // console.log(level, title, assignId);
   const getStdsData = async () => {
@@ -210,6 +212,7 @@ const AdminGradingScreen = () => {
       const stdDatas = await fetchPost(url, body);
       console.log('stdDatas: ', stdDatas.data);
       setStdInfo(stdDatas.data);
+      setIsLoading(false);
     } catch (error) {
       console.error('Error sending data:', error);
     }
@@ -243,14 +246,17 @@ const AdminGradingScreen = () => {
   return (
     <StyledContainer>
       <HeaderDetail title={title} />
-
-      <View style={{padding: 20}}>
-        <FlatList
-          data={stdInfo}
-          renderItem={renderItem}
-          keyExtractor={item => item.studentId}
-        />
-      </View>
+      {!!isLoading ? (
+        <MediumLoader />
+      ) : (
+        <View style={{padding: 20}}>
+          <FlatList
+            data={stdInfo}
+            renderItem={renderItem}
+            keyExtractor={item => item.studentId}
+          />
+        </View>
+      )}
     </StyledContainer>
   );
 };

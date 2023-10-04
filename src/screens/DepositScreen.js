@@ -27,8 +27,6 @@ const DepositScreen = () => {
     getCouponInfo();
   }, []);
 
-  Platform.OS === 'android' ? StatusBar.setBackgroundColor('yellow') : null;
-
   const UseCoupon = async () => {
     const url = '/deposit/useCoupon';
     body = {userId: userInfoFromServer.user_id};
