@@ -44,7 +44,6 @@ export const StyledProgressBar = styled.View`
   border-radius: 5px;
   overflow: hidden;
   margin-top: ${Platform.OS === 'android' ? '5px' : 0};
-  flex: 1;
 `;
 export const ProgressBar = props => (
   <StyledProgressBar>
@@ -175,15 +174,18 @@ const HomeScreen = ({navigation}) => {
                 />
                 <RightArrowBtn />
               </RowView>
-              <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
+              <StyledText content={curTitle} fontSize={20} />
               <RowView style={{marginTop: 10}}>
-                <ProgressBar status={'30%'} />
+
+                <View style={{width: '70%'}}>
+                  <ProgressBar status={`${homeProgress ? homeProgress : 100}%`} />
+                </View>
                 <Image
                   source={require('../assets/icons/timer.png')}
                   style={{width: 15, height: 15}}
                 />
                 <GapH width={5} />
-                <StyledText content={'18:38:43'} fontSize={16} />
+                <StyledText content={`${hour}:${min}:${sec}`} fontSize={16} />
               </RowView>
             </TouchableOpacity>
           </Box>
