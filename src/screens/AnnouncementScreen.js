@@ -60,7 +60,7 @@ const PostBox = ({title, sort, date, id, read}) => {
   const dateString = date;
   const date2 = new Date(dateString);
   date2.setHours(date2.getHours() + 9);
-  const formattedDate = dayjs(date2).format('M.D ddd').toUpperCase();
+  const formattedDate = dayjs(date2).format('MM.DD ddd').toUpperCase();
   return (
     <View>
       <TouchableOpacity onPress={goToAncDet}>
