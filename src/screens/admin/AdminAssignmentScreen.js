@@ -26,10 +26,10 @@ const ModalBtn = styled.TouchableOpacity`
   align-items: center;
   padding: 20px;
 `;
-const AssignmentBox = ({title, due, level, assignId, getAssigns}) => {
+const AssignmentBox = ({createdAt, title, due, level, assignId, getAssigns}) => {
   const navigation = useNavigation();
-  const dateString = due;
-  const formattedDate = dayjs(dateString).format('MM.DD ddd HH:mm');
+  const dateString = createdAt;
+  const formattedDate = dayjs(dateString).format('MM.DD ddd');
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     getAssigns();
@@ -130,7 +130,7 @@ const AssignmentBox = ({title, due, level, assignId, getAssigns}) => {
           }}>
           <RowView>
             <View>
-              <StyledSubText content={`DUE ${formattedDate}`} />
+              <StyledSubText content={`${formattedDate}`} />
               <Gap height={5} />
               <StyledText content={title} fontSize={20} />
             </View>
@@ -153,6 +153,7 @@ const AdminAssignmentScreen = ({route}) => {
     // console.log(item);
     return (
       <AssignmentBox
+        createdAt={item.created_at}
         title={item.title}
         due={item.due_date}
         level={getLevel}
