@@ -36,12 +36,12 @@ const AssignmentBox = ({createdAt, title, due, level, assignId, getAssigns}) => 
     setModalVisible(!modalVisible);
   };
 
-  const deleteAssign = async (deleteId) => {
+  const deleteAssign = async deleteId => {
     const userToken = await getData('user_token');
     const url = `/assign/deleteAssign`;
     const body = {
       userToken: userToken,
-      deleteId : deleteId
+      deleteId: deleteId,
     };
     console.log('body: ', body);
 
@@ -60,19 +60,13 @@ const AssignmentBox = ({createdAt, title, due, level, assignId, getAssigns}) => 
         isVisible={modalVisible}
         animationIn={'fadeIn'}
         animationOut={'fadeOut'}
+        onBackdropPress={toggleModal}
         style={{
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
           marginTop: 22,
         }}>
-        <Pressable
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          onPress={toggleModal}
-        />
         <ModalBox>
           <View style={{padding: 20, alignItems: 'center', gap: 5}}>
             <StyledText content={title} />
@@ -109,7 +103,10 @@ const AssignmentBox = ({createdAt, title, due, level, assignId, getAssigns}) => 
                 backgroundColor: `${COLORS.light_gray}`,
               }}
             />
-            <ModalBtn onPress={() => {deleteAssign(assignId)}}>
+            <ModalBtn
+              onPress={() => {
+                deleteAssign(assignId);
+              }}>
               <StyledText content={'삭제'} fontSize={20} color={'red'} />
             </ModalBtn>
           </RowView>
@@ -166,7 +163,7 @@ const AdminAssignmentScreen = ({route}) => {
     const userToken = await getData('user_token');
     const url = `/assign/readAssign/all`;
     const body = {
-      userToken: userToken
+      userToken: userToken,
     };
     console.log('body: ', body);
     try {
@@ -186,22 +183,22 @@ const AdminAssignmentScreen = ({route}) => {
   return (
     <StyledContainer>
       <HeaderDetail title={'과제 채점'} />
-      <View style={{flex: 1}}>
-        <FlatList
-          data={assigns}
-          renderItem={renderItem}
-          keyExtractor={item => item.assignschedule_id}
+      <View style={{flex: 1, padding: 20}}>
+        <View style={{flex: 1}}>
+          <FlatList
+            data={assigns}
+            renderItem={renderItem}
+            keyExtractor={item => item.assignschedule_id}
+          />
+        </View>
+        <MainButton
+          content={'과제 등록하기'}
+          onPress={() => {
+            navigation.navigate('AdminCreateAssignment', {level: getLevel});
+          }}
+          height={60}
         />
       </View>
-      <MainButton
-        content={'과제 등록하기'}
-        onPress={() => {
-
-          navigation.navigate('AdminCreateAssignment', {level: getLevel});
-
-        }}
-        height={60}
-      />
     </StyledContainer>
   );
 };

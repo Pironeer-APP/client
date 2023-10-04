@@ -45,7 +45,7 @@ const StatusLine = () => {
     <View style={{backgroundColor: `${COLORS.icon_gray}`, width: 1, flex: 1}} />
   );
 };
-const InProgressAsgBox = ({grade, title, due, lastAssignDueDate, item}) => {
+const InProgressAsgBox = ({grade, title, due, lastAssignDueDate, item, firstItem, lastItem}) => {
   const [scale] = useState(new Animated.Value(1)); // 초기 크기 1
 
   useEffect(() => {
@@ -97,15 +97,14 @@ const InProgressAsgBox = ({grade, title, due, lastAssignDueDate, item}) => {
   } = convertTime(Math.trunc(limit / 1000));
   
   return (
-    <View
+    <AsgContainer
       style={{
-        flexDirection: 'row',
-        alignItems: 'center',
         gap: 20,
       }}>
       <View
         style={{
           flexDirection: 'column',
+          alignItems: 'center',
         }}>
         <View
           style={{
@@ -114,7 +113,7 @@ const InProgressAsgBox = ({grade, title, due, lastAssignDueDate, item}) => {
             alignItems: 'center',
             width: 50,
           }}>
-          <View style={{flex: 1}} />
+          {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />}
           <View>
             <Animated.Image
               source={require('../assets/icons/circle_onair.png')}
@@ -125,7 +124,7 @@ const InProgressAsgBox = ({grade, title, due, lastAssignDueDate, item}) => {
               }}
             />
           </View>
-          <StatusLine />
+          {title === lastItem ? <View style={{flex: 1}} /> : <StatusLine />}
         </View>
       </View>
       <View
@@ -133,6 +132,7 @@ const InProgressAsgBox = ({grade, title, due, lastAssignDueDate, item}) => {
           flexDirection: 'column',
           flex: 1,
           justifyContent: 'center',
+          marginVertical: 10,
         }}>
         <Box>
           <View style={{padding: 20}}>
@@ -150,16 +150,12 @@ const InProgressAsgBox = ({grade, title, due, lastAssignDueDate, item}) => {
           </View>
         </Box>
       </View>
-    </View>
+    </AsgContainer>
   );
 };
-const DoneAsgBox = ({grade, title, due, item}) => (
-  <View
-    style={{
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 10,
-    }}>
+
+const DoneAsgBox = ({grade, title, due, item, firstItem, lastItem}) => (
+  <AsgContainer>
     <View
       style={{
         flexDirection: 'column',
@@ -171,9 +167,9 @@ const DoneAsgBox = ({grade, title, due, item}) => (
           alignItems: 'center',
           width: 50,
         }}>
-        <StatusLine />
+        {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />}
         <StatusCircle grade={grade} />
-        <StatusLine />
+        {title === lastItem ? <View style={{flex: 1}} /> : <StatusLine />}
       </View>
     </View>
     <View
@@ -183,35 +179,18 @@ const DoneAsgBox = ({grade, title, due, item}) => (
         justifyContent: 'center',
       }}>
       <View style={{padding: 20}}>
-        <RowView style={{marginBottom: 10}}>
+        <RowView style={{marginVertical: 10}}>
           <View>
             <StyledText content={item.createdDate.split(' ')[0]} fontSize={20} />
           </View>
           <View style={{flex: 1, marginLeft: 20}}>
-            <StyledText content={title} fontSize={20} />
+            <StyledText content={title} fontSize={18} />
           </View>
         </RowView>
       </View>
     </View>
-  </View>
+  </AsgContainer>
 );
-const Item = (props) => {
-  return (
-    <>
-      {props.lastIndex === -1 || props.lastIndex > props.index ? (
-        <InProgressAsgBox
-          grade={props.item.grade}
-          title={props.item.title}
-          due={props.item.dueDate}
-          lastAssignDueDate={props.lastAssignDueDate}
-          item={props.item}
-        /> // 왼쪽에 생성시각 필요 -> item.createdDate 에 MON 2.12 형식으로 저장되어 있음
-      ) : (
-        <DoneAsgBox grade={props.item.grade} title={props.item.title} due={props.item.dueDate} item={props.item} />
-      )}
-    </>
-  );
-};
 
 const AssignmentScreen = () => {
   const [assignment, setAssignment] = useState([]);
@@ -221,13 +200,13 @@ const AssignmentScreen = () => {
     const userToken = await getData('user_token');
     const url = `/assign`;
     const body = {
-      userToken: userToken
+      userToken: userToken,
     };
-    console.log('body: ', body);
+    // console.log('body: ', body);
     try {
       const fetchData = await fetchPost(url, body);
       setAssignment(fetchData.data);
-      console.log('성공  받아온 data: ', fetchData.data);
+      // console.log('성공  받아온 data: ', fetchData);
     } catch (error) {
       console.log(error);
       console.log('에러');
@@ -239,9 +218,9 @@ const AssignmentScreen = () => {
   }, []);
 
   // 프로그레스 구현, 과제는 2개 이상일 수 있으므로 세션과 다름
-  const [lastAssignment, setLastAssignment] = useState();
-  const [lastIndex, setLastIndex] = useState();
-  const [lastAssignDueDate, setLastAssignDueDate] = useState();
+  const [lastAssignment, setLastAssignment] = useState(null);
+  const [lastIndex, setLastIndex] = useState(-1);
+  const [lastAssignDueDate, setLastAssignDueDate] = useState(dayjs().subtract(3, 'day'));
 
   const getLastAssign = () => {
     // 지난 마지막 assignment와 index 알아내기
@@ -253,7 +232,7 @@ const AssignmentScreen = () => {
         if(i === assignment.length - 1) { // 다가오는 과제가 가장 첫 번째 과제인 경우
           setLastAssignment(null);
           setLastIndex(-1);
-          setLastAssignDueDate(assignDueDate);
+          setLastAssignDueDate(dayjs().subtract(3, 'day'));
         }
         setLastAssignment(assignment[i + 1]); // 그 이전 과제가 마지막 과제
         setLastIndex(assignment[i + 1].AssignId - 1);
@@ -268,10 +247,40 @@ const AssignmentScreen = () => {
     console.log(lastAssignment, lastIndex, lastAssignDueDate);
   }, [assignment]);
 
+  let FIRST_ITEM = assignment[0]?.title;
+  let LAST_ITEM = assignment[assignment.length - 1]?.title;
+
+  const Item = (props) => {
+    return (
+      <>
+        {props.lastIndex === -1 || props.lastIndex > props.index ? (
+          <InProgressAsgBox
+            grade={props.item.grade}
+            title={props.item.title}
+            due={props.item.dueDate}
+            lastAssignDueDate={props.lastAssignDueDate}
+            item={props.item}
+            firstItem={FIRST_ITEM} // title과 비교해서 첫번째면 첫 StatusLine 지우기
+            lastItem={LAST_ITEM} // title과 비교해서 마지막이면 두번째 StatusLine 지우기
+          /> // 왼쪽에 생성시각 필요 -> item.createdDate 에 MON 2.12 형식으로 저장되어 있음
+        ) : (
+          <DoneAsgBox
+            grade={props.item.grade}
+            title={props.item.title}
+            due={props.item.dueDate}
+            item={props.item}
+            firstItem={FIRST_ITEM}
+            lastItem={LAST_ITEM}
+          />
+        )}
+      </>
+    );
+  };
+
   return (
     <StyledContainer>
       <HeaderDetail title={'과제'} />
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, padding: 20, paddingLeft: 10}}>
         <FlatList
           data={assignment}
           renderItem={
@@ -287,5 +296,8 @@ const AssignmentScreen = () => {
     </StyledContainer>
   );
 };
-
+const AsgContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
 export default AssignmentScreen;
