@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  Alert,
 } from 'react-native';
 import React, {useState, useEffect, useMemo} from 'react';
 import dayjs from 'dayjs';
@@ -65,6 +66,16 @@ const AnnouncementDetail = ({navigation}) => {
   // console.log('imagesUrl: ', imagesUrl);
 
   // delete fetch
+  const onPressDeletePost = () => {
+    Alert.alert('글을 삭제하시겠습니까?', '', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {text: '삭제', onPress: () => deletePost()},
+    ]);
+  };
+
   const deletePost = async () => {
     const url = `/post/delete/`;
     const userToken = await getData('user_token');
@@ -88,42 +99,45 @@ const AnnouncementDetail = ({navigation}) => {
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
-      <ScrollView>
-        <RowView>
-          <RowView style={{gap: 10}}>
-            <StyledSubText content={`${RenderDate}`} />
-            <Badge sort={post.category} />
-          </RowView>
-          {!!userInfoFromServer.is_admin && (
+      <View style={{paddingHorizontal: 20, flex: 1}}>
+        <ScrollView>
+          <RowView>
             <RowView style={{gap: 10}}>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('AdminUpdateNotice', {post, imagesUrl})
-                }>
-                <StyledSubText content={'수정'} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={deletePost}>
-                <StyledSubText content={'삭제'} />
-              </TouchableOpacity>
+              <StyledSubText content={`${RenderDate}`} />
+              <Badge sort={post.category} />
             </RowView>
-          )}
-        </RowView>
-        <Gap />
+            {!!userInfoFromServer.is_admin && (
+              <RowView style={{gap: 10}}>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('AdminUpdateNotice', {post, imagesUrl})
+                  }>
+                  <StyledSubText content={'수정'} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onPressDeletePost}>
+                  <StyledSubText content={'삭제'} />
+                </TouchableOpacity>
+              </RowView>
+            )}
+          </RowView>
+          <Gap />
 
-        <StyledText content={`${post.title}`} />
-        <TitleBottomLine />
+          <StyledText content={`${post.title}`} />
+          <TitleBottomLine />
 
-        <StyledText content={`${post.content}`} fontSize={20} />
-        <Gap height={10} />
-        {imagesUrl.map((image, index) => (
-          <AutoHeightImage
-            key={index}
-            source={{uri: image}}
-            width={windowWidth}
-            style={{borderRadius: 10, marginBottom: 10}}
-          />
-        ))}
-      </ScrollView>
+          <StyledText content={`${post.content}`} fontSize={20} />
+          <Gap height={10} />
+          {imagesUrl.map((image, index) => (
+            <AutoHeightImage
+              key={index}
+              source={{uri: image}}
+              width={windowWidth - 40}
+              style={{borderRadius: 10, marginBottom: 10}}
+            />
+          ))}
+          <Gap height={200} />
+        </ScrollView>
+      </View>
     </StyledContainer>
   );
 };

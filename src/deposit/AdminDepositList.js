@@ -20,6 +20,7 @@ export default function AdminDepositList({adminInfo}) {
             adminInfo={adminInfo}
           />
         ))}
+        <Gap height={200} />
       </ScrollView>
     </View>
   );
