@@ -10,12 +10,12 @@ import React from 'react';
 import {FontStyledText} from './Text';
 import {COLORS} from '../assets/Theme';
 
-export const MainButton = ({height = 70, content, onPress}) => {
+export const MainButton = ({height = 70, content, onPress, fontSize = 22}) => {
   return (
     <TouchableOpacity
       style={[styles.container, {height: height}]}
       onPress={onPress}>
-      <FontStyledText style={styles.text}>{content}</FontStyledText>
+      <FontStyledText style={[styles.text, {fontSize: fontSize}]}>{content}</FontStyledText>
     </TouchableOpacity>
   );
 };
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   text: {
-    fontSize: 22,
+    // fontSize: 22,
     textAlign: 'center',
     color: '#000000',
     fontWeight: '600',
