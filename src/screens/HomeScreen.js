@@ -44,7 +44,6 @@ export const StyledProgressBar = styled.View`
   border-radius: 5px;
   overflow: hidden;
   margin-top: ${Platform.OS === 'android' ? '5px' : 0};
-  flex: 1;
 `;
 export const ProgressBar = props => (
   <StyledProgressBar>
@@ -177,7 +176,9 @@ const HomeScreen = ({navigation}) => {
               </RowView>
               <StyledText content={curTitle} fontSize={20} />
               <RowView style={{marginTop: 10}}>
-                <ProgressBar status={`${homeProgress ? homeProgress : 100}%`} />
+                <View style={{width: '70%'}}>
+                  <ProgressBar status={`${homeProgress ? homeProgress : 100}%`} />
+                </View>
                 <StyledText content={`${hour}:${min}:${sec}`} fontSize={16} />
               </RowView>
             </TouchableOpacity>
