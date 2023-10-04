@@ -175,10 +175,10 @@ const HomeScreen = ({navigation}) => {
                 />
                 <RightArrowBtn />
               </RowView>
-              <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
+              <StyledText content={curTitle} fontSize={20} />
               <RowView style={{marginTop: 10}}>
-                <ProgressBar status={'30%'} />
-                <StyledText content={'18:38:43'} fontSize={16} />
+                <ProgressBar status={`${homeProgress ? homeProgress : 100}%`} />
+                <StyledText content={`${hour}:${min}:${sec}`} fontSize={16} />
               </RowView>
             </TouchableOpacity>
           </Box>
