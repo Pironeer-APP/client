@@ -229,7 +229,7 @@ const HomeScreen = ({navigation}) => {
                 ) : (
                   <View
                     style={{
-                      width: 80,
+                      width: 85,
                       justifyContent: 'flex-end',
                       flexDirection: 'row',
                       alignItems: 'center',
@@ -330,12 +330,10 @@ const HomeScreen = ({navigation}) => {
             <View
               style={{flex: 1, height: 1, backgroundColor: COLORS.icon_gray}}
             />
-
             <Image
               source={require('../assets/images/headerLogo.png')}
               style={{width: 22, height: 22, margin: 10}}
             />
-
             <View
               style={{flex: 1, height: 1, backgroundColor: COLORS.icon_gray}}
             />
@@ -387,6 +385,7 @@ const HomeScreen = ({navigation}) => {
               </TouchableOpacity>
             </Box>
           </View>
+          <Gap height={50} />
         </ScrollView>
       </View>
     </StyledContainer>

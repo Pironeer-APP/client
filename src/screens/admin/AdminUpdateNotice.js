@@ -5,6 +5,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Image,
+  Alert,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -28,22 +29,25 @@ const AdminUpdateNotice = () => {
   const [category, setCategory] = useState(post.category);
 
   const navigation = useNavigation();
-  useEffect(() => {
-    console.log('받은 이미지: ', getImages);
-  }, []);
+
   const updatePost = async () => {
     const url = `/post/update`;
     const userToken = await getData('user_token');
     const post_id = post.post_id;
     const body = {title, content, category, userToken, post_id};
-    try {
-      await fetchPost(url, body);
-      if (imgsIsChanged) {
-        updateImages(post.post_id);
+
+    if (title.length === 0 || content.length === 0) {
+      Alert.alert('내용을 입력해주세요');
+    } else {
+      try {
+        await fetchPost(url, body);
+        if (imgsIsChanged) {
+          updateImages(post.post_id);
+        }
+        navigation.navigate('AnnouncementScreen');
+      } catch (error) {
+        console.error('Error sending data:', error);
       }
-      navigation.navigate('AnnouncementScreen');
-    } catch (error) {
-      console.error('Error sending data:', error);
     }
   };
   const updateImages = async postId => {
@@ -97,51 +101,52 @@ const AdminUpdateNotice = () => {
         button={'완료'}
         buttonOnPress={updatePost}
       />
+      <View style={{padding: 20, flex: 1}}>
+        <View>
+          <ChooseCategory category={category} setCategory={setCategory} />
+        </View>
 
-      <View>
-        <ChooseCategory category={category} setCategory={setCategory} />
-      </View>
-
-      <TextInput
-        placeholder="제목"
-        value={title}
-        onChangeText={text => setTitle(text)}
-        placeholderTextColor={COLORS.light_gray}
-        style={styles.textInputTitle}
-      />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
-        style={{flex: 1}}>
         <TextInput
-          placeholder="내용"
-          value={content}
-          onChangeText={text => setContent(text)}
+          placeholder="제목"
+          value={title}
+          onChangeText={text => setTitle(text)}
           placeholderTextColor={COLORS.light_gray}
-          style={styles.textInputContent}
-          multiline={true}
+          style={styles.textInputTitle}
         />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : null}
+          style={{flex: 1}}>
+          <TextInput
+            placeholder="내용"
+            value={content}
+            onChangeText={text => setContent(text)}
+            placeholderTextColor={COLORS.light_gray}
+            style={styles.textInputContent}
+            multiline={true}
+          />
 
-        <ImagesContainer>
-          <ScrollView horizontal={true}>
-            {images.map((image, index) => {
-              let URI = image?.uri || image;
-              return (
-                <Image
-                  key={index}
-                  source={{uri: URI}}
-                  style={{
-                    width: 100,
-                    height: 100,
-                    borderRadius: 10,
-                    marginRight: 10,
-                  }}
-                />
-              );
-            })}
-          </ScrollView>
-        </ImagesContainer>
-        <Camera onImageSelect={onImageSelect} />
-      </KeyboardAvoidingView>
+          <ImagesContainer>
+            <ScrollView horizontal={true}>
+              {images.map((image, index) => {
+                let URI = image?.uri || image;
+                return (
+                  <Image
+                    key={index}
+                    source={{uri: URI}}
+                    style={{
+                      width: 100,
+                      height: 100,
+                      borderRadius: 10,
+                      marginRight: 10,
+                    }}
+                  />
+                );
+              })}
+            </ScrollView>
+          </ImagesContainer>
+          <Camera onImageSelect={onImageSelect} />
+        </KeyboardAvoidingView>
+      </View>
     </StyledContainer>
   );
 };
