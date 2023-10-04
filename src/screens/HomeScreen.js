@@ -17,7 +17,7 @@ import {StyledText} from '../components/Text';
 import {Box} from '../components/Box';
 import {RightArrowBtn} from '../components/Button';
 import StyledContainer from '../components/StyledContainer';
-import Gap from '../components/Gap';
+import Gap, {GapH} from '../components/Gap';
 import useUserInfo from '../use-userInfo';
 import {fetchPost, getData} from '../utils';
 import useProgress from '../use-progress';
@@ -178,6 +178,11 @@ const HomeScreen = ({navigation}) => {
               <StyledText content={'Arsha 클론코딩하기'} fontSize={20} />
               <RowView style={{marginTop: 10}}>
                 <ProgressBar status={'30%'} />
+                <Image
+                  source={require('../assets/icons/timer.png')}
+                  style={{width: 15, height: 15}}
+                />
+                <GapH width={5} />
                 <StyledText content={'18:38:43'} fontSize={16} />
               </RowView>
             </TouchableOpacity>
@@ -259,10 +264,7 @@ const HomeScreen = ({navigation}) => {
               <Gap />
             </>
           )}
-          <StyledText
-            content={'피로그래밍을 알차게 즐기고 싶다면?'}
-            fontSize={20}
-          />
+          <StyledText content={'더보기'} fontSize={20} />
           <Gap />
           <Box>
             <TouchableOpacity>
