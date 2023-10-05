@@ -18,20 +18,20 @@ export default function HistoryElement({history}) {
       <View style={{alignItems: 'flex-end'}}>
         <StyledText
           content={
-            history.price <0 
-              ? `${history.price.toLocaleString('en')}원`
-              : `+${history.price.toLocaleString('en')}원`
-            }
+            history.price < 0
+              ? `${history.price?.toLocaleString('en')}원`
+              : `+${history.price?.toLocaleString('en')}원`
+          }
           fontSize={18}
           weight={600}
           color={history.price < 0 ? 'white' : COLORS.green}
         />
         {/* 잔액 */}
-        <StyledSubText content={
-          history.price != 120000 
-          ? `${history.balance}원`
-          : '120000원'
-          }/>        
+        <StyledSubText
+          content={
+            history.price != 120000 ? `${history.balance}원` : '120000원'
+          }
+        />
       </View>
     </HistoryElementBox>
   );

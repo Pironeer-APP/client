@@ -23,6 +23,7 @@ import dayjs from 'dayjs';
 import useProgress from '../use-progress';
 import {GapH} from '../components/Gap';
 import {MediumLoader, TinyLoader} from '../components/Loader';
+import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
 
 export const StatusCircle = ({grade = 4}) => {
   let imageSource;
@@ -312,10 +313,10 @@ const AssignmentScreen = () => {
       <HeaderDetail title={'과제'} />
       {!!isLoading ? (
         <MediumLoader />
-      ) : assignment.length == 0 ? (
-        <StyledText content={'진행중인 과제가 없습니다'} />
+      ) : assignment.length === 0 ? (
+        <MsgForEmptyScreen content={'등록된 과제가 없습니다'} />
       ) : (
-        <View style={{flex: 1, padding: 20, paddingLeft: 10}}>
+        <View style={{flex: 1, paddingRight: 20, paddingLeft: 10}}>
           <FlatList
             data={assignment}
             renderItem={({item, index}) => (
@@ -333,7 +334,7 @@ const AssignmentScreen = () => {
     </StyledContainer>
   );
 };
-const AsgContainer = styled.View`
+export const AsgContainer = styled.View`
   flex-direction: row;
   align-items: center;
 `;

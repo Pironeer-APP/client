@@ -23,6 +23,7 @@ import {useRoute} from '@react-navigation/native';
 import {fetchGet, fetchPost, getData} from '../utils';
 import useUserInfo from '../use-userInfo';
 import {MediumLoader} from '../components/Loader';
+import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -88,23 +89,32 @@ const RenderItem = ({item}) => (
 
 const FirstRoute = ({posts}) => (
   <View style={{flex: 1}}>
-    <FlatList
-      data={posts}
-      renderItem={RenderItem}
-      keyExtractor={item => item.post_id}
-    />
+    {posts.length === 0 ? (
+      <MsgForEmptyScreen content={'등록된 공지글이 없습니다.'} />
+    ) : (
+      <FlatList
+        data={posts}
+        renderItem={RenderItem}
+        keyExtractor={item => item.post_id}
+      />
+    )}
   </View>
 );
 
 const FilteredItems = ({category, posts}) => {
   const filteredPosts = posts?.filter(item => item.category === category);
+
   return (
     <View style={{flex: 1}}>
-      <FlatList
-        data={filteredPosts}
-        renderItem={RenderItem}
-        keyExtractor={item => item.post_id}
-      />
+      {filteredPosts.length === 0 ? (
+        <MsgForEmptyScreen content={'등록된 공지글이 없습니다.'} />
+      ) : (
+        <FlatList
+          data={filteredPosts}
+          renderItem={RenderItem}
+          keyExtractor={item => item.post_id}
+        />
+      )}
     </View>
   );
 };
