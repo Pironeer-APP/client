@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
+  Alert
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
@@ -21,6 +22,8 @@ import Gap from '../components/Gap';
 import useUserInfo from '../use-userInfo';
 import {fetchPost, getData} from '../utils';
 import useProgress from '../use-progress';
+
+import messaging from '@react-native-firebase/messaging';
 
 const Header = () => (
   <View>
@@ -58,7 +61,7 @@ export const ProgressBar = props => (
   </StyledProgressBar>
 );
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({navigation}) => {  
   // status bar 색상설정
   if (Platform.OS === 'android') {
     StatusBar.setBackgroundColor('black');

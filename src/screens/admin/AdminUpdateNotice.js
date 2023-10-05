@@ -14,7 +14,7 @@ import HeaderDetail from '../../components/Header';
 import {COLORS} from '../../assets/Theme';
 import {Camera, ChooseCategory, ImagesContainer} from './AdminCreateNotice';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {fetchPost, getAPIHost, getData} from '../../utils';
+import {fetchPost, getAPIHost, getData, pushNoti} from '../../utils';
 
 const AdminUpdateNotice = () => {
   const route = useRoute();
@@ -41,6 +41,7 @@ const AdminUpdateNotice = () => {
       if (imgsIsChanged) {
         updateImages(post.post_id);
       }
+      await pushNoti({title: `수정된 공지가 있습니다-${title}`, body: content});
       navigation.navigate('AnnouncementScreen');
     } catch (error) {
       console.error('Error sending data:', error);

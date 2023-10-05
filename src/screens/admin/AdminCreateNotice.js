@@ -19,7 +19,7 @@ import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import {StyledText} from '../../components/Text';
 import {COLORS} from '../../assets/Theme';
-import {fetchPost, getAPIHost, getData} from '../../utils';
+import {fetchPost, getAPIHost, getData, pushNoti} from '../../utils';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -80,6 +80,7 @@ const AdminCreateNotice = () => {
       if (result.createdPostId && selectedImages.length > 0) {
         uploadImages(result.createdPostId);
       }
+      await pushNoti({title: title, body: content});
       navigation.goBack();
     } catch (error) {
       console.error('Error sending data:', error);
