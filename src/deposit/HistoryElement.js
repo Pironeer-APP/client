@@ -11,23 +11,29 @@ export default function HistoryElement({history}) {
     <HistoryElementBox>
       <RowView>
         <StyledSubText content={`${history.monthDay}`} />
-        {/* <StyledSubText content={`03.04`} /> */}
         <GapH />
         <StyledText content={`${history.type}`} fontSize={18} />
       </RowView>
       <View style={{alignItems: 'flex-end'}}>
         <StyledText
           content={
-            history.price > 0
-              ? `+${history.price.toLocaleString('en')}원`
-              : `${history.price.toLocaleString('en')}원`
+            history.price < 0
+              ? `${history.price?.toLocaleString('en')}원`
+              : `+${history.price?.toLocaleString('en')}원`
           }
           fontSize={18}
           weight={600}
           color={history.price < 0 ? 'white' : COLORS.green}
         />
+        <Gap height={5} />
         {/* 잔액 */}
-        {/* <StyledSubText content={'11,0000원'} /> */}
+        <StyledSubText
+          content={
+            history.price != 120000
+              ? `${history.balance?.toLocaleString('en')}원`
+              : '120,000원'
+          }
+        />
       </View>
     </HistoryElementBox>
   );

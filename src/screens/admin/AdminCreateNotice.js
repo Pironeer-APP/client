@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   NativeModules,
   ScrollView,
+  Alert,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -72,18 +73,22 @@ const AdminCreateNotice = () => {
 
   const sendDataToServer = async () => {
     const url = '/post/create';
-    const userToken = await getData('user_token')
+    const userToken = await getData('user_token');
     const body = {title, content, category, userToken};
-    console.log('FE:', body);
-    try {
-      const result = await fetchPost(url, body); //서버에서 result.insertId return
-      if (result.createdPostId && selectedImages.length > 0) {
-        uploadImages(result.createdPostId);
+
+    if (title.length === 0 || content.length === 0) {
+      Alert.alert('내용을 입력해주세요');
+    } else {
+      try {
+        const result = await fetchPost(url, body); //서버에서 result.insertId return
+        if (result.createdPostId && selectedImages.length > 0) {
+          uploadImages(result.createdPostId);
+        }
+        await pushNoti({title: title, body: content});
+        navigation.goBack();
+      } catch (error) {
+        console.error('Error sending data:', error);
       }
-      await pushNoti({title: title, body: content});
-      navigation.goBack();
-    } catch (error) {
-      console.error('Error sending data:', error);
     }
   };
 
@@ -138,48 +143,49 @@ const AdminCreateNotice = () => {
         button={'완료'}
         buttonOnPress={sendDataToServer}
       />
+      <View style={{padding: 20, flex: 1}}>
+        <View>
+          <ChooseCategory category={category} setCategory={setCategory} />
+        </View>
 
-      <View>
-        <ChooseCategory category={category} setCategory={setCategory} />
-      </View>
-
-      <TextInput
-        placeholder="제목"
-        value={title}
-        onChangeText={text => setTitle(text)}
-        placeholderTextColor={COLORS.light_gray}
-        style={styles.textInputTitle}
-      />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
-        style={{flex: 1}}>
         <TextInput
-          placeholder="내용"
-          value={content}
-          onChangeText={text => setContent(text)}
+          placeholder="제목"
+          value={title}
+          onChangeText={text => setTitle(text)}
           placeholderTextColor={COLORS.light_gray}
-          style={styles.textInputContent}
-          multiline={true}
+          style={styles.textInputTitle}
         />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : null}
+          style={{flex: 1}}>
+          <TextInput
+            placeholder="내용"
+            value={content}
+            onChangeText={text => setContent(text)}
+            placeholderTextColor={COLORS.light_gray}
+            style={styles.textInputContent}
+            multiline={true}
+          />
 
-        <ImagesContainer>
-          <ScrollView horizontal={true}>
-            {selectedImages.map((image, index) => (
-              <Image
-                key={index}
-                source={{uri: image.uri}}
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: 10,
-                  marginRight: 10,
-                }}
-              />
-            ))}
-          </ScrollView>
-        </ImagesContainer>
-        <Camera onImageSelect={onImageSelect} />
-      </KeyboardAvoidingView>
+          <ImagesContainer>
+            <ScrollView horizontal={true}>
+              {selectedImages.map((image, index) => (
+                <Image
+                  key={index}
+                  source={{uri: image.uri}}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 10,
+                    marginRight: 10,
+                  }}
+                />
+              ))}
+            </ScrollView>
+          </ImagesContainer>
+          <Camera onImageSelect={onImageSelect} />
+        </KeyboardAvoidingView>
+      </View>
     </StyledContainer>
   );
 };

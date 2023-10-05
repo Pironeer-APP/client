@@ -42,12 +42,12 @@ const AdminCreateAssignment = () => {
   //  보낼 값
 
   const dateData = `${date.getFullYear()}-${RenderMonth}-${date.getDate()} ${RenderHour}:${RenderMinutes}:00`;
-  console.log(dateData);
+
   const createAssign = async () => {
     const userToken = await getData('user_token');
     const url = `/assign/createAssign`;
     const body = {userToken, title, dateData};
-    // console.log(level, body);
+
     try {
       await fetchPost(url, body);
       navigation.goBack();

@@ -11,14 +11,17 @@ export default function AdminDepositList({adminInfo}) {
   }, []);
 
   return (
-    <ScrollView>
-      {userList?.map(user => (
-        <AdminDepositElement
-          key={user.user_id}
-          userInfo={user}
-          adminInfo={adminInfo}
-        />
-      ))}
-    </ScrollView>
+    <View style={{padding: 20}}>
+      <ScrollView>
+        {userList?.map(user => (
+          <AdminDepositElement
+            key={user.user_id}
+            userInfo={user}
+            adminInfo={adminInfo}
+          />
+        ))}
+        <Gap height={200} />
+      </ScrollView>
+    </View>
   );
 }
