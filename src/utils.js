@@ -101,7 +101,6 @@ export const pushNoti = async (body) => {
   const myToken = await messaging().getToken();
   body.myToken = myToken;
   const res = await fetchPost(url, body);
-  console.log(res);
 }
 // 기기 토큰 서버에 전송
 export const sendToken = async (token) => {
