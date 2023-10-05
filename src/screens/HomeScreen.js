@@ -8,8 +8,10 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
+  Alert,
+  Animated,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
@@ -21,6 +23,9 @@ import Gap, {GapH} from '../components/Gap';
 import useUserInfo from '../use-userInfo';
 import {fetchPost, getData} from '../utils';
 import useProgress from '../use-progress';
+import {TinyLoader} from '../components/Loader';
+
+import messaging from '@react-native-firebase/messaging';
 
 const Header = () => (
   <View>
@@ -44,26 +49,56 @@ export const StyledProgressBar = styled.View`
   border-radius: 5px;
   overflow: hidden;
   margin-top: ${Platform.OS === 'android' ? '5px' : 0};
+  flex: 1;
 `;
-export const ProgressBar = props => (
-  <StyledProgressBar>
-    <View
-      style={{
-        flexDirection: 'row',
-        width: `${props.status}`,
-        height: '100%',
-        backgroundColor: `${COLORS.green}`,
-      }}
-    />
-  </StyledProgressBar>
-);
 
-const HomeScreen = ({navigation}) => {
+export const ProgressBar = ({status}) => {
+  // width - (width - finalValue)
+  const [width, setWidth] = useState(0);
+  const animatedValue = useRef(new Animated.Value(width)).current;
+
+  useEffect(() => {
+    const finalValue = Math.floor(width * status);
+
+    Animated.timing(animatedValue, {
+      toValue: -(width - finalValue),
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, [status, width]);
+
+  return (
+    <StyledProgressBar
+      onLayout={e => {
+        const newWidth = e.nativeEvent.layout.width;
+        setWidth(newWidth);
+      }}>
+      <Animated.View
+        style={{
+          flexDirection: 'row',
+          width: '100%',
+          height: '100%',
+          backgroundColor: `${COLORS.green}`,
+          transform: [
+            {
+              translateX: animatedValue,
+            },
+          ],
+        }}
+      />
+    </StyledProgressBar>
+  );
+};
+
+const HomeScreen = ({navigation}) => {  
   // status bar 색상설정
-  if (Platform.OS === 'android') {
-    StatusBar.setBackgroundColor('black');
-  }
-  StatusBar.setBarStyle('light-content');
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      StatusBar.setBackgroundColor('black');
+    }
+    StatusBar.setBarStyle('light-content');
+  }, []);
+
   const isFocused = useIsFocused();
 
   const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
@@ -128,7 +163,9 @@ const HomeScreen = ({navigation}) => {
   // 프로그레스 계산
   const [assignLimit, setAssignLimit] = useState();
   const [assignProgress, setAssignProgress] = useState();
-  const [homeProgress, setHomeProgress] = useState();
+  const [homeProgress, setHomeProgress] = useState(NaN);
+  const [isTimerLoading, setIsTimerLoading] = useState(true);
+
   const getProgress = () => {
     const now = new Date();
     const cAssign = new Date(curAssign?.due_date);
@@ -138,12 +175,18 @@ const HomeScreen = ({navigation}) => {
     setAssignProgress(cAssign.getTime() - now.getTime());
 
     setHomeProgress(Math.trunc((assignProgress / assignLimit) * 100));
+
+    setIsTimerLoading(false);
   };
   useEffect(() => {
     setTimeout(() => {
       getProgress();
     }, 1000);
   });
+
+  useEffect(() => {
+    isNaN(homeProgress) ? setIsTimerLoading(true) : setIsTimerLoading(false);
+  }, [homeProgress]);
 
   const {convertTime} = useProgress();
 
@@ -174,18 +217,37 @@ const HomeScreen = ({navigation}) => {
                 />
                 <RightArrowBtn />
               </RowView>
-              <StyledText content={curTitle} fontSize={20} />
+              <StyledText content={curTitle} fontSize={18} />
               <RowView style={{marginTop: 10}}>
+                <ProgressBar status={homeProgress ? homeProgress * 0.01 : 1} />
 
-                <View style={{width: '70%'}}>
-                  <ProgressBar status={`${homeProgress ? homeProgress : 100}%`} />
-                </View>
+                {!!isTimerLoading ? (
+                  <View
+                    style={{
+                      width: 80,
+                      alignItems: 'center',
+                    }}>
+                    <TinyLoader />
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      width: 85,
+                      justifyContent: 'flex-end',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <StyledText
+                      content={`${hour}:${min}:${sec}`}
+                      fontSize={16}
+                    />
+                  </View>
+                )}
+                <GapH width={5} />
                 <Image
                   source={require('../assets/icons/timer.png')}
                   style={{width: 15, height: 15}}
                 />
-                <GapH width={5} />
-                <StyledText content={`${hour}:${min}:${sec}`} fontSize={16} />
               </RowView>
             </TouchableOpacity>
           </Box>
@@ -266,7 +328,19 @@ const HomeScreen = ({navigation}) => {
               <Gap />
             </>
           )}
-          <StyledText content={'더보기'} fontSize={20} />
+          {/* <StyledText content={'더보기'} fontSize={20} /> */}
+          <RowView>
+            <View
+              style={{flex: 1, height: 1, backgroundColor: COLORS.icon_gray}}
+            />
+            <Image
+              source={require('../assets/images/headerLogo.png')}
+              style={{width: 22, height: 22, margin: 10}}
+            />
+            <View
+              style={{flex: 1, height: 1, backgroundColor: COLORS.icon_gray}}
+            />
+          </RowView>
           <Gap />
           <Box>
             <TouchableOpacity>
@@ -314,6 +388,7 @@ const HomeScreen = ({navigation}) => {
               </TouchableOpacity>
             </Box>
           </View>
+          <Gap height={50} />
         </ScrollView>
       </View>
     </StyledContainer>

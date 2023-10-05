@@ -27,17 +27,17 @@ const DepositScreen = () => {
     getCouponInfo();
   }, []);
 
-  Platform.OS === 'android' ? StatusBar.setBackgroundColor('yellow') : null;
-
   const UseCoupon = async () => {
     const url = '/deposit/useCoupon';
     body = {userId: userInfoFromServer.user_id};
-    if (userInfoFromServer.deposit >= 120000) {
+    if (couponInfo.length === 0) {
+      Alert.alert('사용 가능한 보증금 방어권이 없습니다.');
+    } else if (userInfoFromServer.deposit >= 120000) {
       Alert.alert('보증금 12만원은 보증금 방어권을 사용하실 수 없습니다.');
     } else {
       const res = await fetchPost(url, body);
       getCouponInfo(userId);
-      console.log(res);
+      // console.log(res);
     }
   };
 

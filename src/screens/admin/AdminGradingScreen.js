@@ -19,6 +19,7 @@ import Gap from '../../components/Gap';
 import {COLORS} from '../../assets/Theme';
 import {Image} from 'react-native-svg';
 import {fetchPost, getData} from '../../utils';
+import {MediumLoader} from '../../components/Loader';
 
 // const StdGradingData = [
 //   {
@@ -97,13 +98,12 @@ const Student = ({
       inputGrade: grade,
     };
     try {
-      console.log(body);
       await fetchPost(url, body);
       setModalVisible(!modalVisible);
       setStdGrade(grade);
       getStdsData();
     } catch (error) {
-      console.log(error);
+      console.log('에러 발생: ', error);
     }
   };
   const updateGrade = async (grade, assignScheduleId) => {
@@ -116,7 +116,6 @@ const Student = ({
       updateGrade: grade,
     };
     try {
-      console.log(body);
       await fetchPost(url, body);
       setModalVisible(!modalVisible);
       setStdGrade(grade);
@@ -203,6 +202,7 @@ const AdminGradingScreen = () => {
   const [stdId, setStdId] = useState(0);
   const [stdGrade, setStdGrade] = useState(null);
   const [stdInfo, setStdInfo] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // console.log(level, title, assignId);
   const getStdsData = async () => {
@@ -211,8 +211,9 @@ const AdminGradingScreen = () => {
     const body = {assignId, userToken};
     try {
       const stdDatas = await fetchPost(url, body);
-      console.log('stdDatas: ', stdDatas.data);
+
       setStdInfo(stdDatas.data);
+      setIsLoading(false);
     } catch (error) {
       console.error('Error sending data:', error);
     }
@@ -246,14 +247,17 @@ const AdminGradingScreen = () => {
   return (
     <StyledContainer>
       <HeaderDetail title={title} />
-
-      <View style={{padding: 20}}>
-        <FlatList
-          data={stdInfo}
-          renderItem={renderItem}
-          keyExtractor={item => item.studentId}
-        />
-      </View>
+      {!!isLoading ? (
+        <MediumLoader />
+      ) : (
+        <View style={{padding: 20}}>
+          <FlatList
+            data={stdInfo}
+            renderItem={renderItem}
+            keyExtractor={item => item.studentId}
+          />
+        </View>
+      )}
     </StyledContainer>
   );
 };
