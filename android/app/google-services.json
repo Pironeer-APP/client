@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1081179641208",
-    "project_id": "pironeerapp",
-    "storage_bucket": "pironeerapp.appspot.com"
+    "project_number": "955713730873",
+    "project_id": "pirogramming-97844",
+    "storage_bucket": "pirogramming-97844.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1081179641208:android:704feb1b92f144cba2e48d",
+        "mobilesdk_app_id": "1:955713730873:android:4b76d6d3e1ad7fd25790e8",
         "android_client_info": {
           "package_name": "com.client"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDbFD02Njut-r6bCYzFrHF1CNfst8uFzo4"
+          "current_key": "AIzaSyAemKHqITaB0f94OzdP6kcvryDVI9V9z8w"
         }
       ],
       "services": {

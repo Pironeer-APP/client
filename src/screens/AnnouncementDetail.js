@@ -16,7 +16,7 @@ import {useRoute, useIsFocused} from '@react-navigation/native';
 import {StyledSubText, StyledText} from '../components/Text';
 import useUserInfo from '../use-userInfo';
 import {MainButton} from '../components/Button';
-import {fetchGet, fetchPost, getAPIHost, getData} from '../utils';
+import {fetchGet, fetchPost, getAPIHost, getData, pushNoti} from '../utils';
 import {Badge} from './AnnouncementScreen';
 import {RowView} from './HomeScreen';
 import Gap from '../components/Gap';
@@ -83,6 +83,7 @@ const AnnouncementDetail = ({navigation}) => {
 
     try {
       await fetchPost(url, body);
+      await pushNoti({title: '공지가 삭제되었습니다.', body: ''});
       navigation.navigate('AnnouncementScreen');
     } catch (error) {
       console.error('Error sending data:', error);

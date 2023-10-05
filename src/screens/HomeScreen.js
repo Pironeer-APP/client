@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
+  Alert,
   Animated,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
@@ -23,6 +24,8 @@ import useUserInfo from '../use-userInfo';
 import {fetchPost, getData} from '../utils';
 import useProgress from '../use-progress';
 import {TinyLoader} from '../components/Loader';
+
+import messaging from '@react-native-firebase/messaging';
 
 const Header = () => (
   <View>
@@ -87,7 +90,7 @@ export const ProgressBar = ({status}) => {
   );
 };
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({navigation}) => {  
   // status bar 색상설정
   useEffect(() => {
     if (Platform.OS === 'android') {
