@@ -13,7 +13,7 @@ import HeaderDetail from '../../components/Header';
 import {useRoute} from '@react-navigation/native';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
-import {StyledText} from '../../components/Text';
+import {StyledSubText, StyledText} from '../../components/Text';
 import {StatusCircle} from '../AssignmentScreen'; // 0: x / 1, 2: semo / 3: O
 import Gap from '../../components/Gap';
 import {COLORS} from '../../assets/Theme';
@@ -127,7 +127,7 @@ const Student = ({
 
   return (
     <>
-      <Modal
+       <Modal
         isVisible={modalVisible}
         animationIn={'fadeIn'}
         animationOut={'fadeOut'}
@@ -136,42 +136,71 @@ const Student = ({
         <View style={styles.modalView}>
           <StyledText content={`${name}`} fontSize={20} />
           <RowView style={{gap: 20}}>
-            <TouchableOpacity
-              onPress={
-                grade == null
-                  ? () => createGrade(4, assignScheduleId)
-                  : () => updateGrade(4, assignScheduleId)
-              }>
-              <StatusCircle grade={4} />
-              {grade == undefined ? null : <UnSelectedBtn />}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={
-                grade == null
-                  ? () => createGrade(0, assignScheduleId)
-                  : () => updateGrade(0, assignScheduleId)
-              }>
-              <StatusCircle grade={0} />
-              {grade == 0 ? null : <UnSelectedBtn />}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={
-                grade == null
-                  ? () => createGrade(1, assignScheduleId)
-                  : () => updateGrade(1, assignScheduleId)
-              }>
-              <StatusCircle grade={1} />
-              {grade == 1 ? null : <UnSelectedBtn />}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={
-                grade == null
-                  ? () => createGrade(3, assignScheduleId)
-                  : () => updateGrade(3, assignScheduleId)
-              }>
-              <StatusCircle grade={3} />
-              {grade == 3 ? null : <UnSelectedBtn />}
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity
+                onPress={
+                  grade == null
+                    ? () => createGrade(4, assignScheduleId)
+                    : () => updateGrade(4, assignScheduleId)
+                }>
+                <StatusCircle grade={4} />
+                {grade == undefined ? null : <UnSelectedBtn />}
+              </TouchableOpacity>
+              <Gap height={5} />
+              <StyledSubText content={'낫옛'} />
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={
+                  grade == null
+                    ? () => createGrade(0, assignScheduleId)
+                    : () => updateGrade(0, assignScheduleId)
+                }>
+                <StatusCircle grade={0} />
+                {grade == 0 ? null : <UnSelectedBtn />}
+              </TouchableOpacity>
+              <Gap height={5} />
+              <StyledSubText content={'안함'} />
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={
+                  grade == null
+                    ? () => createGrade(1, assignScheduleId)
+                    : () => updateGrade(1, assignScheduleId)
+                }>
+                <StatusCircle grade={1} />
+                {grade == 1 ? null : <UnSelectedBtn />}
+              </TouchableOpacity>
+              <Gap height={5} />
+              <StyledSubText content={'미흡'} />
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={
+                  grade == null
+                    ? () => createGrade(2, assignScheduleId)
+                    : () => updateGrade(2, assignScheduleId)
+                }>
+                <StatusCircle grade={1} />
+                {grade == 2 ? null : <UnSelectedBtn />}
+              </TouchableOpacity>
+              <Gap height={5} />
+              <StyledSubText content={'지각'} />
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={
+                  grade == null
+                    ? () => createGrade(3, assignScheduleId)
+                    : () => updateGrade(3, assignScheduleId)
+                }>
+                <StatusCircle grade={3} />
+                {grade == 3 ? null : <UnSelectedBtn />}
+              </TouchableOpacity>
+              <Gap height={5} />
+              <StyledSubText content={'완료'} />
+            </View>
           </RowView>
         </View>
       </Modal>
