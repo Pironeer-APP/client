@@ -14,6 +14,7 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {fetchPost, getData} from '../../utils';
 import dayjs from 'dayjs';
 import MsgForEmptyScreen from '../../components/MsgForEmptyScreen';
+import {MediumLoader} from '../../components/Loader';
 
 const ModalBox = styled.View`
   background-color: ${COLORS.gray};
@@ -153,6 +154,7 @@ const AdminAssignmentScreen = ({route}) => {
   const [assigns, setAssigns] = useState([]);
   const isFocused = useIsFocused();
   const getLevel = route.params.userLevel;
+  const [isLoading, setIsLoading] = useState(true);
 
   const renderItem = ({item}) => {
     // console.log(item);
@@ -173,11 +175,12 @@ const AdminAssignmentScreen = ({route}) => {
     const body = {
       userToken: userToken,
     };
-    console.log('body: ', body);
+    // console.log('body: ', body);
     try {
       const responseData = await fetchPost(url, body);
       console.log('받아온 데이터: ', responseData);
       setAssigns(responseData.data);
+      setIsLoading(false);
     } catch (error) {
       // 네트워크 오류 또는 예외 처리
       console.error(error);
@@ -191,7 +194,9 @@ const AdminAssignmentScreen = ({route}) => {
   return (
     <StyledContainer>
       <HeaderDetail title={'과제 채점'} />
-      {assigns.length === 0 ? (
+      {!!isLoading ? (
+        <MediumLoader />
+      ) : assigns.length === 0 ? (
         <MsgForEmptyScreen content={'등록된 과제가 없습니다.'} />
       ) : (
         <View style={{flex: 1, paddingHorizontal: 20}}>
