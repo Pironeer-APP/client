@@ -45,7 +45,7 @@ export default function AdminDepositDetail() {
 
     const body = {
       adminToken: userToken,
-      coupon_id: coupon_id,
+      userInfo: userInfo,
     };
     const res = await fetchPost(url, body);
     console.log(res);
