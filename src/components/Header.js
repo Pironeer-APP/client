@@ -19,7 +19,12 @@ export default function HeaderDetail({
     navigation.goBack();
   };
   return (
-    <View style={{paddingVertical: 20, backgroundColor: `${backgroundColor}`}}>
+    <View
+      style={{
+        padding: 20,
+        backgroundColor: `${backgroundColor}`,
+        zIndex: 50,
+      }}>
       <RowView>
         <LeftArrowBtn onPress={handleGoBack} color={color} />
         <StyledText content={title} fontSize={20} />

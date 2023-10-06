@@ -7,22 +7,31 @@ import {COLORS} from '../assets/Theme';
 import styled from 'styled-components';
 
 export default function HistoryElement({history}) {
-  console.log(history);
   return (
     <HistoryElementBox>
       <RowView>
-        {/* <StyledSubText content={`${history.monthDay}`} /> */}
-        <StyledSubText content={`03.04`} />
+        <StyledSubText content={`${history.monthDay}`} />
+        {/* <StyledSubText content={`03.04`} /> */}
         <GapH />
         <StyledText content={`${history.type}`} fontSize={18} />
       </RowView>
       <View style={{alignItems: 'flex-end'}}>
         <StyledText
-          content={`${history.price.toLocaleString('en')}원`}
-          fontSize={20}
+          content={
+            history.price < 0
+              ? `${history.price?.toLocaleString('en')}원`
+              : `+${history.price?.toLocaleString('en')}원`
+          }
+          fontSize={18}
           weight={600}
+          color={history.price < 0 ? 'white' : COLORS.green}
         />
-        <StyledSubText content={'11,0000원'} />
+        {/* 잔액 */}
+        <StyledSubText
+          content={
+            history.price != 120000 ? `${history.balance}원` : '120000원'
+          }
+        />
       </View>
     </HistoryElementBox>
   );

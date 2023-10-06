@@ -1,5 +1,5 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React, { useEffect } from 'react';
+import {Alert, Platform, StyleSheet, Text, View} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import HeaderDetail from '../components/Header';
 import StyledContainer from '../components/StyledContainer';
 import DepositHistory from '../deposit/DepositHistory';
@@ -7,51 +7,73 @@ import useDepositDetail from '../deposit/use-depositDetail';
 import DepositHistoryHeader from '../deposit/DepositHistoryHeader';
 import useUserInfo from '../use-userInfo';
 import AdminDepositList from '../deposit/AdminDepositList';
+import {COLORS} from '../assets/Theme';
+import {StatusBar} from 'react-native';
 
 const DepositScreen = () => {
-  const {
-    userToken,
-    userInfoFromServer,
-    getUserToken,
-    getUserInfoFromServer
-  } = useUserInfo();
-  
-  const {
-    depositHistory,
-    couponInfo,
-    getDepositHistory,
-    getCouponInfo,
-  } = useDepositDetail();
-  
-  useEffect(() => {
-    getUserToken();
-  }, []);
-  useEffect(() => {
-    getUserInfoFromServer(userToken);
-  }, [userToken]);
+  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
+
+  const {depositHistory, couponInfo, getDepositHistory, getCouponInfo} =
+    useDepositDetail();
 
   useEffect(() => {
-    getDepositHistory(userToken);
-  }, []);
-  useEffect(() => {
-    getCouponInfo(userToken);
+    getUserInfoFromServer();
   }, []);
 
+  useEffect(() => {
+    getDepositHistory();
+  }, []);
+  useEffect(() => {
+    getCouponInfo();
+  }, []);
+
+  const UseCoupon = async () => {
+    const url = '/deposit/useCoupon';
+    body = {userId: userInfoFromServer.user_id};
+    if (couponInfo.length === 0) {
+      Alert.alert('사용 가능한 보증금 방어권이 없습니다.');
+    } else if (userInfoFromServer.deposit >= 120000) {
+      Alert.alert('보증금 12만원은 보증금 방어권을 사용하실 수 없습니다.');
+    } else {
+      const res = await fetchPost(url, body);
+      getCouponInfo(userId);
+      // console.log(res);
+    }
+  };
+
+  const onPressUseCoupon = () => {
+    Alert.alert(`보증금 방어권을 사용하시겠습니까?`, '', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => UseCoupon()},
+    ]);
+  };
+  // console.log(couponInfo);
   return (
     <StyledContainer>
-      <HeaderDetail title={!!userInfoFromServer.is_admin ? '보증금 관리' : `${userInfoFromServer.name}님의 보증금 관리`} />
+      <StatusBar backgroundColor={COLORS.deposit_header_blue} />
+      {!!userInfoFromServer.is_admin ? (
+        <HeaderDetail title={'보증금 관리'} />
+      ) : (
+        <HeaderDetail
+          title={`${userInfoFromServer.name}님의 보증금 관리`}
+          backgroundColor={COLORS.deposit_header_blue}
+          color={'white'}
+        />
+      )}
       {!!userInfoFromServer.is_admin && (
-        <AdminDepositList />
+        <AdminDepositList adminInfo={userInfoFromServer} />
       )}
       {!userInfoFromServer.is_admin && (
         <StyledContainer>
           <DepositHistoryHeader
             userInfo={userInfoFromServer}
             couponInfo={couponInfo}
+            onPressUseCoupon={onPressUseCoupon}
           />
-          <DepositHistory
-            depositHistory={depositHistory}
-          />
+          <DepositHistory depositHistory={depositHistory} />
         </StyledContainer>
       )}
     </StyledContainer>

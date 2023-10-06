@@ -7,15 +7,17 @@ import {
   Image,
 } from 'react-native';
 import React from 'react';
-import {FontStyledText} from './Text';
+import {FontStyledText, StyledText} from './Text';
 import {COLORS} from '../assets/Theme';
 
 export const MainButton = ({height = 70, content, onPress, fontSize = 22}) => {
   return (
     <TouchableOpacity
-      style={[styles.container, {height: height}]}
+      style={[styles.container, {height: height, marginBottom: 40}]}
       onPress={onPress}>
-      <FontStyledText style={[styles.text, {fontSize: fontSize}]}>{content}</FontStyledText>
+      <FontStyledText style={[styles.text, {fontSize: fontSize}]}>
+        {content}
+      </FontStyledText>
     </TouchableOpacity>
   );
 };
@@ -69,15 +71,22 @@ export const RightArrowBtn = ({onPress, size = 10}) => {
     </TouchableOpacity>
   );
 };
+export const UnTouchableRightArrow = ({size = 10}) => (
+  <Image
+    source={require('../assets/icons/right-arrow.png')}
+    style={[styles.arrow, {width: size}]}
+  />
+);
 
 export const CouponButton = ({selected, content, onPress}) => {
-  const couponStyle = selected
-    ? styles.couponSelected
-    : styles.couponNotSelected;
-  const couponText = selected ? styles.text : styles.notSelectedText;
   return (
-    <TouchableOpacity style={couponStyle} onPress={onPress}>
-      <FontStyledText style={couponText}>{content}</FontStyledText>
+    <TouchableOpacity style={styles.couponNotSelected} onPress={onPress}>
+      <StyledText
+        content={content}
+        fontSize={20}
+        color={'black'}
+        weight={600}
+      />
     </TouchableOpacity>
   );
 };
@@ -103,6 +112,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#000000',
     fontWeight: '600',
+    alignItems: 'center',
   },
   loginContainer: {
     justifyContent: 'center',
@@ -121,17 +131,11 @@ const styles = StyleSheet.create({
   },
   couponNotSelected: {
     justifyContent: 'center',
-    width: '70%',
-    height: 50,
-    backgroundColor: COLORS.light_gray,
+    width: '100%',
+    backgroundColor: `${COLORS.lightTheme_btn}`,
+    alignItems: 'center',
     borderRadius: 10,
-  },
-  couponSelected: {
-    justifyContent: 'center',
-    width: '70%',
-    height: 50,
-    backgroundColor: COLORS.green,
-    borderRadius: 10,
+    paddingVertical: 20,
   },
   notSelectedText: {
     fontSize: 22,
