@@ -1,13 +1,10 @@
 import {
   View,
-  Text,
   TextInput,
   StyleSheet,
-  Button,
-  Touchable,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -50,12 +47,18 @@ export default function AdminAddSessionScreen() {
       place: sessionPlace,
       userToken: userToken,
     };
-    try {
-      const res = await fetchPost(url, body);
-      console.log(res);
-      navigation.goBack();
-    } catch (error) {
-      console.log(error);
+    if (sessionTitle.length === 0) {
+      Alert.alert('제목 입력해야지?');
+    } else if (sessionPlace.length === 0) {
+      Alert.alert('장소 입력해야지?');
+    } else {
+      try {
+        const res = await fetchPost(url, body);
+        console.log(res);
+        navigation.navigate('AdminSessionScreen');
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 

@@ -1,4 +1,4 @@
-import {View, Text, TextInput, KeyboardAvoidingView} from 'react-native';
+import {View, Text, TextInput, KeyboardAvoidingView, Alert} from 'react-native';
 import React, {useState} from 'react';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
@@ -41,23 +41,21 @@ const AdminCreateAssignment = () => {
 
   //  보낼 값
 
-  const date2 = new Date(date);
-  date2.setHours(date2.getHours() + 9);
-  const hour2 = `${date2.getHours()}`;
-  const RenderHour2 = hour2.padStart(2, '0');
-  
-  const dateData = `${date2.getFullYear()}-${RenderMonth}-${date2.getDate()} ${RenderHour2}:${RenderMinutes}:00`;
-  console.log(dateData);
+  const dateData = `${date.getFullYear()}-${RenderMonth}-${date.getDate()} ${RenderHour}:${RenderMinutes}:00`;
+
   const createAssign = async () => {
     const userToken = await getData('user_token');
     const url = `/assign/createAssign`;
     const body = {userToken, title, dateData};
-
-    try {
-      await fetchPost(url, body);
-      navigation.goBack();
-    } catch (error) {
-      console.error('Error sending data:', error);
+    if (title.length === 0) {
+      Alert.alert('제목 입력해');
+    } else {
+      try {
+        await fetchPost(url, body);
+        navigation.goBack();
+      } catch (error) {
+        console.error('Error sending data:', error);
+      }
     }
   };
 

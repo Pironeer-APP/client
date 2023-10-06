@@ -162,7 +162,7 @@ const InProgressAsgBox = props => {
                   <GapH width={9} />
                   <StyledSubText content={props.item.location} />
                 </View>
-                <Gap height={8} />
+                <Gap height={5} />
               </>
             ) : null}
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
