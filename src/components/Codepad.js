@@ -36,6 +36,7 @@ const Numberpad = ({onNumberPress, onDeletePress, code, setBottomSheet, setModal
     const url = `/attend/addAttend`;
     const body = {
       token: userToken,
+      input_code: code.join('')
     };
     const attenResult = await fetchPost(url, body);
     setCodeConfirmed(attenResult.result);
