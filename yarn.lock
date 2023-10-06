@@ -1776,24 +1776,6 @@
   dependencies:
     invariant "^2.2.4"
 
-"@react-native-firebase/analytics@^18.5.0":
-  version "18.5.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/analytics/-/analytics-18.5.0.tgz"
-  integrity sha512-+8fkDedcftieOBEkNdqEW0lS/FB9SKzfUc3yYXnJcLTy3Ceg9JZga/tWz4BGbbxPddUy1Sm2UuWDuOxsdkFUyA==
-
-"@react-native-firebase/app@^18.5.0", "@react-native-firebase/app@18.5.0":
-  version "18.5.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-18.5.0.tgz"
-  integrity sha512-AhHQi5KFDlKZn/lH7rEYtLfpsGamEq+P/cXZWcNPcP0WGlmi++abk7Pxnn4MjnG7TNhEyG/C9uq//qb6VhXaZg==
-  dependencies:
-    opencollective-postinstall "^2.0.1"
-    superstruct "^0.6.2"
-
-"@react-native-firebase/messaging@^18.5.0":
-  version "18.5.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-18.5.0.tgz"
-  integrity sha512-y1FApYxBMcygmbWBqUPFC+fCfvx6Yf6TdZewun7kPwx+S+tkYzoKx1IsXtxOXtqyJjCNEYirjFgNrs5SSd02zA==
-
 "@react-native/assets-registry@^0.72.0":
   version "0.72.0"
   resolved "https://registry.npmjs.org/@react-native/assets-registry/-/assets-registry-0.72.0.tgz"
