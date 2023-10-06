@@ -21,23 +21,33 @@ const Codebox = ({code}) => {
   );
 };
 
-const Numberpad = ({onNumberPress, onDeletePress, code, setBottomSheet, isBottomSheetVisible, setModalVisible, isModalVisible, setCodeConfirmed, codeConfirmed, confirmCode}) => {
-
-
+const Numberpad = ({
+  onNumberPress,
+  onDeletePress,
+  code,
+  setBottomSheet,
+  setModalVisible,
+  isModalVisible,
+  setCodeConfirmed,
+}) => {
   const numbers = [
     [1, 2, 3],
     [4, 5, 6],
     [7, 8, 9],
   ];
 
-  // useEffect(() => {
-  //   // 출석성공실패 모달 3초 후에 사라지게 하기
-  //   if (!isBottomSheetVisible) {
-  //     setTimeout(() => {
-  //       setModalVisible(!isModalVisible);
-  //     }, 1500);
-  //   }
-  // }, [codeConfirmed]);
+  //출석코드 일치 확인
+  const confirmCode = async () => {
+    const userToken = await getData('user_token');
+    const url = `/attend/addAttend`;
+    const body = {
+      token: userToken,
+    };
+    const attenResult = await fetchPost(url, body);
+    setCodeConfirmed(attenResult.result);
+    setBottomSheet(false);
+    setModalVisible(true);
+  };
 
   return (
     <View
@@ -72,7 +82,9 @@ const Numberpad = ({onNumberPress, onDeletePress, code, setBottomSheet, isBottom
             style={{width: 30, height: 20}}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={{position: 'relative', left: 19}} onPress={() => onNumberPress(0)}>
+        <TouchableOpacity
+          style={{position: 'relative', left: 19}}
+          onPress={() => onNumberPress(0)}>
           <StyledText content={0} fontSize={30} />
         </TouchableOpacity>
         <TouchableOpacity
@@ -128,8 +140,13 @@ const Numberpad = ({onNumberPress, onDeletePress, code, setBottomSheet, isBottom
   );
 };
 
-const Codepad = ({ setBottomSheet, setModalVisible, isModalVisible, setCodeConfirmed, codeConfirmed, confirmCode, codes, setCodes }) => {
-  // const [codes, setCodes] = useState(['', '', '', '']);
+const Codepad = ({
+  setBottomSheet,
+  setModalVisible,
+  isModalVisible,
+  setCodeConfirmed,
+}) => {
+  const [codes, setCodes] = useState(['', '', '', '']);
 
   const updateCode = (index, value) => {
     const updatedCodes = [...codes];

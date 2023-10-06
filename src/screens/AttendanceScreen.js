@@ -285,16 +285,20 @@ const AttendanceScreen = () => {
       setIsLoading(false);
       // setInitialScrollIndex(6);
       // console.log('받은 데이터: ', fetchAttenData.sessions);
-      
+
       // 오늘 세션있는지 확인
       const today = new Date();
-      const month = today.getMonth() + 1 < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1;
-      const day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
-      fetchAttenData.sessions.map((session) => {
+      const month =
+        today.getMonth() + 1 < 10
+          ? '0' + (today.getMonth() + 1)
+          : today.getMonth() + 1;
+      const day =
+        today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
+      fetchAttenData.sessions.map(session => {
         if (month == session.month && day == session.day) {
           setIsTodaySession(true);
         }
-      })
+      });
       console.log(isTodaySession);
 
       //데이터 안 세션들 중에서 오늘 날짜와 동일한 날짜인 세션 인덱스 찾기
@@ -303,10 +307,18 @@ const AttendanceScreen = () => {
       console.log('에러 발생: ', error);
     }
   };
-
+  
+  // 출석성공실패 모달 3초 후에 사라지게 하기
+  // if (isModalVisible) {
+  //   setTimeout(() => {
+  //     setModalVisible(false);
+  //   }, 1500);
+  // }
   useEffect(() => {
     userSessionInfo();
   }, []);
+  console.log('isBottom', isBottomSheetVisible);
+  console.log('ismodal', isModalVisible);
 
   // need to be changed [wonchae]
   const getItemLayout = (data, index) => {
@@ -349,7 +361,7 @@ const AttendanceScreen = () => {
       {!!isLoading ? (
         <MediumLoader />
       ) : (
-        <View style={{flex:1}}>
+        <View style={{flex: 1}}>
           <View style={{flex: 1, padding: 20, paddingLeft: 10}}>
             <FlatList
               data={attendance}
@@ -365,57 +377,52 @@ const AttendanceScreen = () => {
                 content={'출석하기'}
                 onPress={toggleBottomSheet}
                 marginBottom={0}
-              /> 
-            ) : null
-            }
+              />
+            ) : null}
           </View>
-          
+
           {/* 출석코드입력 모달 */}
           <Modal
             isVisible={isBottomSheetVisible}
             onBackdropPress={toggleBottomSheet}
             style={{justifyContent: 'flex-end', margin: 0}}>
             <View style={styles.modalContainer}>
-              <Codepad 
-              setBottomSheet={setBottomSheetVisible} 
-              isBottomSheetVisible={isBottomSheetVisible} 
-              setModalVisible={setModalVisible} 
-              isModalVisible={isModalVisible}
-              setCodeConfirmed={setCodeConfirmed}
-              codeConfirmed={codeConfirmed}
-              confirmCode={confirmCode}
-              codes={codes}
-              setCodes={setCodes}
+              <Codepad
+                setBottomSheet={setBottomSheetVisible}
+                setModalVisible={setModalVisible}
+                isModalVisible={isModalVisible}
+                setCodeConfirmed={setCodeConfirmed}
               />
             </View>
           </Modal>
 
           {/* 출석성공실패 모달 */}
+
           <Modal
-          isVisible={isModalVisible}
-          // onBackdropPress={toggleModal}
-          animationIn={'fadeIn'}
-          animationOut={'fadeOut'}
-          style={styles.centeredView}>
-          <View style={styles.modalView}>
-            {!!codeConfirmed ? (
-              <>
-                <Image
-                  source={require('../assets/images/attend_success.png')}
-                  resizeMode="contain"
-                  style={{width: 120, height: 120}}
-                />
-                <StyledText content={'출석 성공'} fontSize={25} />
+            isVisible={isModalVisible}
+            // onBackdropPress={toggleModal}
+            animationIn={'fadeIn'}
+            animationOut={'fadeOut'}
+            style={styles.centeredView}>
+            <View style={styles.modalView}>
+              {!!codeConfirmed ? (
+                <>
+                  <Image
+                    source={require('../assets/images/attend_success.png')}
+                    resizeMode="contain"
+                    style={{width: 120, height: 120}}
+                  />
+                  <StyledText content={'출석 성공'} fontSize={25} />
                 </>
-            ) : (
-              <>
-                <Image
-                  source={require('../assets/images/attend_late.png')}
-                  resizeMode="contain"
-                  style={{width: 120, height: 120}}
-                />
-                <StyledText content={'지각처리 되었습니다'} fontSize={25} />
-              </>
+              ) : (
+                <>
+                  <Image
+                    source={require('../assets/images/attend_late.png')}
+                    resizeMode="contain"
+                    style={{width: 120, height: 120}}
+                  />
+                  <StyledText content={'지각처리 되었습니다'} fontSize={25} />
+                </>
               )}
             </View>
           </Modal>
