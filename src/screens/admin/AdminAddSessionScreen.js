@@ -34,6 +34,7 @@ export default function AdminAddSessionScreen() {
 
   useEffect(() => {
     getUserToken();
+    setDate(date.setHours(10, 0, 0, 0));
   }, []);
 
   const onPressConfirm = async () => {

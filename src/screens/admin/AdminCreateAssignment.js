@@ -1,5 +1,5 @@
 import {View, Text, TextInput, KeyboardAvoidingView, Alert} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
 import {COLORS} from '../../assets/Theme';
@@ -58,6 +58,10 @@ const AdminCreateAssignment = () => {
       }
     }
   };
+
+  useEffect(() => {
+    setDate(date.setHours(10, 0, 0, 0));
+  }, []);
 
   return (
     <StyledContainer>

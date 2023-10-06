@@ -56,11 +56,11 @@ const StatusLine = () => {
 
 const InProgressAttendBox = props => {
   const today = new Date();
-  const month = props.date.getMonth() + 1;
-  const day = props.date.getDate();
+  const month = String(Number(props.date.getMonth()) + 1);
+  const day = String(props.date.getDate());
   const dayOfTheWeek = dayOfWeek(props.date.getDay());
-  let hour = props.date.getUTCHours();
-  const minute = props.date.getUTCMinutes();
+  let hour = String(props.date.getUTCHours());
+  const minute = String(props.date.getUTCMinutes());
   let dayWithZero = day;
 
   if (day < 9) {
@@ -140,7 +140,7 @@ const InProgressAttendBox = props => {
           <View style={{paddingHorizontal: 17, paddingVertical: 10}}>
             <RowView style={{marginBottom: 10}}>
               <StyledSubText
-                content={`${month}.${dayWithZero} ${dayOfTheWeek}`}
+                content={`${month.padStart(2, '0')}.${day.padStart(2, '0')} ${dayOfTheWeek}`}
               />
               <IsFaceBox isFace={props.isFace} />
             </RowView>
@@ -167,7 +167,7 @@ const InProgressAttendBox = props => {
                 resizeMode="contain"
               />
               <GapH width={9} />
-              <StyledSubText content={`${hour}:${minute}`} />
+              <StyledSubText content={`${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`} />
             </View>
           </View>
         </Box>
@@ -211,7 +211,7 @@ const DoneAttendBox = props => {
         <View style={{padding: 20}}>
           <RowView style={{marginVertical: 10}}>
             <View style={{alignItems: 'center'}}>
-              <StyledSubText content={`${month}.${day}`} fontSize={20} />
+              <StyledSubText content={`${month.padStart(2, '0')}.${day.padStart(2, '0')}`} fontSize={20} />
               <StyledSubText content={dayOfTheWeek} fontSize={20} />
             </View>
             <View style={{flex: 1, marginLeft: 20}}>
@@ -288,8 +288,8 @@ const AttendanceScreen = () => {
       
       // 오늘 세션있는지 확인
       const today = new Date();
-      const month = today.getMonth() + 1 < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1;
-      const day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
+      const month = String(Number(today.getMonth()) + 1).padStart(2, '0');
+      const day = String(Number(today.getDate())).padStart(2, '0');
       fetchAttenData.sessions.map((session) => {
         if (month == session.month && day == session.day) {
           setIsTodaySession(true);
@@ -308,16 +308,17 @@ const AttendanceScreen = () => {
     userSessionInfo();
   }, []);
 
+  // 자동스크롤
   // need to be changed [wonchae]
-  const getItemLayout = (data, index) => {
-    return {
-      length: 100,
-      offset: 100 * data.length,
-      index,
-    };
-  };
+  // const getItemLayout = (data, index) => {
+  //   return {
+  //     length: 100,
+  //     offset: 100 * data.length,
+  //     index,
+  //   };
+  // };
 
-  const [codes, setCodes] = useState(['', '', '', '']);
+  const [codes, setCodes] = useState('');
   
   //출석코드 일치 확인
   const confirmCode = async () => {
@@ -325,23 +326,20 @@ const AttendanceScreen = () => {
     const url = `/attend/addAttend`;
     const body = {
       token: userToken,
-      input_code: codes.join('')
+      input_code: codes
       // input_code: 1234
     };
     const attenResult = await fetchPost(url, body);
     setCodeConfirmed(attenResult.result);
     setBottomSheetVisible(!isBottomSheetVisible);
-    setModalVisible(!isModalVisible);
+    setModalVisible(true);
     // setModalVisible(!isModalVisible);
+    setTimeout(() => {
+      setModalVisible(false);
+    }, 1500);
     console.log('btm', isBottomSheetVisible);
     console.log('mod', isModalVisible);
   };
-  
-  if(isModalVisible) {
-    setTimeout(() => {
-      setModalVisible(!isModalVisible);
-    }, 1500);
-  }
 
   return (
     <StyledContainer>
@@ -355,8 +353,8 @@ const AttendanceScreen = () => {
               data={attendance}
               renderItem={renderAttenItem}
               keyExtractor={item => item.session_id}
-              getItemLayout={getItemLayout}
-              initialScrollIndex={initialScrollIndex}
+              // getItemLayout={getItemLayout} // 자동스크롤
+              // initialScrollIndex={initialScrollIndex}
             />
             {/* 오늘 세션이 있는 경우에만 출석하기 버튼 나타남  */}
             {!!isTodaySession ? (
@@ -377,12 +375,6 @@ const AttendanceScreen = () => {
             style={{justifyContent: 'flex-end', margin: 0}}>
             <View style={styles.modalContainer}>
               <Codepad 
-              setBottomSheet={setBottomSheetVisible} 
-              isBottomSheetVisible={isBottomSheetVisible} 
-              setModalVisible={setModalVisible} 
-              isModalVisible={isModalVisible}
-              setCodeConfirmed={setCodeConfirmed}
-              codeConfirmed={codeConfirmed}
               confirmCode={confirmCode}
               codes={codes}
               setCodes={setCodes}

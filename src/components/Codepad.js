@@ -21,7 +21,7 @@ const Codebox = ({code}) => {
   );
 };
 
-const Numberpad = ({onNumberPress, onDeletePress, code, setBottomSheet, isBottomSheetVisible, setModalVisible, isModalVisible, setCodeConfirmed, codeConfirmed, confirmCode}) => {
+const Numberpad = ({onNumberPress, onDeletePress, code, confirmCode}) => {
 
 
   const numbers = [
@@ -79,68 +79,34 @@ const Numberpad = ({onNumberPress, onDeletePress, code, setBottomSheet, isBottom
           style={{
             borderRadius: 10,
             padding: 9,
-            backgroundColor: code.includes('')
-              ? COLORS.icon_gray
-              : COLORS.green,
+            backgroundColor: code.length === 4
+              ? COLORS.green
+              : COLORS.icon_gray,
             position: 'relative',
             left: 13,
           }}
           onPress={confirmCode}
-          disabled={code.includes('') ? true : false}>
+          disabled={code.length === 4 ? false : true}>
           <StyledText
             content={'확인'}
             fontSize={28}
-            color={code.includes('') ? 'white' : 'black'}
+            color={code.length === 4 ? 'black' : 'white'}
           />
         </TouchableOpacity>
-
-        {/* 출결성공/실패 모달 */}
-        {/* <Modal
-          isVisible={isModalVisible}
-          onBackdropPress={toggleModal}
-          animationIn={'fadeIn'}
-          animationOut={'fadeOut'}
-          style={styles.centeredView}>
-          <View style={styles.modalView}>
-            {!!codeConfirmed ? (
-              <>
-                <Image
-                  source={require('../assets/images/attend_success.png')}
-                  resizeMode="contain"
-                  style={{width: 120, height: 120}}
-                />
-                <StyledText content={'출석 성공'} fontSize={25} />
-                </>
-            ) : (
-              <>
-                <Image
-                  source={require('../assets/images/attend_late.png')}
-                  resizeMode="contain"
-                  style={{width: 120, height: 120}}
-                />
-                <StyledText content={'지각처리 되었습니다'} fontSize={25} />
-              </>
-            )}
-          </View>
-        </Modal> */}
       </View>
     </View>
   );
 };
 
-const Codepad = ({ setBottomSheet, setModalVisible, isModalVisible, setCodeConfirmed, codeConfirmed, confirmCode, codes, setCodes }) => {
-  // const [codes, setCodes] = useState(['', '', '', '']);
+const Codepad = ({ confirmCode, codes, setCodes }) => {
 
-  const updateCode = (index, value) => {
-    const updatedCodes = [...codes];
-    updatedCodes[index] = value;
-    setCodes(updatedCodes);
+  const updateCode = (value) => {
+    console.log(value);
+    setCodes(codes+value);
   };
 
-  const deleteCode = index => {
-    const updatedCodes = [...codes];
-    updatedCodes[index] = '';
-    setCodes(updatedCodes);
+  const deleteCode = () => {
+    setCodes(codes.slice(0, -1));
   };
 
   return (
@@ -151,36 +117,21 @@ const Codepad = ({ setBottomSheet, setModalVisible, isModalVisible, setCodeConfi
           justifyContent: 'space-around',
           marginVertical: 20,
         }}>
-        {codes.map((code, index) => (
-          <Codebox key={index} code={code} />
-        ))}
+        <Codebox code={codes.slice(0,1)} />
+        <Codebox code={codes.slice(1,2)} />
+        <Codebox code={codes.slice(2,3)} />
+        <Codebox code={codes.slice(3,4)} />
       </View>
       <Numberpad
         onNumberPress={number => {
-          for (let i = 0; i < codes.length; i++) {
-            if (codes[i] === '') {
-              updateCode(i, number);
-              break;
-            }
-          }
+          updateCode(number);
         }}
         onDeletePress={() => {
-          for (let i = 0; i < codes.length; i++) {
-            if (codes[i] === '' && i !== 0) {
-              deleteCode(i - 1);
-              break;
-            }
-          }
-          if (!codes.includes('')) {
-            deleteCode(3);
+          if(codes.length) {
+            deleteCode();
           }
         }}
         code={codes}
-        setBottomSheet={setBottomSheet}
-        setModalVisible={setModalVisible}
-        isModalVisible={isModalVisible}
-        setCodeConfirmed={setCodeConfirmed}
-        codeConfirmed={codeConfirmed}
         confirmCode={confirmCode}
       />
     </View>
