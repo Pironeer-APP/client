@@ -15,7 +15,6 @@ export default function useUserInfo() {
     const url = '/user/getOneUserInfo';
     const body = {userToken: storageUserToken};
     const res = await fetchPost(url, body);
-
     setUserInfoFromServer(res.oneUserInfo);
   }
 

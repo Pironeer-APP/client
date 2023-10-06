@@ -79,7 +79,7 @@ const AnnouncementDetail = ({navigation}) => {
     ]);
   };
   // delete fetch
-  const onPressDeletePost = () => {
+  const OnPressDeletePost = () => {
     Alert.alert('글을 삭제하시겠습니까?', '', [
       {
         text: '취소',
