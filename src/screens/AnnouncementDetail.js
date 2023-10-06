@@ -91,8 +91,8 @@ const AnnouncementDetail = ({navigation}) => {
 
   const dateString = `${post.created_at}`;
   const date = new Date(dateString);
-  date.setHours(date.getHours() + 9);
-  const RenderDate = dayjs(date).format('MM.DD ddd').toUpperCase();
+  // date.setHours(date.getHours() + 9);
+  const RenderDate = dayjs(date.getTime()).format('MM.DD ddd').toUpperCase();
 
   const windowWidth = Dimensions.get('window').width;
 

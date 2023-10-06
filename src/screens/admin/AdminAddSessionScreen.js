@@ -34,7 +34,9 @@ export default function AdminAddSessionScreen() {
 
   useEffect(() => {
     getUserToken();
-    setDate(date.setHours(10, 0, 0, 0));
+    const newDate = new Date();
+    newDate.setHours(10, 0, 0, 0);
+    setDate(newDate);
   }, []);
 
   const onPressConfirm = async () => {
@@ -50,7 +52,7 @@ export default function AdminAddSessionScreen() {
     };
     if (sessionTitle.length === 0) {
       Alert.alert('제목 입력해야지?');
-    } else if (sessionPlace.length === 0) {
+    } else if (face === true && sessionPlace.length === 0) {
       Alert.alert('장소 입력해야지?');
     } else {
       try {
@@ -129,6 +131,7 @@ export default function AdminAddSessionScreen() {
               minuteInterval={5}
               fadeToColor="none"
               is24hourSource="locale"
+              defaultValue={date}
             />
             </View>
           </StyledContainer>
