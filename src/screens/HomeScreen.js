@@ -10,6 +10,7 @@ import {
   StatusBar,
   Alert,
   Animated,
+  Linking,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
@@ -17,7 +18,7 @@ import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import {StyledText} from '../components/Text';
 import {Box} from '../components/Box';
-import {RightArrowBtn} from '../components/Button';
+import {RightArrowBtn, UnTouchableRightArrow} from '../components/Button';
 import StyledContainer from '../components/StyledContainer';
 import Gap, {GapH} from '../components/Gap';
 import useUserInfo from '../use-userInfo';
@@ -215,7 +216,7 @@ const HomeScreen = ({navigation}) => {
                   content={userInfoFromServer.is_admin ? '과제 관리' : '과제'}
                   fontSize={24}
                 />
-                <RightArrowBtn />
+                <UnTouchableRightArrow />
               </RowView>
               <StyledText content={curTitle} fontSize={18} />
               <RowView style={{marginTop: 10}}>
@@ -224,7 +225,7 @@ const HomeScreen = ({navigation}) => {
                 {!!isTimerLoading ? (
                   <View
                     style={{
-                      width: 80,
+                      width: 90,
                       alignItems: 'center',
                     }}>
                     <TinyLoader />
@@ -232,7 +233,7 @@ const HomeScreen = ({navigation}) => {
                 ) : (
                   <View
                     style={{
-                      width: 85,
+                      width: 90,
                       justifyContent: 'flex-end',
                       flexDirection: 'row',
                       alignItems: 'center',
@@ -343,10 +344,11 @@ const HomeScreen = ({navigation}) => {
           </RowView>
           <Gap />
           <Box>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => Linking.openURL('https://pirogramming.com/')}>
               <RowView style={{padding: 20}}>
                 <StyledText content={'공식 홈페이지 바로가기'} fontSize={20} />
-                <RightArrowBtn />
+                <UnTouchableRightArrow />
               </RowView>
             </TouchableOpacity>
           </Box>
@@ -355,7 +357,7 @@ const HomeScreen = ({navigation}) => {
             <TouchableOpacity>
               <RowView style={{padding: 20}}>
                 <StyledText content={'노션 바로가기'} fontSize={20} />
-                <RightArrowBtn />
+                <UnTouchableRightArrow />
               </RowView>
             </TouchableOpacity>
           </Box>
@@ -364,7 +366,7 @@ const HomeScreen = ({navigation}) => {
             <TouchableOpacity>
               <RowView style={{padding: 20}}>
                 <StyledText content={'피로스퀘어 바로가기'} fontSize={20} />
-                <RightArrowBtn />
+                <UnTouchableRightArrow />
               </RowView>
             </TouchableOpacity>
           </Box>

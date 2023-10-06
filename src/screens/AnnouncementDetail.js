@@ -63,10 +63,10 @@ const AnnouncementDetail = ({navigation}) => {
   }, [isFocused]);
 
   const imagesUrl = images.map(img => convertToUrl(img));
-  // console.log('imagesUrl: ', imagesUrl);
+
 
   // delete fetch
-  const onPressDeletePost = () => {
+  const OnPressDeletePost = () => {
     Alert.alert('글을 삭제하시겠습니까?', '', [
       {
         text: '취소',
@@ -115,7 +115,7 @@ const AnnouncementDetail = ({navigation}) => {
                   }>
                   <StyledSubText content={'수정'} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={onPressDeletePost}>
+                <TouchableOpacity onPress={OnPressDeletePost}>
                   <StyledSubText content={'삭제'} />
                 </TouchableOpacity>
               </RowView>

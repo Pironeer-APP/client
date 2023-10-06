@@ -50,7 +50,7 @@ const DepositScreen = () => {
       {text: 'OK', onPress: () => UseCoupon()},
     ]);
   };
-
+  // console.log(couponInfo);
   return (
     <StyledContainer>
       <StatusBar backgroundColor={COLORS.deposit_header_blue} />
@@ -67,7 +67,7 @@ const DepositScreen = () => {
         <AdminDepositList adminInfo={userInfoFromServer} />
       )}
       {!userInfoFromServer.is_admin && (
-        <StyledContainer style={{backgroundColor: 'red'}}>
+        <StyledContainer>
           <DepositHistoryHeader
             userInfo={userInfoFromServer}
             couponInfo={couponInfo}

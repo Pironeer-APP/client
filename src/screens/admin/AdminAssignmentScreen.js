@@ -8,11 +8,13 @@ import Modal from 'react-native-modal';
 import {StyledSubText, StyledText} from '../../components/Text';
 import {COLORS} from '../../assets/Theme';
 import {Box} from '../../components/Box';
-import {MainButton, RightArrowBtn} from '../../components/Button';
+import {MainButton, UnTouchableRightArrow} from '../../components/Button';
 import Gap from '../../components/Gap';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {fetchPost, getData} from '../../utils';
 import dayjs from 'dayjs';
+import MsgForEmptyScreen from '../../components/MsgForEmptyScreen';
+import {MediumLoader} from '../../components/Loader';
 
 const ModalBox = styled.View`
   background-color: ${COLORS.gray};
@@ -26,7 +28,14 @@ const ModalBtn = styled.TouchableOpacity`
   align-items: center;
   padding: 20px;
 `;
-const AssignmentBox = ({createdAt, title, due, level, assignId, getAssigns}) => {
+const AssignmentBox = ({
+  createdAt,
+  title,
+  due,
+  level,
+  assignId,
+  getAssigns,
+}) => {
   const navigation = useNavigation();
   const dateString = createdAt;
   const formattedDate = dayjs(dateString).format('MM.DD ddd');
@@ -131,7 +140,7 @@ const AssignmentBox = ({createdAt, title, due, level, assignId, getAssigns}) => 
               <Gap height={5} />
               <StyledText content={title} fontSize={20} />
             </View>
-            <RightArrowBtn />
+            <UnTouchableRightArrow />
           </RowView>
         </TouchableOpacity>
       </Box>
@@ -145,6 +154,7 @@ const AdminAssignmentScreen = ({route}) => {
   const [assigns, setAssigns] = useState([]);
   const isFocused = useIsFocused();
   const getLevel = route.params.userLevel;
+  const [isLoading, setIsLoading] = useState(true);
 
   const renderItem = ({item}) => {
     // console.log(item);
@@ -165,11 +175,12 @@ const AdminAssignmentScreen = ({route}) => {
     const body = {
       userToken: userToken,
     };
-    console.log('body: ', body);
+    // console.log('body: ', body);
     try {
       const responseData = await fetchPost(url, body);
       console.log('받아온 데이터: ', responseData);
       setAssigns(responseData.data);
+      setIsLoading(false);
     } catch (error) {
       // 네트워크 오류 또는 예외 처리
       console.error(error);
@@ -183,22 +194,28 @@ const AdminAssignmentScreen = ({route}) => {
   return (
     <StyledContainer>
       <HeaderDetail title={'과제 채점'} />
-      <View style={{flex: 1, padding: 20}}>
-        <View style={{flex: 1}}>
-          <FlatList
-            data={assigns}
-            renderItem={renderItem}
-            keyExtractor={item => item.assignschedule_id}
+      {!!isLoading ? (
+        <MediumLoader />
+      ) : assigns.length === 0 ? (
+        <MsgForEmptyScreen content={'등록된 과제가 없습니다.'} />
+      ) : (
+        <View style={{flex: 1, paddingHorizontal: 20}}>
+          <View style={{flex: 1}}>
+            <FlatList
+              data={assigns}
+              renderItem={renderItem}
+              keyExtractor={item => item.assignschedule_id}
+            />
+          </View>
+          <MainButton
+            content={'과제 등록하기'}
+            onPress={() => {
+              navigation.navigate('AdminCreateAssignment', {level: getLevel});
+            }}
+            height={60}
           />
         </View>
-        <MainButton
-          content={'과제 등록하기'}
-          onPress={() => {
-            navigation.navigate('AdminCreateAssignment', {level: getLevel});
-          }}
-          height={60}
-        />
-      </View>
+      )}
     </StyledContainer>
   );
 };

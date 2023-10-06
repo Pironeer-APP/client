@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 
 import {COLORS} from '../assets/Theme';
 import {FontStyledText, StyledSubText, StyledText} from '../components/Text';
-import {RightArrowBtn} from '../components/Button';
+import {RightArrowBtn, UnTouchableRightArrow} from '../components/Button';
 import {Box} from '../components/Box';
 import Gap from '../components/Gap';
 import {RowView} from '../screens/HomeScreen';
@@ -60,7 +60,7 @@ export default function AdminDepositElement({userInfo, adminInfo}) {
             </View>
           </RowView>
 
-          <RightArrowBtn />
+          <UnTouchableRightArrow />
         </DepositContainer>
       </Box>
       <Gap height={10} />
