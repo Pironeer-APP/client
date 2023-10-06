@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { COLORS } from '../assets/Theme'
 import { GapH } from './Gap'
 import { StyledText } from './Text'
+import { fetchPost, getData } from '../utils'
+import Modal from 'react-native-modal';
 
 const Codebox = ({code}) => {
   return (
@@ -13,11 +15,31 @@ const Codebox = ({code}) => {
 }
 
 const Numberpad = ({onNumberPress, onDeletePress, code}) => {
+  const [codeConfirmed, setCodeConfirmed] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  //모달 띄우고 접고
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
   const numbers = [
     [1, 2, 3],
     [4, 5, 6],
     [7, 8, 9],
   ];
+
+  //출석코드 일치 확인
+  const confirmCode = async () => {
+    const userToken = await getData('user_token');
+    const url = `/attend/addAttend`;
+    const body = {
+      token: userToken,
+    };
+    const attenResult = await fetchPost(url, body);
+    setModalVisible(true);
+    console.log('출석결과: ', attenResult);
+  }
 
   return (
     <View 
@@ -54,9 +76,23 @@ const Numberpad = ({onNumberPress, onDeletePress, code}) => {
             backgroundColor: code.includes('') ? COLORS.icon_gray : COLORS.green, 
             position: 'relative', 
             left: 13 }}
+            onPress={confirmCode}
+            disabled={code.includes('') ? true : false}
         >
           <StyledText content={'확인'} fontSize={28} color={code.includes('') ? 'white' : 'black'}/>
         </TouchableOpacity>
+
+        {/* 출결성공/실패 모달 */}
+        <Modal 
+          isVisible={isModalVisible}
+          onBackdropPress={toggleModal}
+          animationIn={'fadeIn'}
+          animationOut={'fadeOut'}
+          style={styles.centeredView}
+          >
+            <View style={styles.modalView}>
+            </View>
+          </Modal>
       </View>
     </View>
   )
@@ -131,7 +167,22 @@ const styles = StyleSheet.create({
     android: {
       marginBottom: 8,
     }
-  })
+  }),
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    backgroundColor: `${COLORS.gray}`,
+    width: 300,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    gap: 20,
+    position: 'absolute',
+  },
 })
 
 export default Codepad
