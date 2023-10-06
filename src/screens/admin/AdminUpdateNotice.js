@@ -35,9 +35,10 @@ const AdminUpdateNotice = () => {
     const userToken = await getData('user_token');
     const post_id = post.post_id;
     const body = {title, content, category, userToken, post_id};
-
-    if (title.length === 0 || content.length === 0) {
-      Alert.alert('내용을 입력해주세요');
+    if (title.length === 0) {
+      Alert.alert('제목을 입력하세요');
+    } else if (content.length === 0) {
+      Alert.alert('내용을 입력하세요');
     } else {
       try {
         await fetchPost(url, body);
@@ -102,21 +103,21 @@ const AdminUpdateNotice = () => {
         button={'완료'}
         buttonOnPress={updatePost}
       />
-      <View style={{padding: 20, flex: 1}}>
+      <View style={{paddingHorizontal: 20, flex: 1}}>
         <View>
           <ChooseCategory category={category} setCategory={setCategory} />
         </View>
 
-        <TextInput
-          placeholder="제목"
-          value={title}
-          onChangeText={text => setTitle(text)}
-          placeholderTextColor={COLORS.light_gray}
-          style={styles.textInputTitle}
-        />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : null}
           style={{flex: 1}}>
+          <TextInput
+            placeholder="제목"
+            value={title}
+            onChangeText={text => setTitle(text)}
+            placeholderTextColor={COLORS.light_gray}
+            style={styles.textInputTitle}
+          />
           <TextInput
             placeholder="내용"
             value={content}
@@ -145,6 +146,7 @@ const AdminUpdateNotice = () => {
               })}
             </ScrollView>
           </ImagesContainer>
+          <Gap height={100} />
           <Camera onImageSelect={onImageSelect} />
         </KeyboardAvoidingView>
       </View>

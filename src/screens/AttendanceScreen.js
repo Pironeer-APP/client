@@ -26,6 +26,7 @@ import Codepad from '../components/Codepad';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderLogo from '../login/HeaderLogo';
 import Loader, {MediumLoader, TinyLoader} from '../components/Loader';
+import {AsgContainer} from './AssignmentScreen';
 
 //데이터 날짜순으로 배열하기
 
@@ -92,16 +93,14 @@ const InProgressAttendBox = props => {
     ).start();
   }, []);
   return (
-    <View
+    <AsgContainer
       style={{
-        flexDirection: 'row',
-        alignItems: 'center',
         gap: 20,
-        marginVertical: 15,
       }}>
       <View
         style={{
           flexDirection: 'column',
+          alignItems: 'center',
         }}>
         <View
           style={{
@@ -110,7 +109,8 @@ const InProgressAttendBox = props => {
             alignItems: 'center',
             width: 50,
           }}>
-          <View style={{flex: 1}} />
+          {/*  {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />} */}
+          <StatusLine />
           <View>
             {today.getMonth() + 1 === month && today.getDate() === day ? (
               <Animated.Image
@@ -125,6 +125,7 @@ const InProgressAttendBox = props => {
               <AttenStatusCircle type={props.attenType} />
             )}
           </View>
+          {/*  {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />} */}
           <StatusLine />
         </View>
       </View>
@@ -133,6 +134,7 @@ const InProgressAttendBox = props => {
           flexDirection: 'column',
           flex: 1,
           justifyContent: 'center',
+          marginVertical: 10,
         }}>
         <Box>
           <View style={{paddingHorizontal: 17, paddingVertical: 10}}>
@@ -170,7 +172,7 @@ const InProgressAttendBox = props => {
           </View>
         </Box>
       </View>
-    </View>
+    </AsgContainer>
   );
 };
 const DoneAttendBox = props => {
@@ -183,12 +185,7 @@ const DoneAttendBox = props => {
   }
 
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
-      }}>
+    <AsgContainer>
       <View
         style={{
           flexDirection: 'column',
@@ -212,18 +209,18 @@ const DoneAttendBox = props => {
           justifyContent: 'center',
         }}>
         <View style={{padding: 20}}>
-          <RowView style={{marginBottom: 10}}>
+          <RowView style={{marginVertical: 10}}>
             <View style={{alignItems: 'center'}}>
-              <StyledText content={`${month}.${day}`} fontSize={20} />
-              <StyledText content={dayOfTheWeek} fontSize={20} />
+              <StyledSubText content={`${month}.${day}`} fontSize={20} />
+              <StyledSubText content={dayOfTheWeek} fontSize={20} />
             </View>
             <View style={{flex: 1, marginLeft: 20}}>
-              <StyledText content={props.title} fontSize={20} />
+              <StyledText content={props.title} fontSize={18} />
             </View>
           </RowView>
         </View>
       </View>
-    </View>
+    </AsgContainer>
   );
 };
 
@@ -303,7 +300,7 @@ const AttendanceScreen = () => {
         <MediumLoader />
       ) : (
         <>
-          <View style={{flex: 1}}>
+          <View style={{flex: 1, padding: 20, paddingLeft: 10}}>
             <FlatList
               data={attendance}
               renderItem={renderAttenItem}

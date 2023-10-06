@@ -28,7 +28,7 @@ export default function DepositHistory(props) {
       {/* 이력 */}
       <ScrollView>
         {history_num > 0 &&
-          (props.depositHistory || []).reverse().map(history => (
+          (props.depositHistory).reverse().map(history => (
             <HistoryElement key={history.CNT} history={history} />
           ))}
         <HistoryElement key={FIRST_HISTORY.CNT} history={FIRST_HISTORY} />

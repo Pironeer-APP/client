@@ -75,9 +75,10 @@ const AdminCreateNotice = () => {
     const url = '/post/create';
     const userToken = await getData('user_token');
     const body = {title, content, category, userToken};
-
-    if (title.length === 0 || content.length === 0) {
-      Alert.alert('내용을 입력해주세요');
+    if (title.length === 0) {
+      Alert.alert('제목 입력해 바보야');
+    } else if (content.length === 0) {
+      Alert.alert('내용이 빠졌잖아!');
     } else {
       try {
         const result = await fetchPost(url, body); //서버에서 result.insertId return
@@ -143,7 +144,7 @@ const AdminCreateNotice = () => {
         button={'완료'}
         buttonOnPress={sendDataToServer}
       />
-      <View style={{padding: 20, flex: 1}}>
+      <View style={{paddingHorizontal: 20, flex: 1}}>
         <View>
           <ChooseCategory category={category} setCategory={setCategory} />
         </View>
@@ -183,6 +184,7 @@ const AdminCreateNotice = () => {
               ))}
             </ScrollView>
           </ImagesContainer>
+          <Gap height={100} />
           <Camera onImageSelect={onImageSelect} />
         </KeyboardAvoidingView>
       </View>
