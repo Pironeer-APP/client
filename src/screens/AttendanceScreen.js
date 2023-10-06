@@ -299,7 +299,7 @@ const AttendanceScreen = () => {
       {!!isLoading ? (
         <MediumLoader />
       ) : (
-        <>
+        <View style={{flex:1}}>
           <View style={{flex: 1, padding: 20, paddingLeft: 10}}>
             <FlatList
               data={attendance}
@@ -307,12 +307,11 @@ const AttendanceScreen = () => {
               keyExtractor={item => item.session_id}
               initialScrollIndex={initialScrollIndex}
             />
-          </View>
-          <View style={{zIndex: 999, marginBottom: 20, marginHorizontal: 10}}>
             <MainButton
               height={60}
               content={'출석하기'}
               onPress={toggleBottomSheet}
+              marginBottom={0}
             />
           </View>
           {/* 출석코드입력 모달 */}
@@ -324,7 +323,7 @@ const AttendanceScreen = () => {
               <Codepad />
             </View>
           </Modal>
-        </>
+        </View>
       )}
     </StyledContainer>
   );

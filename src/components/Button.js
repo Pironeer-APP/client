@@ -10,10 +10,10 @@ import React from 'react';
 import {FontStyledText, StyledText} from './Text';
 import {COLORS} from '../assets/Theme';
 
-export const MainButton = ({height = 70, content, onPress, fontSize = 22}) => {
+export const MainButton = ({height = 70, content, onPress, fontSize = 22, marginBottom = 40}) => {
   return (
     <TouchableOpacity
-      style={[styles.container, {height: height, marginBottom: 40}]}
+      style={[styles.container, {height: height, marginBottom: marginBottom}]}
       onPress={onPress}>
       <FontStyledText style={[styles.text, {fontSize: fontSize}]}>
         {content}

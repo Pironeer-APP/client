@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { COLORS } from '../assets/Theme'
 import { GapH } from './Gap'
@@ -20,25 +20,32 @@ const Numberpad = ({onNumberPress, onDeletePress, code}) => {
   ];
 
   return (
-    <View style={{ flex: 1, justifyContent: 'space-around' }}>
+    <View 
+      style={[
+        styles.numberpadMarginBottom,
+        { 
+          flex: 1, 
+          justifyContent: 'space-around', 
+        }
+      ]}>
       {numbers.map((row, rowIndex) => {
         return (
           <View key={rowIndex} style={styles.numberpadRow}>
             {row.map((num, numIndex) => {
               return (
                 <TouchableOpacity key={numIndex} onPress={() => onNumberPress(num)}>
-                  <StyledText content={num} fontSize={35} color={'white'} />
+                  <StyledText content={num} fontSize={30} color={'white'} />
                 </TouchableOpacity>
               )
             })}
           </View>
       )})}
       <View style={styles.numberpadRow}>
-        <TouchableOpacity style={{ position: 'relative', left: 3 }} onPress={onDeletePress}>
+        <TouchableOpacity style={{ position: 'relative', left: 4 }} onPress={onDeletePress}>
           <Image source={require('../assets/icons/leftarrow_icon.png')} style={{ width: 30, height: 20 }} />
         </TouchableOpacity>
-        <TouchableOpacity style={{ position: 'relative', left: 13 }}>
-          <StyledText content={0} fontSize={35} />
+        <TouchableOpacity style={{ position: 'relative', left: 19 }}> 
+          <StyledText content={0} fontSize={30} />
         </TouchableOpacity>
         <TouchableOpacity 
           style={{ 
@@ -48,7 +55,7 @@ const Numberpad = ({onNumberPress, onDeletePress, code}) => {
             position: 'relative', 
             left: 13 }}
         >
-          <StyledText content={'확인'} fontSize={30} color={code.includes('') ? 'white' : 'black'}/>
+          <StyledText content={'확인'} fontSize={28} color={code.includes('') ? 'white' : 'black'}/>
         </TouchableOpacity>
       </View>
     </View>
@@ -115,7 +122,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-  }
+    // marginBottom: 100,
+  },
+  numberpadMarginBottom: Platform.select({
+    ios: {
+      marginBottom: 40,
+    },
+    android: {
+      marginBottom: 8,
+    }
+  })
 })
 
 export default Codepad
