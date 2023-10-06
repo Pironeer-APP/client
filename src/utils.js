@@ -1,7 +1,7 @@
 import { Platform } from "react-native";
 import { _ANDROID_AVD_API_HOST, _IOS_API_HOST } from "./variables";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 
 export const autoHyphen = (value) => {
   const newValue = value
@@ -111,4 +111,18 @@ export const sendToken = async (token) => {
   } catch(error) {
     console.log(error);
   }
+}
+
+export const localeDate = (dateTime) => {
+  let localeDate = new Date(dateTime);
+  const year = localeDate.getFullYear();
+  const month = Number(localeDate.getMonth()) + 1;
+  const day = localeDate.getDate();
+  const hour = localeDate.getHours();
+  const min = localeDate.getMinutes();
+  const sec = localeDate.getSeconds();
+
+  const dateformat = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+
+  return dateformat;
 }

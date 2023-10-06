@@ -47,7 +47,7 @@ const AdminUpdateNotice = () => {
           updateImages(post.post_id);
         }
 
-        await pushNoti({title: `수정된 공지가 있습니다-${title}`, body: content});
+        // await pushNoti({title: `수정된 공지가 있습니다-${title}`, body: content});
         navigation.navigate('AnnouncementScreen');
       } catch (error) {
         console.error('Error sending data:', error);

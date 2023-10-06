@@ -87,7 +87,7 @@ const AdminCreateNotice = () => {
           uploadImages(result.createdPostId);
         }
 
-        await pushNoti({title: title, body: content});
+        // await pushNoti({title: title, body: content});
         navigation.goBack();
       } catch (error) {
         console.error('Error sending data:', error);

@@ -157,7 +157,7 @@ const InProgressAttendBox = props => {
                   <GapH width={9} />
                   <StyledSubText content={props.location} />
                 </View>
-                <Gap height={8} />
+                <Gap height={5} />
               </>
             ) : null}
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -261,6 +261,9 @@ const AttendanceScreen = () => {
   const [attendance, setAttendance] = useState([]);
   const [initialScrollIndex, setInitialScrollIndex] = useState(0);
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [isTodaySession, setIsTodaySession] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [codeConfirmed, setCodeConfirmed] = useState(false);
   const toggleBottomSheet = () => {
     setBottomSheetVisible(!isBottomSheetVisible);
   };
@@ -281,7 +284,18 @@ const AttendanceScreen = () => {
       setAttendance(fetchAttenData.sessions);
       setIsLoading(false);
       // setInitialScrollIndex(6);
-      // console.log('받은 데이터: ', attendance);
+      // console.log('받은 데이터: ', fetchAttenData.sessions);
+      
+      // 오늘 세션있는지 확인
+      const today = new Date();
+      const month = today.getMonth() + 1 < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1;
+      const day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
+      fetchAttenData.sessions.map((session) => {
+        if (month == session.month && day == session.day) {
+          setIsTodaySession(true);
+        }
+      })
+      console.log(isTodaySession);
 
       //데이터 안 세션들 중에서 오늘 날짜와 동일한 날짜인 세션 인덱스 찾기
       setInitialScrollIndex(fetchAttenData.nextSessionIdx);
@@ -289,9 +303,45 @@ const AttendanceScreen = () => {
       console.log('에러 발생: ', error);
     }
   };
+
   useEffect(() => {
     userSessionInfo();
   }, []);
+
+  // need to be changed [wonchae]
+  const getItemLayout = (data, index) => {
+    return {
+      length: 100,
+      offset: 100 * data.length,
+      index,
+    };
+  };
+
+  const [codes, setCodes] = useState(['', '', '', '']);
+  
+  //출석코드 일치 확인
+  const confirmCode = async () => {
+    const userToken = await getData('user_token');
+    const url = `/attend/addAttend`;
+    const body = {
+      token: userToken,
+      input_code: codes.join('')
+      // input_code: 1234
+    };
+    const attenResult = await fetchPost(url, body);
+    setCodeConfirmed(attenResult.result);
+    setBottomSheetVisible(!isBottomSheetVisible);
+    setModalVisible(!isModalVisible);
+    // setModalVisible(!isModalVisible);
+    console.log('btm', isBottomSheetVisible);
+    console.log('mod', isModalVisible);
+  };
+  
+  if(isModalVisible) {
+    setTimeout(() => {
+      setModalVisible(!isModalVisible);
+    }, 1500);
+  }
 
   return (
     <StyledContainer>
@@ -299,32 +349,77 @@ const AttendanceScreen = () => {
       {!!isLoading ? (
         <MediumLoader />
       ) : (
-        <>
+        <View style={{flex:1}}>
           <View style={{flex: 1, padding: 20, paddingLeft: 10}}>
             <FlatList
               data={attendance}
               renderItem={renderAttenItem}
               keyExtractor={item => item.session_id}
+              getItemLayout={getItemLayout}
               initialScrollIndex={initialScrollIndex}
             />
+            {/* 오늘 세션이 있는 경우에만 출석하기 버튼 나타남  */}
+            {!!isTodaySession ? (
+              <MainButton
+                height={60}
+                content={'출석하기'}
+                onPress={toggleBottomSheet}
+                marginBottom={0}
+              /> 
+            ) : null
+            }
           </View>
-          <View style={{zIndex: 999, marginBottom: 20, marginHorizontal: 10}}>
-            <MainButton
-              height={60}
-              content={'출석하기'}
-              onPress={toggleBottomSheet}
-            />
-          </View>
+          
           {/* 출석코드입력 모달 */}
           <Modal
             isVisible={isBottomSheetVisible}
             onBackdropPress={toggleBottomSheet}
             style={{justifyContent: 'flex-end', margin: 0}}>
             <View style={styles.modalContainer}>
-              <Codepad />
+              <Codepad 
+              setBottomSheet={setBottomSheetVisible} 
+              isBottomSheetVisible={isBottomSheetVisible} 
+              setModalVisible={setModalVisible} 
+              isModalVisible={isModalVisible}
+              setCodeConfirmed={setCodeConfirmed}
+              codeConfirmed={codeConfirmed}
+              confirmCode={confirmCode}
+              codes={codes}
+              setCodes={setCodes}
+              />
             </View>
           </Modal>
-        </>
+
+          {/* 출석성공실패 모달 */}
+          <Modal
+          isVisible={isModalVisible}
+          // onBackdropPress={toggleModal}
+          animationIn={'fadeIn'}
+          animationOut={'fadeOut'}
+          style={styles.centeredView}>
+          <View style={styles.modalView}>
+            {!!codeConfirmed ? (
+              <>
+                <Image
+                  source={require('../assets/images/attend_success.png')}
+                  resizeMode="contain"
+                  style={{width: 120, height: 120}}
+                />
+                <StyledText content={'출석 성공'} fontSize={25} />
+                </>
+            ) : (
+              <>
+                <Image
+                  source={require('../assets/images/attend_late.png')}
+                  resizeMode="contain"
+                  style={{width: 120, height: 120}}
+                />
+                <StyledText content={'지각처리 되었습니다'} fontSize={25} />
+              </>
+              )}
+            </View>
+          </Modal>
+        </View>
       )}
     </StyledContainer>
   );
@@ -368,5 +463,20 @@ const styles = StyleSheet.create({
   loadingText: {
     color: 'white',
     fontSize: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    backgroundColor: `${COLORS.gray}`,
+    width: 300,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    gap: 20,
+    position: 'absolute',
   },
 });

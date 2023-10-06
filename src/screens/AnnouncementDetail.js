@@ -64,20 +64,6 @@ const AnnouncementDetail = ({navigation}) => {
 
   const imagesUrl = images.map(img => convertToUrl(img));
 
-  const OnPressDeletePost = () => {
-    Alert.alert('삭제하시겠습니까?', '', [
-      {
-        text: '취소',
-        style: 'cancel',
-      },
-      {
-        text: '삭제',
-        onPress: () => {
-          deletePost();
-        },
-      },
-    ]);
-  };
   // delete fetch
   const OnPressDeletePost = () => {
     Alert.alert('글을 삭제하시겠습니까?', '', [
@@ -96,7 +82,7 @@ const AnnouncementDetail = ({navigation}) => {
 
     try {
       await fetchPost(url, body);
-      await pushNoti({title: '공지가 삭제되었습니다.', body: ''});
+      // await pushNoti({title: '공지가 삭제되었습니다.', body: ''});
       navigation.navigate('AnnouncementScreen');
     } catch (error) {
       console.error('Error sending data:', error);

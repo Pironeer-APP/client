@@ -6,32 +6,32 @@ import DrawerNavigationRoutes from './src/screens/DrawerNavigationRoutes';
 import SplashScreen from './src/screens/SplashScreen';
 import FindAccountScreen from './src/screens/FindAccountScreen';
 import {PermissionsAndroid, Alert} from 'react-native';
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 import { sendToken } from './src/utils';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+  // PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
-  const getFcmToken = async () => {
-    const fcmToken = await messaging().getToken();
-    console.log('[FCM Token] ', fcmToken);
-    try {
-      await sendToken(fcmToken);
-    } catch(error) {
-      console.log(error);
-    }
-  };
+  // const getFcmToken = async () => {
+  //   const fcmToken = await messaging().getToken();
+  //   console.log('[FCM Token] ', fcmToken);
+  //   try {
+  //     await sendToken(fcmToken);
+  //   } catch(error) {
+  //     console.log(error);
+  //   }
+  // };
  
-  useEffect(() => {
-    getFcmToken();
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('[Remote Message] ', JSON.stringify(remoteMessage));
-      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
-    return unsubscribe;
-  }, []);
+  // useEffect(() => {
+  //   getFcmToken();
+  //   const unsubscribe = messaging().onMessage(async remoteMessage => {
+  //     console.log('[Remote Message] ', JSON.stringify(remoteMessage));
+  //     // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  //   });
+  //   return unsubscribe;
+  // }, []);
 
   return (
     <NavigationContainer>
