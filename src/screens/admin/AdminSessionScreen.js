@@ -149,13 +149,13 @@ const InProgressAsgBox = (props) => {
               <IsFaceBox isFace={props.item.is_face} />
             </RowView>
             <StyledText content={props.item.title} fontSize={20} />
-            {props.isNextSchedule &&
+            {/* {props.isNextSchedule &&
             <RowView style={{ marginTop: 10 }}>
               <View style={{ width: '70%' }}>
                 <ProgressBar status={`${timeStatus}%`} />
               </View>
               <StyledText content={props.status === 0 ? 'CLEAR' : `${hour}:${min}:${sec}`} fontSize={16} />
-            </RowView>}
+            </RowView>} */}
           </View>
         </Box>
       </View>
