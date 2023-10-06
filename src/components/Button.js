@@ -10,12 +10,14 @@ import React from 'react';
 import {FontStyledText, StyledText} from './Text';
 import {COLORS} from '../assets/Theme';
 
-export const MainButton = ({height = 70, content, onPress}) => {
+export const MainButton = ({height = 70, content, onPress, fontSize = 22, marginBottom = 40}) => {
   return (
     <TouchableOpacity
-      style={[styles.container, {height: height}]}
+      style={[styles.container, {height: height, marginBottom: marginBottom}]}
       onPress={onPress}>
-      <FontStyledText style={styles.text}>{content}</FontStyledText>
+      <FontStyledText style={[styles.text, {fontSize: fontSize}]}>
+        {content}
+      </FontStyledText>
     </TouchableOpacity>
   );
 };
@@ -69,6 +71,12 @@ export const RightArrowBtn = ({onPress, size = 10}) => {
     </TouchableOpacity>
   );
 };
+export const UnTouchableRightArrow = ({size = 10}) => (
+  <Image
+    source={require('../assets/icons/right-arrow.png')}
+    style={[styles.arrow, {width: size}]}
+  />
+);
 
 export const CouponButton = ({selected, content, onPress}) => {
   return (
@@ -100,7 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   text: {
-    fontSize: 22,
+    // fontSize: 22,
     textAlign: 'center',
     color: '#000000',
     fontWeight: '600',

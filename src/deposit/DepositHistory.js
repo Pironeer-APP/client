@@ -8,6 +8,7 @@ import CouponElement from './CouponElement';
 import HistoryElement from './HistoryElement';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components';
+import Gap from '../components/Gap';
 
 export default function DepositHistory(props) {
   // 보증금 계산 로직은 필요 없음 => 출결 상황에 따라 userInfo.deposit이 update될 예정
@@ -27,10 +28,11 @@ export default function DepositHistory(props) {
       {/* 이력 */}
       <ScrollView>
         {history_num > 0 &&
-          props.depositHistory?.map(history => (
+          props.depositHistory.map(history => (
             <HistoryElement key={history.CNT} history={history} />
           ))}
         <HistoryElement key={FIRST_HISTORY.CNT} history={FIRST_HISTORY} />
+        <Gap height={100} />
       </ScrollView>
       <View
         style={{
@@ -46,7 +48,7 @@ export default function DepositHistory(props) {
 }
 const DepositHistoryBox = styled.View`
   flex: 1;
-  padding-bottom: 60px;
+  /* padding-bottom: 60px; */
   background-color: ${COLORS.gray};
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;

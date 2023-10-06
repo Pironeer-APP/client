@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   NativeModules,
   ScrollView,
+  Alert,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -19,7 +20,7 @@ import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import {StyledText} from '../../components/Text';
 import {COLORS} from '../../assets/Theme';
-import {fetchPost, getAPIHost, getData} from '../../utils';
+import {fetchPost, getAPIHost, getData, pushNoti} from '../../utils';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -72,17 +73,25 @@ const AdminCreateNotice = () => {
 
   const sendDataToServer = async () => {
     const url = '/post/create';
-    const userToken = await getData('user_token')
+    const userToken = await getData('user_token');
     const body = {title, content, category, userToken};
-    console.log('FE:', body);
-    try {
-      const result = await fetchPost(url, body); //서버에서 result.insertId return
-      if (result.createdPostId && selectedImages.length > 0) {
-        uploadImages(result.createdPostId);
+
+    if (title.length === 0) {
+      Alert.alert('제목 입력해 바보야');
+    } else if (content.length === 0) {
+      Alert.alert('내용이 빠졌잖아!');
+    } else {
+      try {
+        const result = await fetchPost(url, body); //서버에서 result.insertId return
+        if (result.createdPostId && selectedImages.length > 0) {
+          uploadImages(result.createdPostId);
+        }
+
+        // await pushNoti({title: title, body: content});
+        navigation.goBack();
+      } catch (error) {
+        console.error('Error sending data:', error);
       }
-      navigation.goBack();
-    } catch (error) {
-      console.error('Error sending data:', error);
     }
   };
 
@@ -137,48 +146,50 @@ const AdminCreateNotice = () => {
         button={'완료'}
         buttonOnPress={sendDataToServer}
       />
+      <View style={{paddingHorizontal: 20, flex: 1}}>
+        <View>
+          <ChooseCategory category={category} setCategory={setCategory} />
+        </View>
 
-      <View>
-        <ChooseCategory category={category} setCategory={setCategory} />
-      </View>
-
-      <TextInput
-        placeholder="제목"
-        value={title}
-        onChangeText={text => setTitle(text)}
-        placeholderTextColor={COLORS.light_gray}
-        style={styles.textInputTitle}
-      />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
-        style={{flex: 1}}>
         <TextInput
-          placeholder="내용"
-          value={content}
-          onChangeText={text => setContent(text)}
+          placeholder="제목"
+          value={title}
+          onChangeText={text => setTitle(text)}
           placeholderTextColor={COLORS.light_gray}
-          style={styles.textInputContent}
-          multiline={true}
+          style={styles.textInputTitle}
         />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : null}
+          style={{flex: 1}}>
+          <TextInput
+            placeholder="내용"
+            value={content}
+            onChangeText={text => setContent(text)}
+            placeholderTextColor={COLORS.light_gray}
+            style={styles.textInputContent}
+            multiline={true}
+          />
 
-        <ImagesContainer>
-          <ScrollView horizontal={true}>
-            {selectedImages.map((image, index) => (
-              <Image
-                key={index}
-                source={{uri: image.uri}}
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: 10,
-                  marginRight: 10,
-                }}
-              />
-            ))}
-          </ScrollView>
-        </ImagesContainer>
-        <Camera onImageSelect={onImageSelect} />
-      </KeyboardAvoidingView>
+          <ImagesContainer>
+            <ScrollView horizontal={true}>
+              {selectedImages.map((image, index) => (
+                <Image
+                  key={index}
+                  source={{uri: image.uri}}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 10,
+                    marginRight: 10,
+                  }}
+                />
+              ))}
+            </ScrollView>
+          </ImagesContainer>
+          <Gap height={100} />
+          <Camera onImageSelect={onImageSelect} />
+        </KeyboardAvoidingView>
+      </View>
     </StyledContainer>
   );
 };
