@@ -8,6 +8,7 @@ import {
   FlatList,
   Animated,
   Easing,
+  RefreshControl,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {ProgressBar, RowView} from './HomeScreen';
@@ -219,9 +220,11 @@ const DoneAsgBox = ({grade, title, due, item, firstItem, lastItem}) => (
 const AssignmentScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [assignment, setAssignment] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const isFocused = useIsFocused(); // 일단 살립니다
 
   const saveUserId = async () => {
+    setIsRefreshing(true);
     const userToken = await getData('user_token');
     const url = `/assign`;
     const body = {
@@ -233,6 +236,7 @@ const AssignmentScreen = () => {
       setAssignment(fetchData.data);
       // console.log('성공  받아온 data: ', fetchData);
       setIsLoading(false);
+      setIsRefreshing(false);
     } catch (error) {
       console.log('에러 발생: ', error);
     }
@@ -262,18 +266,16 @@ const AssignmentScreen = () => {
           setLastAssignment(null);
           setLastIndex(-1);
           setLastAssignDueDate(dayjs().subtract(3, 'day'));
+        } else {
+          setLastAssignment(assignment[i + 1]); // 그 이전 과제가 마지막 과제 (진행 완료)
+          setLastIndex(assignment[i + 1].AssignId - 1); // 가장 마지막에 진행 완료된 과제의 index (기준)
+          setLastAssignDueDate(dayjs(assignment[i + 1].due_date));
         }
-        setLastAssignment(assignment[i + 1]); // 그 이전 과제가 마지막 과제 (진행 완료)
-        setLastIndex(assignment[i + 1].AssignId - 1); // 가장 마지막에 진행 완료된 과제의 index (기준)
-        setLastAssignDueDate(dayjs(assignment[i + 1].due_date));
-    
+
         break;
       }
     }
   };
-  console.log(lastAssignment);
-  console.log(lastIndex);
-  console.log(lastAssignDueDate);
 
   useEffect(() => {
     getLastAssign();
@@ -329,6 +331,13 @@ const AssignmentScreen = () => {
               />
             )}
             keyExtractor={item => item.AssignId}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={saveUserId}
+                tintColor={COLORS.green}
+              />
+            }
           />
         </View>
       )}

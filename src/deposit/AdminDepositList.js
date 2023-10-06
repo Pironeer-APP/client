@@ -11,7 +11,7 @@ export default function AdminDepositList({adminInfo}) {
     fetchData();
   }, []);
 
-  if (!userList) {
+  if (!userList?.length) {
     return <MsgForEmptyScreen content={'등록된 회원이 없습니다.'} />;
   }
   return (

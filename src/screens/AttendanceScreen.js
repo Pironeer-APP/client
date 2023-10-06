@@ -7,6 +7,7 @@ import {
   Easing,
   Image,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import StyledContainer from '../components/StyledContainer';
@@ -27,6 +28,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderLogo from '../login/HeaderLogo';
 import Loader, {MediumLoader, TinyLoader} from '../components/Loader';
 import {AsgContainer} from './AssignmentScreen';
+import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
 
 //데이터 날짜순으로 배열하기
 
@@ -264,6 +266,8 @@ const AttendanceScreen = () => {
   const [isTodaySession, setIsTodaySession] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [codeConfirmed, setCodeConfirmed] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const toggleBottomSheet = () => {
     setBottomSheetVisible(!isBottomSheetVisible);
   };
@@ -274,6 +278,7 @@ const AttendanceScreen = () => {
   // const isFocused = useIsFocused();
 
   const userSessionInfo = async () => {
+    setIsRefreshing(true);
     const userToken = await getData('user_token');
     const url = `/attend/getSessionAndAttend`;
     const body = {
@@ -283,18 +288,23 @@ const AttendanceScreen = () => {
       const fetchAttenData = await fetchPost(url, body);
       setAttendance(fetchAttenData.sessions);
       setIsLoading(false);
+      setIsRefreshing(false);
       // setInitialScrollIndex(6);
       // console.log('받은 데이터: ', fetchAttenData.sessions);
-      
+
       // 오늘 세션있는지 확인
       const today = new Date();
-      const month = today.getMonth() + 1 < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1;
-      const day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
-      fetchAttenData.sessions.map((session) => {
+      const month =
+        today.getMonth() + 1 < 10
+          ? '0' + (today.getMonth() + 1)
+          : today.getMonth() + 1;
+      const day =
+        today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
+      fetchAttenData.sessions.map(session => {
         if (month == session.month && day == session.day) {
           setIsTodaySession(true);
         }
-      })
+      });
       console.log(isTodaySession);
 
       //데이터 안 세션들 중에서 오늘 날짜와 동일한 날짜인 세션 인덱스 찾기
@@ -318,14 +328,14 @@ const AttendanceScreen = () => {
   };
 
   const [codes, setCodes] = useState(['', '', '', '']);
-  
+
   //출석코드 일치 확인
   const confirmCode = async () => {
     const userToken = await getData('user_token');
     const url = `/attend/addAttend`;
     const body = {
       token: userToken,
-      input_code: codes.join('')
+      input_code: codes.join(''),
       // input_code: 1234
     };
     const attenResult = await fetchPost(url, body);
@@ -336,8 +346,8 @@ const AttendanceScreen = () => {
     console.log('btm', isBottomSheetVisible);
     console.log('mod', isModalVisible);
   };
-  
-  if(isModalVisible) {
+
+  if (isModalVisible) {
     setTimeout(() => {
       setModalVisible(!isModalVisible);
     }, 1500);
@@ -348,8 +358,10 @@ const AttendanceScreen = () => {
       <HeaderDetail title={'출석'} />
       {!!isLoading ? (
         <MediumLoader />
+      ) : attendance.length === 0 ? (
+        <MsgForEmptyScreen content={'등록된 세션이 없습니다'} />
       ) : (
-        <View style={{flex:1}}>
+        <View style={{flex: 1}}>
           <View style={{flex: 1, padding: 20, paddingLeft: 10}}>
             <FlatList
               data={attendance}
@@ -357,6 +369,13 @@ const AttendanceScreen = () => {
               keyExtractor={item => item.session_id}
               getItemLayout={getItemLayout}
               initialScrollIndex={initialScrollIndex}
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefreshing}
+                  onRefresh={userSessionInfo}
+                  tintColor={COLORS.green}
+                />
+              }
             />
             {/* 오늘 세션이 있는 경우에만 출석하기 버튼 나타남  */}
             {!!isTodaySession ? (
@@ -365,57 +384,56 @@ const AttendanceScreen = () => {
                 content={'출석하기'}
                 onPress={toggleBottomSheet}
                 marginBottom={0}
-              /> 
-            ) : null
-            }
+              />
+            ) : null}
           </View>
-          
+
           {/* 출석코드입력 모달 */}
           <Modal
             isVisible={isBottomSheetVisible}
             onBackdropPress={toggleBottomSheet}
             style={{justifyContent: 'flex-end', margin: 0}}>
             <View style={styles.modalContainer}>
-              <Codepad 
-              setBottomSheet={setBottomSheetVisible} 
-              isBottomSheetVisible={isBottomSheetVisible} 
-              setModalVisible={setModalVisible} 
-              isModalVisible={isModalVisible}
-              setCodeConfirmed={setCodeConfirmed}
-              codeConfirmed={codeConfirmed}
-              confirmCode={confirmCode}
-              codes={codes}
-              setCodes={setCodes}
+              <Codepad
+                setBottomSheet={setBottomSheetVisible}
+                isBottomSheetVisible={isBottomSheetVisible}
+                setModalVisible={setModalVisible}
+                isModalVisible={isModalVisible}
+                setCodeConfirmed={setCodeConfirmed}
+                codeConfirmed={codeConfirmed}
+                confirmCode={confirmCode}
+                codes={codes}
+                setCodes={setCodes}
               />
             </View>
           </Modal>
 
           {/* 출석성공실패 모달 */}
           <Modal
-          isVisible={isModalVisible}
-          // onBackdropPress={toggleModal}
-          animationIn={'fadeIn'}
-          animationOut={'fadeOut'}
-          style={styles.centeredView}>
-          <View style={styles.modalView}>
-            {!!codeConfirmed ? (
-              <>
-                <Image
-                  source={require('../assets/images/attend_success.png')}
-                  resizeMode="contain"
-                  style={{width: 120, height: 120}}
-                />
-                <StyledText content={'출석 성공'} fontSize={25} />
+            isVisible={isModalVisible}
+            // onBackdropPress={toggleModal}
+            animationIn={'fadeIn'}
+            animationOut={'fadeOut'}
+            style={styles.centeredView}>
+            <View style={styles.modalView}>
+              {!!codeConfirmed ? (
+                <>
+                  <Image
+                    source={require('../assets/images/attend_success.png')}
+                    resizeMode="contain"
+                    style={{width: 120, height: 120}}
+                  />
+                  <StyledText content={'출석 성공'} fontSize={25} />
                 </>
-            ) : (
-              <>
-                <Image
-                  source={require('../assets/images/attend_late.png')}
-                  resizeMode="contain"
-                  style={{width: 120, height: 120}}
-                />
-                <StyledText content={'지각처리 되었습니다'} fontSize={25} />
-              </>
+              ) : (
+                <>
+                  <Image
+                    source={require('../assets/images/attend_late.png')}
+                    resizeMode="contain"
+                    style={{width: 120, height: 120}}
+                  />
+                  <StyledText content={'지각처리 되었습니다'} fontSize={25} />
+                </>
               )}
             </View>
           </Modal>

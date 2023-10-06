@@ -7,6 +7,7 @@ import {
   Dimensions,
   ScrollView,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import React, {useState, useEffect, useMemo} from 'react';
 import dayjs from 'dayjs';
@@ -50,13 +51,17 @@ const AnnouncementDetail = ({navigation}) => {
   }, []);
 
   const isFocused = useIsFocused();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const getPost = async () => {
+    setIsRefreshing(true);
     const url = `/post/detail`;
     const userToken = await getData('user_token');
     const body = {userToken, post_id};
     const res = await fetchPost(url, body);
     setPost(res.post);
     setImages(res.result);
+    setIsRefreshing(false);
   };
   useEffect(() => {
     getPost();
@@ -100,7 +105,14 @@ const AnnouncementDetail = ({navigation}) => {
     <StyledContainer>
       <HeaderDetail title={'공지'} />
       <View style={{paddingHorizontal: 20, flex: 1}}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={getPost}
+              tintColor={COLORS.green}
+            />
+          }>
           <RowView>
             <RowView style={{gap: 10}}>
               <StyledSubText content={`${RenderDate}`} />
