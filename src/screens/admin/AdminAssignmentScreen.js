@@ -1,4 +1,11 @@
-import {View, Text, TouchableOpacity, FlatList, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Pressable,
+  RefreshControl,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import StyledContainer from '../../components/StyledContainer';
@@ -155,6 +162,7 @@ const AdminAssignmentScreen = ({route}) => {
   const isFocused = useIsFocused();
   const getLevel = route.params.userLevel;
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const renderItem = ({item}) => {
     // console.log(item);
@@ -170,17 +178,18 @@ const AdminAssignmentScreen = ({route}) => {
     );
   };
   const getAssigns = async () => {
+    setIsRefreshing(true);
     const userToken = await getData('user_token');
     const url = `/assign/readAssign/all`;
     const body = {
       userToken: userToken,
     };
-    // console.log('body: ', body);
     try {
       const responseData = await fetchPost(url, body);
       console.log('받아온 데이터: ', responseData);
       setAssigns(responseData.data);
       setIsLoading(false);
+      setIsRefreshing(false);
     } catch (error) {
       // 네트워크 오류 또는 예외 처리
       console.error(error);
@@ -214,6 +223,13 @@ const AdminAssignmentScreen = ({route}) => {
               data={assigns}
               renderItem={renderItem}
               keyExtractor={item => item.assignschedule_id}
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefreshing}
+                  onRefresh={getAssigns}
+                  tintColor={COLORS.green}
+                />
+              }
             />
           </View>
           <MainButton

@@ -70,10 +70,13 @@ const Student = ({
   id,
   name,
   grade,
+  realStdId,
   stdId,
   setStdId,
   stdGrade,
   setStdGrade,
+  assignScheduleId,
+  getStdsData,
   isLastItem,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -95,13 +98,12 @@ const Student = ({
       inputGrade: grade,
     };
     try {
-      console.log(body);
       await fetchPost(url, body);
       setModalVisible(!modalVisible);
       setStdGrade(grade);
       getStdsData();
     } catch (error) {
-      console.log(error);
+      console.log('에러 발생: ', error);
     }
   };
   const updateGrade = async (grade, assignScheduleId) => {
@@ -114,7 +116,6 @@ const Student = ({
       updateGrade: grade,
     };
     try {
-      console.log(body);
       await fetchPost(url, body);
       setModalVisible(!modalVisible);
       setStdGrade(grade);
@@ -239,7 +240,7 @@ const AdminGradingScreen = () => {
     const body = {assignId, userToken};
     try {
       const stdDatas = await fetchPost(url, body);
-      console.log('stdDatas: ', stdDatas.data);
+
       setStdInfo(stdDatas.data);
       setIsLoading(false);
     } catch (error) {
@@ -263,9 +264,9 @@ const AdminGradingScreen = () => {
         setStdId={setStdId}
         stdGrade={stdGrade}
         setStdGrade={setStdGrade}
-        isLastItem={isLastItem}
         assignScheduleId={assignId}
         getStdsData={getStdsData}
+        isLastItem={isLastItem}
       />
     );
   };
