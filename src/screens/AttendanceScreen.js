@@ -308,6 +308,41 @@ const AttendanceScreen = () => {
     userSessionInfo();
   }, []);
 
+  // need to be changed [wonchae]
+  const getItemLayout = (data, index) => {
+    return {
+      length: 100,
+      offset: 100 * data.length,
+      index,
+    };
+  };
+
+  const [codes, setCodes] = useState(['', '', '', '']);
+  
+  //출석코드 일치 확인
+  const confirmCode = async () => {
+    const userToken = await getData('user_token');
+    const url = `/attend/addAttend`;
+    const body = {
+      token: userToken,
+      input_code: codes.join('')
+      // input_code: 1234
+    };
+    const attenResult = await fetchPost(url, body);
+    setCodeConfirmed(attenResult.result);
+    setBottomSheetVisible(!isBottomSheetVisible);
+    setModalVisible(!isModalVisible);
+    // setModalVisible(!isModalVisible);
+    console.log('btm', isBottomSheetVisible);
+    console.log('mod', isModalVisible);
+  };
+  
+  if(isModalVisible) {
+    setTimeout(() => {
+      setModalVisible(!isModalVisible);
+    }, 1500);
+  }
+
   return (
     <StyledContainer>
       <HeaderDetail title={'출석'} />
@@ -320,6 +355,7 @@ const AttendanceScreen = () => {
               data={attendance}
               renderItem={renderAttenItem}
               keyExtractor={item => item.session_id}
+              getItemLayout={getItemLayout}
               initialScrollIndex={initialScrollIndex}
             />
             {/* 오늘 세션이 있는 경우에만 출석하기 버튼 나타남  */}
@@ -342,9 +378,14 @@ const AttendanceScreen = () => {
             <View style={styles.modalContainer}>
               <Codepad 
               setBottomSheet={setBottomSheetVisible} 
+              isBottomSheetVisible={isBottomSheetVisible} 
               setModalVisible={setModalVisible} 
               isModalVisible={isModalVisible}
               setCodeConfirmed={setCodeConfirmed}
+              codeConfirmed={codeConfirmed}
+              confirmCode={confirmCode}
+              codes={codes}
+              setCodes={setCodes}
               />
             </View>
           </Modal>

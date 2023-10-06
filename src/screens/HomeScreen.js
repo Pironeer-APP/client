@@ -26,7 +26,7 @@ import {fetchPost, getData} from '../utils';
 import useProgress from '../use-progress';
 import {TinyLoader} from '../components/Loader';
 
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 
 const Header = () => (
   <View>
