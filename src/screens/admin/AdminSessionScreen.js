@@ -272,6 +272,7 @@ const AssignmentScreen = ({navigation}) => {
     const res = await fetchPost(url, body);
 
     setSessionData(res.sessions);
+    console.log('서버로부터 받은 세션들', res.sessions);
     setInitialScrollIndex(res.nextSessionIdx);
     console.log(res.nextSessionIdx);
   };
@@ -293,6 +294,15 @@ const AssignmentScreen = ({navigation}) => {
     }, 1000);
   });
 
+  // need to be changed [wonchae]
+  const getItemLayout = (data, index) => {
+    return {
+      length: 100,
+      offset: 100 * data.length,
+      index,
+    };
+  };
+
   return (
     <StyledContainer>
       <HeaderDetail title={'세션'} />
@@ -309,6 +319,7 @@ const AssignmentScreen = ({navigation}) => {
             />
           )}
           keyExtractor={item => item.session_id}
+          getItemLayout={getItemLayout}
           initialScrollIndex={initialScrollIndex}
         />
         <MainButton

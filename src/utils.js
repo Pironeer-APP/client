@@ -112,3 +112,17 @@ export const sendToken = async (token) => {
     console.log(error);
   }
 }
+
+export const localeDate = (dateTime) => {
+  let localeDate = new Date(dateTime);
+  const year = localeDate.getFullYear();
+  const month = Number(localeDate.getMonth()) + 1;
+  const day = localeDate.getDate();
+  const hour = localeDate.getHours();
+  const min = localeDate.getMinutes();
+  const sec = localeDate.getSeconds();
+
+  const dateformat = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+
+  return dateformat;
+}

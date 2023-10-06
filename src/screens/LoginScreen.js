@@ -1,4 +1,4 @@
-import {SafeAreaView, StyleSheet, KeyboardAvoidingView} from 'react-native';
+import {SafeAreaView, StyleSheet, KeyboardAvoidingView, Platform} from 'react-native';
 import React from 'react';
 import {COLORS} from '../assets/Theme';
 import HeaderLogo from '../login/HeaderLogo';
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: Platform.OS === 'android' ? 0 : 20,
     backgroundColor: COLORS.bg_black,
   },
 });
