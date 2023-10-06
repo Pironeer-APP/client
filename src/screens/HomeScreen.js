@@ -26,7 +26,7 @@ import {fetchPost, getData} from '../utils';
 import useProgress from '../use-progress';
 import {TinyLoader} from '../components/Loader';
 
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 
 const Header = () => (
   <View>
@@ -152,10 +152,10 @@ const HomeScreen = ({navigation}) => {
 
     setCurAssign(cRes.currentAssign);
     setCurAssignCnt(cRes.currentAssignCnt);
-
+    
     const rUrl = '/assign/getRecentAssign';
     const rRes = await fetchPost(rUrl, body);
-
+    
     setRecentAssign(rRes.recentAssign);
   };
   useEffect(() => {
@@ -170,13 +170,29 @@ const HomeScreen = ({navigation}) => {
 
   const getProgress = () => {
     const now = new Date();
-    const cAssign = new Date(curAssign?.due_date);
-    const rAssign = new Date(recentAssign?.due_date);
+    let cAssign;
+    let rAssign;
+    // curAssgin recentAssign 없을 때
+    if(curAssign === undefined && recentAssign === undefined) {
+      // setHomeProgress(0);
+      return;
+    } else if(curAssign === undefined && recentAssign !== undefined) {
+      // curAssgin 없을 때
+      // setHomeProgress(0);
+      return;
+    } else if(curAssign !== undefined && recentAssign === undefined) {
+      // recentAssign 없을 때
+      cAssign = new Date(curAssign?.due_date);
+      setAssignLimit(24 * 60 * 60 * 1000); // 1일 전
+    } else {
+      cAssign = new Date(curAssign?.due_date);
+      rAssign = new Date(recentAssign?.due_date);
+      setAssignLimit(cAssign.getTime() - rAssign.getTime());
+    }
 
-    setAssignLimit(cAssign.getTime() - rAssign.getTime());
     setAssignProgress(cAssign.getTime() - now.getTime());
-
-    setHomeProgress(Math.trunc((assignProgress / assignLimit) * 100));
+    
+    setHomeProgress(assignProgress / assignLimit);
   };
   useEffect(() => {
     setTimeout(() => {
@@ -222,8 +238,9 @@ const HomeScreen = ({navigation}) => {
                 <>
                   <StyledText content={curTitle} fontSize={18} />
                   <RowView style={{marginTop: 10}}>
+                    {/* 시간이 너무 많이 남아 있는 경우를 위해 <= 1 추가 */}
                     <ProgressBar
-                      status={homeProgress ? homeProgress * 0.01 : 1}
+                      status={homeProgress && homeProgress <= 1 ? homeProgress : 1}
                     />
 
                     {!!isTimerLoading ? (
