@@ -95,7 +95,7 @@ const AssignmentBox = ({
                 toggleModal();
                 navigation.navigate('AdminUpdateAssign', {
                   title,
-                  dateString,
+                  due,
                   assignId,
                   level,
                 });

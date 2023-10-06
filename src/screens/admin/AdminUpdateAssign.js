@@ -17,7 +17,7 @@ const AdminUpdateAssign = ({route}) => {
 
   const {
     title: getTitle,
-    dateString: getDue,
+    due: getDue,
     assignId: assignId,
     level,
   } = route.params;
