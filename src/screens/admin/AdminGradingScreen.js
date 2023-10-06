@@ -5,6 +5,7 @@ import {
   FlatList,
   StyleSheet,
   Pressable,
+  RefreshControl,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Modal from 'react-native-modal';
@@ -21,38 +22,6 @@ import {Image} from 'react-native-svg';
 import {fetchPost, getData} from '../../utils';
 import {MediumLoader} from '../../components/Loader';
 
-// const StdGradingData = [
-//   {
-//     id: 1,
-//     name: '정환희',
-//     grade: 4,
-//   },
-//   {
-//     id: 2,
-//     name: '장민서',
-//     grade: 4,
-//   },
-//   {
-//     id: 3,
-//     name: '양원채',
-//     grade: 4,
-//   },
-//   {
-//     id: 4,
-//     name: '민세원',
-//     grade: 4,
-//   },
-//   {
-//     id: 5,
-//     name: '박석류',
-//     grade: 4,
-//   },
-//   {
-//     id: 6,
-//     name: '김정곤',
-//     grade: 4,
-//   },
-// ];
 const UnSelectedBtn = () => (
   <View
     style={{
@@ -127,7 +96,7 @@ const Student = ({
 
   return (
     <>
-       <Modal
+      <Modal
         isVisible={modalVisible}
         animationIn={'fadeIn'}
         animationOut={'fadeOut'}
@@ -232,9 +201,11 @@ const AdminGradingScreen = () => {
   const [stdGrade, setStdGrade] = useState(null);
   const [stdInfo, setStdInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // console.log(level, title, assignId);
   const getStdsData = async () => {
+    setIsRefreshing(true);
     const userToken = await getData('user_token');
     const url = `/assign/readAssign/detail`;
     const body = {assignId, userToken};
@@ -243,6 +214,7 @@ const AdminGradingScreen = () => {
 
       setStdInfo(stdDatas.data);
       setIsLoading(false);
+      setIsRefreshing(false);
     } catch (error) {
       console.error('Error sending data:', error);
     }
@@ -284,6 +256,13 @@ const AdminGradingScreen = () => {
             data={stdInfo}
             renderItem={renderItem}
             keyExtractor={item => item.studentId}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={getStdsData}
+                tintColor={COLORS.green}
+              />
+            }
           />
         </View>
       )}

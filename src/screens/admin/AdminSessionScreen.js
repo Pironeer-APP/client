@@ -26,6 +26,8 @@ import {fetchPost, getData} from '../../utils';
 import useProgress from '../../use-progress';
 import IsFaceBox from '../../components/IsFaceBox';
 import {GapH} from '../../components/Gap';
+import {MediumLoader} from '../../components/Loader';
+import MsgForEmptyScreen from '../../components/MsgForEmptyScreen';
 
 const StatusCircle = () => {
   return <View style={styles.statusCircle} />;
@@ -262,6 +264,7 @@ const AssignmentScreen = ({navigation}) => {
   const [sessionData, setSessionData] = useState([]);
   const [initialScrollIndex, setInitialScrollIndex] = useState(0);
   const isFocused = useIsFocused();
+  const [isLoading, setIsLoading] = useState(true);
 
   const getSessions = async () => {
     const userToken = await getData('user_token'); // token 받아올 땐 fetch랑 같이...
@@ -272,8 +275,9 @@ const AssignmentScreen = ({navigation}) => {
     const res = await fetchPost(url, body);
 
     setSessionData(res.sessions);
-    console.log('서버로부터 받은 세션들', res.sessions);
+    // console.log('서버로부터 받은 세션들', res.sessions.length);
     setInitialScrollIndex(res.nextSessionIdx);
+    setIsLoading(false);
     console.log(res.nextSessionIdx);
   };
 
@@ -306,28 +310,41 @@ const AssignmentScreen = ({navigation}) => {
   return (
     <StyledContainer>
       <HeaderDetail title={'세션'} />
-      <View style={{flex: 1, paddingRight: 20, paddingLeft: 10}}>
-        <FlatList
-          data={sessionData}
-          renderItem={({item}) => (
-            <Item
-              item={item}
-              lastSessionId={lastScheduleId}
-              nextSessionId={nextScheduleId}
-              limit={limit}
-              status={status}
-            />
-          )}
-          keyExtractor={item => item.session_id}
-          getItemLayout={getItemLayout}
-          initialScrollIndex={initialScrollIndex}
-        />
-        <MainButton
-          content="일정 추가하기"
-          onPress={onPressAddSchedule}
-          height={60}
-        />
-      </View>
+      {!!isLoading ? (
+        <MediumLoader />
+      ) : sessionData.length === 0 ? (
+        <View style={{paddingHorizontal: 20, flex: 1}}>
+          <MsgForEmptyScreen content={'등록된 세션이 없습니다'} />
+          <MainButton
+            content="일정 추가하기"
+            onPress={onPressAddSchedule}
+            height={60}
+          />
+        </View>
+      ) : (
+        <View style={{flex: 1, paddingRight: 20, paddingLeft: 10}}>
+          <FlatList
+            data={sessionData}
+            renderItem={({item}) => (
+              <Item
+                item={item}
+                lastSessionId={lastScheduleId}
+                nextSessionId={nextScheduleId}
+                limit={limit}
+                status={status}
+              />
+            )}
+            keyExtractor={item => item.session_id}
+            getItemLayout={getItemLayout}
+            initialScrollIndex={initialScrollIndex}
+          />
+          <MainButton
+            content="일정 추가하기"
+            onPress={onPressAddSchedule}
+            height={60}
+          />
+        </View>
+      )}
     </StyledContainer>
   );
 };
