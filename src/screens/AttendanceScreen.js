@@ -176,8 +176,8 @@ const InProgressAttendBox = props => {
   );
 };
 const DoneAttendBox = props => {
-  const month = props.date.getMonth() + 1;
-  let day = props.date.getDate();
+  const month = String(Number(props.date.getMonth()) + 1);
+  let day = String(props.date.getDate());
   const dayOfTheWeek = dayOfWeek(props.date.getDay());
 
   if (day < 9) {
