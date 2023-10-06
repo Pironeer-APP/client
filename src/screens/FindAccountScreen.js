@@ -34,7 +34,7 @@ export default function FindAccountScreen({navigation}) {
     setLoading(true);
     const res = await fetchPost(url, body);
     setLoading(false);
-    if (res.result) {
+    if (res.result === '비밀번호 변경 완료') {
       Alert.alert(
         '새로운 비밀번호가 등록된 이메일로 전송되었습니다',
         '로그인 후 비밀번호를 변경해 주세요',
@@ -42,6 +42,28 @@ export default function FindAccountScreen({navigation}) {
           {
             text: '확인',
             onPress: () => navigation.navigate('LoginScreen'),
+          },
+        ],
+      );
+    } else if(res.result === '계정 정보 없음') {
+      Alert.alert(
+        '입력하신 아이디(전화번호) 계정 정보가 존재하지 않습니다',
+        '다시 시도해 주세요',
+        [
+          {
+            text: '확인',
+            onPress: () => setData('')
+          },
+        ],
+      );
+    } else if(res.result === '서버 오류') {
+      Alert.alert(
+        'SERVER ERROR',
+        '관리자에게 문의하세요',
+        [
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('SplashScreen')
           },
         ],
       );

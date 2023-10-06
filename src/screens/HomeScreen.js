@@ -174,8 +174,6 @@ const HomeScreen = ({navigation}) => {
     setAssignProgress(cAssign.getTime() - now.getTime());
 
     setHomeProgress(Math.trunc((assignProgress / assignLimit) * 100));
-
-    setIsTimerLoading(false);
   };
   useEffect(() => {
     setTimeout(() => {
