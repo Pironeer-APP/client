@@ -255,7 +255,7 @@ const AssignmentScreen = () => {
     // 지난 마지막 assignment와 index 알아내기
     const now = dayjs();
     console.log('now:', now);
-    for (let i = assignment.length - 1; i > 0; i--) {
+    for (let i = assignment.length - 1; i >= 0; i--) {
       const assignDueDate = dayjs(assignment[i].due_date);
       if (now.isBefore(assignDueDate)) {
         // 지금부터가 다가오는 과제
