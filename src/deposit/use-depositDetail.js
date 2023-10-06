@@ -12,10 +12,25 @@ export default function useDepositDetail() {
     const res = await fetchPost(url, body);
     setDepositHistory(res.histories);
   }
+
+  const getDepositHistoryAdmin = async (userInfo) => {
+    const url = '/deposit/getDepositHistoryAdmin';
+    const body = {userInfo};
+    const res = await fetchPost(url, body);
+    setDepositHistory(res.histories);
+  }
+
   const getCouponInfo = async () => {
     const userToken = await getData('user_token');
     const url = '/deposit/getCoupons';
     const body = {userToken};
+    const res = await fetchPost(url, body);
+    setCouponInfo(res.couponInfo);
+  }
+
+  const getCouponInfoAdmin = async (userInfo) => {
+    const url = '/deposit/getCouponsAdmin';
+    const body = {userInfo};
     const res = await fetchPost(url, body);
     setCouponInfo(res.couponInfo);
   }
@@ -24,5 +39,7 @@ export default function useDepositDetail() {
     couponInfo,
     getDepositHistory,
     getCouponInfo,
+    getDepositHistoryAdmin,
+    getCouponInfoAdmin,
   }
 }

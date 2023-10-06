@@ -38,7 +38,9 @@ const AssignmentBox = ({
 }) => {
   const navigation = useNavigation();
   const dateString = createdAt;
-  const formattedDate = dayjs(dateString).format('MM.DD ddd');
+  const dateString2 = new Date(dateString);
+  dateString2.setHours(dateString2.getHours() + 9);
+  const formattedDate = dayjs(dateString2).format('MM.DD ddd');
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     getAssigns();
@@ -94,7 +96,7 @@ const AssignmentBox = ({
                 toggleModal();
                 navigation.navigate('AdminUpdateAssign', {
                   title,
-                  dateString,
+                  due,
                   assignId,
                   level,
                 });

@@ -15,7 +15,7 @@ import ToggleItem from '../../components/ToggleItem';
 import {PaddingBox} from '../../components/Box';
 import DatePicker from 'react-native-date-picker';
 import {StyledText} from '../../components/Text';
-import {fetchPost} from '../../utils';
+import {fetchPost, localeDate} from '../../utils';
 import HeaderDetail from '../../components/Header';
 import useUserInfo from '../../use-userInfo';
 
@@ -37,10 +37,12 @@ export default function AdminAddSessionScreen() {
   }, []);
 
   const onPressConfirm = async () => {
+    console.log('클라이언트 저장 직전 date', date);
+    console.log('클라이언트 저장 직전 locale date', localeDate(date));
     const url = '/session/addSchedule';
     const body = {
       title: sessionTitle,
-      date: new Date(date.getTime() + 9 * 60 * 60 * 1000),
+      date: localeDate(date),
       face: face,
       place: sessionPlace,
       userToken: userToken,
@@ -107,14 +109,15 @@ export default function AdminAddSessionScreen() {
                 fontSize={20}
               />
               <StyledText
-                content={`${date.getHours().toLocaleString()}:${date
+                content={`${date.getHours().toLocaleString().padStart(2, '0')}:${date
                   .getMinutes()
-                  .toLocaleString()}`}
+                  .toLocaleString().padStart(2, '0')}`}
                 fontSize={20}
               />
             </View>
           </PaddingBox>
           <StyledContainer>
+            <View style={{flex: 1, alignItems: 'center'}}>
             <DatePicker
               date={date}
               onDateChange={setDate}
@@ -126,6 +129,7 @@ export default function AdminAddSessionScreen() {
               fadeToColor="none"
               is24hourSource="locale"
             />
+            </View>
           </StyledContainer>
         </View>
       </StyledContainer>
