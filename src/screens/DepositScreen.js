@@ -9,6 +9,7 @@ import useUserInfo from '../use-userInfo';
 import AdminDepositList from '../deposit/AdminDepositList';
 import {COLORS} from '../assets/Theme';
 import {StatusBar} from 'react-native';
+import { fetchPost } from '../utils';
 
 const DepositScreen = () => {
   const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
@@ -17,6 +18,7 @@ const DepositScreen = () => {
     useDepositDetail();
 
   useEffect(() => {
+    console.log('1')
     getUserInfoFromServer();
   }, []);
 
@@ -24,6 +26,7 @@ const DepositScreen = () => {
     getDepositHistory();
   }, []);
   useEffect(() => {
+    console.log('2')
     getCouponInfo();
   }, []);
 
@@ -36,7 +39,11 @@ const DepositScreen = () => {
       Alert.alert('보증금 12만원은 보증금 방어권을 사용하실 수 없습니다.');
     } else {
       const res = await fetchPost(url, body);
-      getCouponInfo(userId);
+      Alert.alert('사용되었습니다.');
+      console.log('3')
+      getDepositHistory();
+      getUserInfoFromServer();
+      getCouponInfo();
       // console.log(res);
     }
   };

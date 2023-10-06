@@ -16,7 +16,7 @@ import {useRoute, useIsFocused} from '@react-navigation/native';
 import {StyledSubText, StyledText} from '../components/Text';
 import useUserInfo from '../use-userInfo';
 import {MainButton} from '../components/Button';
-import {fetchGet, fetchPost, getAPIHost, getData} from '../utils';
+import {fetchGet, fetchPost, getAPIHost, getData, pushNoti} from '../utils';
 import {Badge} from './AnnouncementScreen';
 import {RowView} from './HomeScreen';
 import Gap from '../components/Gap';
@@ -64,21 +64,17 @@ const AnnouncementDetail = ({navigation}) => {
 
   const imagesUrl = images.map(img => convertToUrl(img));
 
+  // delete fetch
   const OnPressDeletePost = () => {
-    Alert.alert('삭제하시겠습니까?', '', [
+    Alert.alert('글을 삭제하시겠습니까?', '', [
       {
         text: '취소',
         style: 'cancel',
       },
-      {
-        text: '삭제',
-        onPress: () => {
-          deletePost();
-        },
-      },
+      {text: '삭제', onPress: () => deletePost()},
     ]);
   };
-  // delete fetch
+
   const deletePost = async () => {
     const url = `/post/delete/`;
     const userToken = await getData('user_token');
@@ -86,6 +82,7 @@ const AnnouncementDetail = ({navigation}) => {
 
     try {
       await fetchPost(url, body);
+      // await pushNoti({title: '공지가 삭제되었습니다.', body: ''});
       navigation.navigate('AnnouncementScreen');
     } catch (error) {
       console.error('Error sending data:', error);
@@ -134,7 +131,7 @@ const AnnouncementDetail = ({navigation}) => {
             <AutoHeightImage
               key={index}
               source={{uri: image}}
-              width={windowWidth}
+              width={windowWidth - 40}
               style={{borderRadius: 10, marginBottom: 10}}
             />
           ))}

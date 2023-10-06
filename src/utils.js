@@ -1,6 +1,7 @@
 import { Platform } from "react-native";
 import { _ANDROID_AVD_API_HOST, _IOS_API_HOST } from "./variables";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+// import messaging from '@react-native-firebase/messaging';
 
 export const autoHyphen = (value) => {
   const newValue = value
@@ -92,4 +93,22 @@ export const dayOfWeek = (num) => {
   const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   
   return days[num];
+}
+
+// 알림
+export const pushNoti = async (body) => {
+  const url = '/fcm/push';
+  const myToken = await messaging().getToken();
+  body.myToken = myToken;
+  const res = await fetchPost(url, body);
+}
+// 기기 토큰 서버에 전송
+export const sendToken = async (token) => {
+  const url = '/fcm/saveToken';
+  try {
+    const res = await fetchPost(url, {token: token});
+    console.log(res);
+  } catch(error) {
+    console.log(error);
+  }
 }
