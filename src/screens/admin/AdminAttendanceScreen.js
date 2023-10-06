@@ -92,6 +92,7 @@ const AdminAttendanceScreen = () => {
   const [mainCodeText, setMainCodeText] = useState("오늘 세션 출결관리");
   const [attenCheckNumber, setAttenCheckNumber] = useState(1);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [sessionId, setSessionId] = useState();
 
   // 이미 생성된 출석 코드가 있는지 확인
   const getTodayCode = async () => {
@@ -108,6 +109,9 @@ const AdminAttendanceScreen = () => {
   useEffect(() => {
     getTodayCode();
   }, []);
+  useEffect(() => {
+    const now = new Date();
+  })
 
   const getSessionsByWeek = async () => {
     const userToken = await getData('user_token');
@@ -152,6 +156,7 @@ const AdminAttendanceScreen = () => {
         console.log(session);
         if (session.month == month && session.day == day) {
           setIsToday(true);
+          setSessionId(session.session_id);
         }
       });
     }
@@ -179,6 +184,7 @@ const AdminAttendanceScreen = () => {
     const url = '/attend/confirmAttend';
     const body = {
       token: userToken,
+      session_id: sessionId
     }
     const result = await fetchPost(url, body);
     setAttenCheckNumber(result.part);
@@ -190,6 +196,7 @@ const AdminAttendanceScreen = () => {
     const url = '/attend/endAttend';
     const body = {
       token: userToken,
+      session_id: sessionId
     }
     const result = await fetchPost(url, body);
     console.log(result);

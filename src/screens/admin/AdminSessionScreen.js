@@ -295,13 +295,13 @@ const AssignmentScreen = ({navigation}) => {
   });
 
   // need to be changed [wonchae]
-  const getItemLayout = (data, index) => {
-    return {
-      length: 100,
-      offset: 100 * data.length,
-      index,
-    };
-  };
+  // const getItemLayout = (data, index) => {
+  //   return {
+  //     length: 100,
+  //     offset: 100 * data.length,
+  //     index,
+  //   };
+  // };
 
   return (
     <StyledContainer>
@@ -319,8 +319,8 @@ const AssignmentScreen = ({navigation}) => {
             />
           )}
           keyExtractor={item => item.session_id}
-          getItemLayout={getItemLayout}
-          initialScrollIndex={initialScrollIndex}
+          // getItemLayout={getItemLayout}
+          // initialScrollIndex={initialScrollIndex}
         />
         <MainButton
           content="일정 추가하기"

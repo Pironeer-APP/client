@@ -26,7 +26,7 @@ const AdminUpdateAssign = ({route}) => {
   const [date, setDate] = useState(new Date(getDue));
 
   const updateAssign = async () => {
-    const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
+    const formattedDate =  `${date.getFullYear()}-${Number(date.getMonth())+1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
     const userToken = await getData('user_token');
     const url = `/assign/updateAssign`;
@@ -78,6 +78,7 @@ const AdminUpdateAssign = ({route}) => {
                 theme="dark"
                 minuteInterval={5}
                 fadeToColor="none"
+                defaultValue={date}
               />
             </View>
           </View>

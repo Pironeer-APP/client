@@ -19,31 +19,18 @@ const AdminCreateAssignment = () => {
   const [date, setDate] = useState(new Date());
   const route = useRoute();
 
-  const DayConverter = DayInNum => {
-    if (DayInNum == 0) return 'SUN';
-    else if (DayInNum == 1) return 'MON';
-    else if (DayInNum == 2) return 'TUE';
-    else if (DayInNum == 3) return 'WED';
-    else if (DayInNum == 4) return 'THU';
-    else if (DayInNum == 5) return 'FRI';
-    else if (DayInNum == 6) return 'SAT';
-  };
-
-  const RenderdDay = DayConverter(date.getDay());
-  const hour = `${date.getHours()}`;
-  const minute = `${date.getMinutes()}`;
-  const RenderHour = hour.padStart(2, '0');
-  const RenderMinutes = minute.padStart(2, '0');
-  const month = `${date.getMonth() + 1}`;
-  const RenderMonth = month.padStart(2, '0');
-  const level = route.params.level;
   // const sendLevel = level - 1;
 
   //  보낼 값
-
-  const dateData = `${date.getFullYear()}-${RenderMonth}-${date.getDate()} ${RenderHour}:${RenderMinutes}:00`;
-
+  useEffect(() => {
+    const newDate = new Date();
+    newDate.setHours(10, 0, 0, 0);
+    setDate(newDate);
+  }, []);
+  
+  
   const createAssign = async () => {
+    const dateData = `${date.getFullYear()}-${Number(date.getMonth())+1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:00`;
     const userToken = await getData('user_token');
     const url = `/assign/createAssign`;
     const body = {userToken, title, dateData};
@@ -58,10 +45,6 @@ const AdminCreateAssignment = () => {
       }
     }
   };
-
-  useEffect(() => {
-    setDate(date.setHours(10, 0, 0, 0));
-  }, []);
 
   return (
     <StyledContainer>
@@ -100,6 +83,7 @@ const AdminCreateAssignment = () => {
                 theme="dark"
                 minuteInterval={5}
                 fadeToColor="none"
+                defaultValue={date}
               />
             </View>
           </View>
