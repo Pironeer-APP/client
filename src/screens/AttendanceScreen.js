@@ -262,6 +262,8 @@ const AttendanceScreen = () => {
   const [initialScrollIndex, setInitialScrollIndex] = useState(0);
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [isTodaySession, setIsTodaySession] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [codeConfirmed, setCodeConfirmed] = useState(false);
   const toggleBottomSheet = () => {
     setBottomSheetVisible(!isBottomSheetVisible);
   };
@@ -321,7 +323,7 @@ const AttendanceScreen = () => {
               initialScrollIndex={initialScrollIndex}
             />
             {/* 오늘 세션이 있는 경우에만 출석하기 버튼 나타남  */}
-            {!isTodaySession ? (
+            {!!isTodaySession ? (
               <MainButton
                 height={60}
                 content={'출석하기'}
@@ -331,13 +333,49 @@ const AttendanceScreen = () => {
             ) : null
             }
           </View>
+          
           {/* 출석코드입력 모달 */}
           <Modal
             isVisible={isBottomSheetVisible}
             onBackdropPress={toggleBottomSheet}
             style={{justifyContent: 'flex-end', margin: 0}}>
             <View style={styles.modalContainer}>
-              <Codepad />
+              <Codepad 
+              setBottomSheet={setBottomSheetVisible} 
+              setModalVisible={setModalVisible} 
+              isModalVisible={isModalVisible}
+              setCodeConfirmed={setCodeConfirmed}
+              />
+            </View>
+          </Modal>
+
+          {/* 출석성공실패 모달 */}
+          <Modal
+          isVisible={isModalVisible}
+          // onBackdropPress={toggleModal}
+          animationIn={'fadeIn'}
+          animationOut={'fadeOut'}
+          style={styles.centeredView}>
+          <View style={styles.modalView}>
+            {!!codeConfirmed ? (
+              <>
+                <Image
+                  source={require('../assets/images/attend_success.png')}
+                  resizeMode="contain"
+                  style={{width: 120, height: 120}}
+                />
+                <StyledText content={'출석 성공'} fontSize={25} />
+                </>
+            ) : (
+              <>
+                <Image
+                  source={require('../assets/images/attend_late.png')}
+                  resizeMode="contain"
+                  style={{width: 120, height: 120}}
+                />
+                <StyledText content={'지각처리 되었습니다'} fontSize={25} />
+              </>
+              )}
             </View>
           </Modal>
         </View>
@@ -384,5 +422,20 @@ const styles = StyleSheet.create({
   loadingText: {
     color: 'white',
     fontSize: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    backgroundColor: `${COLORS.gray}`,
+    width: 300,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    gap: 20,
+    position: 'absolute',
   },
 });
