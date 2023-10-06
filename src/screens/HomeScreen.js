@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
+  Alert,
   Animated,
   Linking,
 } from 'react-native';
@@ -24,6 +25,8 @@ import useUserInfo from '../use-userInfo';
 import {fetchPost, getData} from '../utils';
 import useProgress from '../use-progress';
 import {TinyLoader} from '../components/Loader';
+
+// import messaging from '@react-native-firebase/messaging';
 
 const Header = () => (
   <View>
@@ -88,7 +91,7 @@ export const ProgressBar = ({status}) => {
   );
 };
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({navigation}) => {  
   // status bar 색상설정
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -174,8 +177,6 @@ const HomeScreen = ({navigation}) => {
     setAssignProgress(cAssign.getTime() - now.getTime());
 
     setHomeProgress(Math.trunc((assignProgress / assignLimit) * 100));
-
-    setIsTimerLoading(false);
   };
   useEffect(() => {
     setTimeout(() => {
@@ -203,7 +204,7 @@ const HomeScreen = ({navigation}) => {
           <Header />
           <Gap />
           <StyledText
-            content={`${userInfoFromServer.level}기 ${userInfoFromServer.name}님 \n오늘은 대면 세션 날이에요`}
+            content={`${userInfoFromServer.level}기 ${userInfoFromServer.name}님 \n환영합니다`}
             fontSize={24}
           />
           <Gap />
@@ -397,6 +398,7 @@ const HomeScreen = ({navigation}) => {
               </TouchableOpacity>
             </Box>
           </View>
+          <Gap height={50} />
         </ScrollView>
       </View>
     </StyledContainer>

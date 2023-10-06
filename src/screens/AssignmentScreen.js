@@ -227,15 +227,14 @@ const AssignmentScreen = () => {
     const body = {
       userToken: userToken,
     };
-    // console.log('body: ', body);
+
     try {
       const fetchData = await fetchPost(url, body);
       setAssignment(fetchData.data);
       // console.log('성공  받아온 data: ', fetchData);
       setIsLoading(false);
     } catch (error) {
-      console.log(error);
-      console.log('에러');
+      console.log('에러 발생: ', error);
     }
   };
 
@@ -254,8 +253,7 @@ const AssignmentScreen = () => {
   const getLastAssign = () => {
     // 지난 마지막 assignment와 index 알아내기
     const now = dayjs();
-    console.log('now:', now);
-    for (let i = assignment.length - 1; i > 0; i--) {
+    for (let i = assignment.length - 1; i >= 0; i--) {
       const assignDueDate = dayjs(assignment[i].due_date);
       if (now.isBefore(assignDueDate)) {
         // 지금부터가 다가오는 과제
@@ -265,17 +263,20 @@ const AssignmentScreen = () => {
           setLastIndex(-1);
           setLastAssignDueDate(dayjs().subtract(3, 'day'));
         }
-        setLastAssignment(assignment[i + 1]); // 그 이전 과제가 마지막 과제
-        setLastIndex(assignment[i + 1].AssignId - 1);
+        setLastAssignment(assignment[i + 1]); // 그 이전 과제가 마지막 과제 (진행 완료)
+        setLastIndex(assignment[i + 1].AssignId - 1); // 가장 마지막에 진행 완료된 과제의 index (기준)
         setLastAssignDueDate(dayjs(assignment[i + 1].due_date));
+    
         break;
       }
     }
   };
+  console.log(lastAssignment);
+  console.log(lastIndex);
+  console.log(lastAssignDueDate);
 
   useEffect(() => {
     getLastAssign();
-    console.log(lastAssignment, lastIndex, lastAssignDueDate);
   }, [assignment]);
 
   let FIRST_ITEM = assignment[0]?.title;

@@ -15,7 +15,7 @@ import HeaderDetail from '../../components/Header';
 import {COLORS} from '../../assets/Theme';
 import {Camera, ChooseCategory, ImagesContainer} from './AdminCreateNotice';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {fetchPost, getAPIHost, getData} from '../../utils';
+import {fetchPost, getAPIHost, getData, pushNoti} from '../../utils';
 
 const AdminUpdateNotice = () => {
   const route = useRoute();
@@ -35,6 +35,7 @@ const AdminUpdateNotice = () => {
     const userToken = await getData('user_token');
     const post_id = post.post_id;
     const body = {title, content, category, userToken, post_id};
+
     if (title.length === 0) {
       Alert.alert('제목을 입력하세요');
     } else if (content.length === 0) {
@@ -45,6 +46,8 @@ const AdminUpdateNotice = () => {
         if (imgsIsChanged) {
           updateImages(post.post_id);
         }
+
+        // await pushNoti({title: `수정된 공지가 있습니다-${title}`, body: content});
         navigation.navigate('AnnouncementScreen');
       } catch (error) {
         console.error('Error sending data:', error);

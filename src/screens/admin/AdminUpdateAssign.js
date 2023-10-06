@@ -17,7 +17,7 @@ const AdminUpdateAssign = ({route}) => {
 
   const {
     title: getTitle,
-    dateString: getDue,
+    due: getDue,
     assignId: assignId,
     level,
   } = route.params;
@@ -31,7 +31,7 @@ const AdminUpdateAssign = ({route}) => {
     const userToken = await getData('user_token');
     const url = `/assign/updateAssign`;
     const body = {userToken, assignId, title, formattedDate};
-    console.log('body: ', body);
+
     try {
       await fetchPost(url, body);
       navigation.goBack();

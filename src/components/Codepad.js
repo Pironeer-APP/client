@@ -21,7 +21,7 @@ const Codebox = ({code}) => {
   );
 };
 
-const Numberpad = ({onNumberPress, onDeletePress, code, setBottomSheet, setModalVisible, isModalVisible, setCodeConfirmed}) => {
+const Numberpad = ({onNumberPress, onDeletePress, code, setBottomSheet, isBottomSheetVisible, setModalVisible, isModalVisible, setCodeConfirmed, codeConfirmed, confirmCode}) => {
 
 
   const numbers = [
@@ -30,26 +30,14 @@ const Numberpad = ({onNumberPress, onDeletePress, code, setBottomSheet, setModal
     [7, 8, 9],
   ];
 
-  //출석코드 일치 확인
-  const confirmCode = async () => {
-    const userToken = await getData('user_token');
-    const url = `/attend/addAttend`;
-    const body = {
-      token: userToken,
-    };
-    const attenResult = await fetchPost(url, body);
-    setCodeConfirmed(attenResult.result);
-    setModalVisible(true);
-    setBottomSheet(false);
-    console.log(attenResult.result);
-  };
-
-  // 출석성공실패 모달 3초 후에 사라지게 하기
-  if (isModalVisible) {
-    const timer = setTimeout(() => {
-      setModalVisible(false);
-    }, 1500);
-  }
+  // useEffect(() => {
+  //   // 출석성공실패 모달 3초 후에 사라지게 하기
+  //   if (!isBottomSheetVisible) {
+  //     setTimeout(() => {
+  //       setModalVisible(!isModalVisible);
+  //     }, 1500);
+  //   }
+  // }, [codeConfirmed]);
 
   return (
     <View
@@ -140,8 +128,8 @@ const Numberpad = ({onNumberPress, onDeletePress, code, setBottomSheet, setModal
   );
 };
 
-const Codepad = ({ setBottomSheet, setModalVisible, isModalVisible, setCodeConfirmed }) => {
-  const [codes, setCodes] = useState(['', '', '', '']);
+const Codepad = ({ setBottomSheet, setModalVisible, isModalVisible, setCodeConfirmed, codeConfirmed, confirmCode, codes, setCodes }) => {
+  // const [codes, setCodes] = useState(['', '', '', '']);
 
   const updateCode = (index, value) => {
     const updatedCodes = [...codes];
@@ -192,6 +180,8 @@ const Codepad = ({ setBottomSheet, setModalVisible, isModalVisible, setCodeConfi
         setModalVisible={setModalVisible}
         isModalVisible={isModalVisible}
         setCodeConfirmed={setCodeConfirmed}
+        codeConfirmed={codeConfirmed}
+        confirmCode={confirmCode}
       />
     </View>
   );

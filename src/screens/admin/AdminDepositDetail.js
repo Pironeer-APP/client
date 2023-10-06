@@ -23,15 +23,15 @@ export default function AdminDepositDetail() {
   const userInfo = route.params.userInfo;
   const adminInfo = route.params.adminInfo;
 
-  const {depositHistory, couponInfo, getDepositHistory, getCouponInfo} =
+  const {depositHistory, couponInfo, getDepositHistoryAdmin, getCouponInfoAdmin} =
     useDepositDetail();
 
   useEffect(() => {
-    getDepositHistory(userInfo);
+    getDepositHistoryAdmin(userInfo);
   }, []);
 
   useEffect(() => {
-    getCouponInfo(userInfo);
+    getCouponInfoAdmin(userInfo);
   }, []);
 
   const {userToken, getUserToken} = useUserInfo();
@@ -45,11 +45,11 @@ export default function AdminDepositDetail() {
 
     const body = {
       adminToken: userToken,
-      coupon_id: coupon_id,
+      userInfo: userInfo,
     };
     const res = await fetchPost(url, body);
     console.log(res);
-    getCouponInfo(userInfo);
+    getCouponInfoAdmin(userInfo);
   };
 
   const onPressDeleteBadge = () => {
@@ -71,7 +71,7 @@ export default function AdminDepositDetail() {
       user_id: userInfo.user_id,
     };
     const res = await fetchPost(url, body);
-    getCouponInfo(userInfo);
+    getCouponInfoAdmin(userInfo);
     console.log(res);
   };
   const onPressAddCoupon = async () => {
