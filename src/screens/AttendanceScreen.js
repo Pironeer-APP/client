@@ -300,7 +300,7 @@ const AttendanceScreen = () => {
         <MediumLoader />
       ) : (
         <>
-          <View style={{flex: 1, padding: 20, paddingLeft: 10}}>
+          <View style={{flex: 1, paddingRight: 20, paddingLeft: 10}}>
             <FlatList
               data={attendance}
               renderItem={renderAttenItem}
