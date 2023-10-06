@@ -49,7 +49,7 @@ export default function AdminAddSessionScreen() {
     };
     if (sessionTitle.length === 0) {
       Alert.alert('제목 입력해야지?');
-    } else if (sessionPlace.length === 0) {
+    } else if (face === true && sessionPlace.length === 0) {
       Alert.alert('장소 입력해야지?');
     } else {
       try {
@@ -80,14 +80,17 @@ export default function AdminAddSessionScreen() {
             onChangeText={setSessionTitle}
           />
           {/* 지도 api 적용해보기 */}
-          <TextInput
-            style={styles.titleInput}
-            placeholder="장소"
-            placeholderTextColor={COLORS.light_gray}
-            color={COLORS.textColor}
-            value={sessionPlace}
-            onChangeText={setSessionPlace}
-          />
+          {!!face && (
+            <TextInput
+              style={styles.titleInput}
+              placeholder="장소"
+              placeholderTextColor={COLORS.light_gray}
+              color={COLORS.textColor}
+              value={sessionPlace}
+              onChangeText={setSessionPlace}
+            />
+          )}
+
           <PaddingBox>
             <ToggleItem
               text="대면"
