@@ -197,7 +197,16 @@ const AdminAssignmentScreen = ({route}) => {
       {!!isLoading ? (
         <MediumLoader />
       ) : assigns.length === 0 ? (
-        <MsgForEmptyScreen content={'등록된 과제가 없습니다.'} />
+        <View style={{flex: 1, paddingHorizontal: 20}}>
+          <MsgForEmptyScreen content={'등록된 과제가 없습니다.'} />
+          <MainButton
+            content={'과제 등록하기'}
+            onPress={() => {
+              navigation.navigate('AdminCreateAssignment', {level: getLevel});
+            }}
+            height={60}
+          />
+        </View>
       ) : (
         <View style={{flex: 1, paddingHorizontal: 20}}>
           <View style={{flex: 1}}>
