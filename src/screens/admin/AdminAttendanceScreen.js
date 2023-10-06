@@ -176,6 +176,7 @@ const AdminAttendanceScreen = () => {
       token: userToken,
     }
     const result = await fetchPost(url, body);
+    console.log(result);
   }
 
   //모달 띄우고 접고
