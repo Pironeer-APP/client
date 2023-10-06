@@ -227,15 +227,14 @@ const AssignmentScreen = () => {
     const body = {
       userToken: userToken,
     };
-    // console.log('body: ', body);
+
     try {
       const fetchData = await fetchPost(url, body);
       setAssignment(fetchData.data);
       // console.log('성공  받아온 data: ', fetchData);
       setIsLoading(false);
     } catch (error) {
-      console.log(error);
-      console.log('에러');
+      console.log('에러 발생: ', error);
     }
   };
 
@@ -254,7 +253,7 @@ const AssignmentScreen = () => {
   const getLastAssign = () => {
     // 지난 마지막 assignment와 index 알아내기
     const now = dayjs();
-    console.log('now:', now);
+
     for (let i = assignment.length - 1; i > 0; i--) {
       const assignDueDate = dayjs(assignment[i].due_date);
       if (now.isBefore(assignDueDate)) {
@@ -275,7 +274,6 @@ const AssignmentScreen = () => {
 
   useEffect(() => {
     getLastAssign();
-    console.log(lastAssignment, lastIndex, lastAssignDueDate);
   }, [assignment]);
 
   let FIRST_ITEM = assignment[0]?.title;
