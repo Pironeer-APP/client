@@ -75,6 +75,7 @@ const AdminCreateNotice = () => {
     const url = '/post/create';
     const userToken = await getData('user_token');
     const body = {title, content, category, userToken};
+
     if (title.length === 0) {
       Alert.alert('제목 입력해 바보야');
     } else if (content.length === 0) {
@@ -85,6 +86,7 @@ const AdminCreateNotice = () => {
         if (result.createdPostId && selectedImages.length > 0) {
           uploadImages(result.createdPostId);
         }
+
         await pushNoti({title: title, body: content});
         navigation.goBack();
       } catch (error) {

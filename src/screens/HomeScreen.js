@@ -16,7 +16,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
-import {StyledText} from '../components/Text';
+import {StyledSubText, StyledText} from '../components/Text';
 import {Box} from '../components/Box';
 import {RightArrowBtn, UnTouchableRightArrow} from '../components/Button';
 import StyledContainer from '../components/StyledContainer';
@@ -141,6 +141,7 @@ const HomeScreen = ({navigation}) => {
   const [curAssign, setCurAssign] = useState();
   const [curAssignCnt, setCurAssignCnt] = useState();
   const [recentAssign, setRecentAssign] = useState();
+
   // 다가오는 과제
   // 지나간 과제 하나
   const getCurrentRecentAssigns = async () => {
@@ -218,38 +219,47 @@ const HomeScreen = ({navigation}) => {
                 />
                 <UnTouchableRightArrow />
               </RowView>
-              <StyledText content={curTitle} fontSize={18} />
-              <RowView style={{marginTop: 10}}>
-                <ProgressBar status={homeProgress ? homeProgress * 0.01 : 1} />
 
-                {!!isTimerLoading ? (
-                  <View
-                    style={{
-                      width: 90,
-                      alignItems: 'center',
-                    }}>
-                    <TinyLoader />
-                  </View>
-                ) : (
-                  <View
-                    style={{
-                      width: 90,
-                      justifyContent: 'flex-end',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <StyledText
-                      content={`${hour}:${min}:${sec}`}
-                      fontSize={16}
+              {curAssignCnt > 0 ? (
+                <>
+                  <StyledText content={curTitle} fontSize={18} />
+                  <RowView style={{marginTop: 10}}>
+                    <ProgressBar
+                      status={homeProgress ? homeProgress * 0.01 : 1}
                     />
-                  </View>
-                )}
-                <GapH width={5} />
-                <Image
-                  source={require('../assets/icons/timer.png')}
-                  style={{width: 15, height: 15}}
-                />
-              </RowView>
+
+                    {!!isTimerLoading ? (
+                      <View
+                        style={{
+                          width: 90,
+                          alignItems: 'center',
+                        }}>
+                        <TinyLoader />
+                      </View>
+                    ) : (
+                      <View
+                        style={{
+                          width: 90,
+                          justifyContent: 'flex-end',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
+                        <StyledText
+                          content={`${hour}:${min}:${sec}`}
+                          fontSize={16}
+                        />
+                      </View>
+                    )}
+                    <GapH width={5} />
+                    <Image
+                      source={require('../assets/icons/timer.png')}
+                      style={{width: 15, height: 15}}
+                    />
+                  </RowView>
+                </>
+              ) : (
+                <StyledSubText content="진행중인 과제가 없습니다." />
+              )}
             </TouchableOpacity>
           </Box>
           <Gap />

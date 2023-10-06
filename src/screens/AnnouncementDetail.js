@@ -64,7 +64,20 @@ const AnnouncementDetail = ({navigation}) => {
 
   const imagesUrl = images.map(img => convertToUrl(img));
 
-
+  const OnPressDeletePost = () => {
+    Alert.alert('삭제하시겠습니까?', '', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {
+        text: '삭제',
+        onPress: () => {
+          deletePost();
+        },
+      },
+    ]);
+  };
   // delete fetch
   const OnPressDeletePost = () => {
     Alert.alert('글을 삭제하시겠습니까?', '', [
