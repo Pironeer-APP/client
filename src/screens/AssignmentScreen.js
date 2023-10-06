@@ -21,6 +21,9 @@ import {fetchPost, getData} from '../utils';
 import {useIsFocused} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import useProgress from '../use-progress';
+import {GapH} from '../components/Gap';
+import {MediumLoader, TinyLoader} from '../components/Loader';
+import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
 
 export const StatusCircle = ({grade = 4}) => {
   let imageSource;
@@ -45,7 +48,15 @@ const StatusLine = () => {
     <View style={{backgroundColor: `${COLORS.icon_gray}`, width: 1, flex: 1}} />
   );
 };
-const InProgressAsgBox = ({grade, title, due, lastAssignDueDate, item, firstItem, lastItem}) => {
+const InProgressAsgBox = ({
+  grade,
+  title,
+  due,
+  lastAssignDueDate,
+  item,
+  firstItem,
+  lastItem,
+}) => {
   const [scale] = useState(new Animated.Value(1)); // 초기 크기 1
 
   useEffect(() => {
@@ -71,31 +82,29 @@ const InProgressAsgBox = ({grade, title, due, lastAssignDueDate, item, firstItem
   // 프로그레스 표기
   // lastAssginDueDate는 dayjs객체임
   const [limit, setLimit] = useState();
-  const [status, setStatus] = useState(100);
+  const [status, setStatus] = useState(NaN);
+  const [isTimerLoading, setIsTimerLoading] = useState(true);
   const getProgress = () => {
     const now = dayjs();
     const itemDueDate = dayjs(item.due_date);
     const full = itemDueDate.diff(lastAssignDueDate);
     setLimit(itemDueDate.diff(now));
-    setStatus(Math.trunc(limit/full*100));
-  }
+    setStatus(Math.trunc((limit / full) * 100));
+  };
 
   useEffect(() => {
     setTimeout(() => {
       getProgress();
     }, 1000);
   });
+  useEffect(() => {
+    isNaN(status) ? setIsTimerLoading(true) : setIsTimerLoading(false);
+  }, [status]);
 
-  const {
-    convertTime
-  } = useProgress();
-  
-  const {
-    hour,
-    min,
-    sec,
-  } = convertTime(Math.trunc(limit / 1000));
-  
+  const {convertTime} = useProgress();
+
+  const {hour, min, sec} = convertTime(Math.trunc(limit / 1000));
+
   return (
     <AsgContainer
       style={{
@@ -142,10 +151,22 @@ const InProgressAsgBox = ({grade, title, due, lastAssignDueDate, item, firstItem
             </RowView>
             <StyledText content={title} fontSize={20} />
             <RowView style={{marginTop: 10}}>
-              <View style={{ width: '70%' }}>
-                <ProgressBar status={`${status}%`} />
-              </View>
-              <StyledText content={`${hour}:${min}:${sec}`} fontSize={16} />
+              <ProgressBar status={status ? status * 0.01 : 1} />
+              {!!isTimerLoading ? (
+                <View style={{width: 75, alignItems: 'center'}}>
+                  <TinyLoader />
+                </View>
+              ) : (
+                <View style={{width: 75, alignItems: 'flex-end'}}>
+                  <StyledText content={`${hour}:${min}:${sec}`} fontSize={14} />
+                </View>
+              )}
+
+              <GapH width={5} />
+              <Image
+                source={require('../assets/icons/timer.png')}
+                style={{width: 15, height: 15}}
+              />
             </RowView>
           </View>
         </Box>
@@ -181,7 +202,10 @@ const DoneAsgBox = ({grade, title, due, item, firstItem, lastItem}) => (
       <View style={{padding: 20}}>
         <RowView style={{marginVertical: 10}}>
           <View>
-            <StyledText content={item.createdDate.split(' ')[0]} fontSize={20} />
+            <StyledSubText
+              content={item.createdDate.split(' ')[0]}
+              fontSize={20}
+            />
           </View>
           <View style={{flex: 1, marginLeft: 20}}>
             <StyledText content={title} fontSize={18} />
@@ -193,6 +217,7 @@ const DoneAsgBox = ({grade, title, due, item, firstItem, lastItem}) => (
 );
 
 const AssignmentScreen = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [assignment, setAssignment] = useState([]);
   const isFocused = useIsFocused(); // 일단 살립니다
 
@@ -207,6 +232,7 @@ const AssignmentScreen = () => {
       const fetchData = await fetchPost(url, body);
       setAssignment(fetchData.data);
       // console.log('성공  받아온 data: ', fetchData);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
       console.log('에러');
@@ -214,22 +240,27 @@ const AssignmentScreen = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     saveUserId();
   }, []);
 
   // 프로그레스 구현, 과제는 2개 이상일 수 있으므로 세션과 다름
   const [lastAssignment, setLastAssignment] = useState(null);
   const [lastIndex, setLastIndex] = useState(-1);
-  const [lastAssignDueDate, setLastAssignDueDate] = useState(dayjs().subtract(3, 'day'));
+  const [lastAssignDueDate, setLastAssignDueDate] = useState(
+    dayjs().subtract(3, 'day'),
+  );
 
   const getLastAssign = () => {
     // 지난 마지막 assignment와 index 알아내기
     const now = dayjs();
     console.log('now:', now);
-    for(let i = assignment.length - 1; i > 0; i--) {
+    for (let i = assignment.length - 1; i > 0; i--) {
       const assignDueDate = dayjs(assignment[i].due_date);
-      if(now.isBefore(assignDueDate)) { // 지금부터가 다가오는 과제
-        if(i === assignment.length - 1) { // 다가오는 과제가 가장 첫 번째 과제인 경우
+      if (now.isBefore(assignDueDate)) {
+        // 지금부터가 다가오는 과제
+        if (i === assignment.length - 1) {
+          // 다가오는 과제가 가장 첫 번째 과제인 경우
           setLastAssignment(null);
           setLastIndex(-1);
           setLastAssignDueDate(dayjs().subtract(3, 'day'));
@@ -240,7 +271,7 @@ const AssignmentScreen = () => {
         break;
       }
     }
-  }
+  };
 
   useEffect(() => {
     getLastAssign();
@@ -250,7 +281,7 @@ const AssignmentScreen = () => {
   let FIRST_ITEM = assignment[0]?.title;
   let LAST_ITEM = assignment[assignment.length - 1]?.title;
 
-  const Item = (props) => {
+  const Item = props => {
     return (
       <>
         {props.lastIndex === -1 || props.lastIndex > props.index ? (
@@ -280,23 +311,30 @@ const AssignmentScreen = () => {
   return (
     <StyledContainer>
       <HeaderDetail title={'과제'} />
-      <View style={{flex: 1, padding: 20, paddingLeft: 10}}>
-        <FlatList
-          data={assignment}
-          renderItem={
-            ({item, index}) =>
+      {!!isLoading ? (
+        <MediumLoader />
+      ) : assignment.length === 0 ? (
+        <MsgForEmptyScreen content={'등록된 과제가 없습니다'} />
+      ) : (
+        <View style={{flex: 1, paddingRight: 20, paddingLeft: 10}}>
+          <FlatList
+            data={assignment}
+            renderItem={({item, index}) => (
               <Item
                 item={item}
                 lastIndex={lastIndex}
                 lastAssignDueDate={lastAssignDueDate}
-                index={index} />}
-          keyExtractor={item => item.AssignId}
-        />
-      </View>
+                index={index}
+              />
+            )}
+            keyExtractor={item => item.AssignId}
+          />
+        </View>
+      )}
     </StyledContainer>
   );
 };
-const AsgContainer = styled.View`
+export const AsgContainer = styled.View`
   flex-direction: row;
   align-items: center;
 `;

@@ -1,19 +1,32 @@
-import {StyleSheet, Text, View, FlatList, Animated, Easing, Image} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Animated,
+  Easing,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
-import { dayOfWeek, fetchPost, getData } from '../utils';
+import {dayOfWeek, fetchPost, getData} from '../utils';
 import useUserInfo from '../use-userInfo';
-import { Box } from '../components/Box';
-import { ProgressBar, RowView } from './HomeScreen';
-import { StyledSubText, StyledText } from '../components/Text';
-import { COLORS } from '../assets/Theme';
-import  Gap, { GapH } from '../components/Gap';
-import { MainButton } from '../components/Button';
+import {Box} from '../components/Box';
+import {ProgressBar, RowView} from './HomeScreen';
+import {FontStyledText, StyledSubText, StyledText} from '../components/Text';
+import {COLORS} from '../assets/Theme';
+import Gap, {GapH} from '../components/Gap';
+import {MainButton} from '../components/Button';
 import IsFaceBox from '../components/IsFaceBox';
 import Modal from 'react-native-modal';
 import useProgress from '../use-progress';
 import Codepad from '../components/Codepad';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import HeaderLogo from '../login/HeaderLogo';
+import Loader, {MediumLoader, TinyLoader} from '../components/Loader';
+import {AsgContainer} from './AssignmentScreen';
 
 //데이터 날짜순으로 배열하기
 
@@ -41,7 +54,7 @@ const StatusLine = () => {
   );
 };
 
-const InProgressAttendBox = (props) => {
+const InProgressAttendBox = props => {
   const today = new Date();
   const month = props.date.getMonth() + 1;
   const day = props.date.getDate();
@@ -80,16 +93,14 @@ const InProgressAttendBox = (props) => {
     ).start();
   }, []);
   return (
-    <View
+    <AsgContainer
       style={{
-        flexDirection: 'row',
-        alignItems: 'center',
         gap: 20,
-        marginVertical: 15,
       }}>
       <View
         style={{
           flexDirection: 'column',
+          alignItems: 'center',
         }}>
         <View
           style={{
@@ -98,9 +109,10 @@ const InProgressAttendBox = (props) => {
             alignItems: 'center',
             width: 50,
           }}>
-          <View style={{flex: 1}} />
+          {/*  {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />} */}
+          <StatusLine />
           <View>
-            {(today.getMonth() + 1) === month && today.getDate() === day ? (
+            {today.getMonth() + 1 === month && today.getDate() === day ? (
               <Animated.Image
                 source={require('../assets/icons/circle_onair.png')}
                 style={{
@@ -113,6 +125,7 @@ const InProgressAttendBox = (props) => {
               <AttenStatusCircle type={props.attenType} />
             )}
           </View>
+          {/*  {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />} */}
           <StatusLine />
         </View>
       </View>
@@ -121,32 +134,37 @@ const InProgressAttendBox = (props) => {
           flexDirection: 'column',
           flex: 1,
           justifyContent: 'center',
+          marginVertical: 10,
         }}>
         <Box>
           <View style={{paddingHorizontal: 17, paddingVertical: 10}}>
             <RowView style={{marginBottom: 10}}>
-              <StyledSubText content={`${month}.${dayWithZero} ${dayOfTheWeek}`} />
+              <StyledSubText
+                content={`${month}.${dayWithZero} ${dayOfTheWeek}`}
+              />
               <IsFaceBox isFace={props.isFace} />
             </RowView>
             <StyledText content={props.title} fontSize={20} />
-            <Gap height={14}/>
-            {props.isFace === 1 ? (<>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image 
-                  source={require('../assets/images/location_icon.png')} 
-                  style={{width: 15, height: 15}}
-                  resizeMode='contain' 
-                />
-                <GapH width={9} />
-                <StyledSubText content={props.location} />
-              </View>
-              <Gap height={8} /></>
-            ) : null }
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Image 
-                source={require('../assets/images/time_icon.png')} 
+            <Gap height={14} />
+            {props.isFace === 1 ? (
+              <>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Image
+                    source={require('../assets/images/location_icon.png')}
+                    style={{width: 15, height: 15}}
+                    resizeMode="contain"
+                  />
+                  <GapH width={9} />
+                  <StyledSubText content={props.location} />
+                </View>
+                <Gap height={8} />
+              </>
+            ) : null}
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image
+                source={require('../assets/images/time_icon.png')}
                 style={{width: 15, height: 15}}
-                resizeMode='contain' 
+                resizeMode="contain"
               />
               <GapH width={9} />
               <StyledSubText content={`${hour}:${minute}`} />
@@ -154,10 +172,10 @@ const InProgressAttendBox = (props) => {
           </View>
         </Box>
       </View>
-    </View>
+    </AsgContainer>
   );
 };
-const DoneAttendBox = (props) => {
+const DoneAttendBox = props => {
   const month = props.date.getMonth() + 1;
   let day = props.date.getDate();
   const dayOfTheWeek = dayOfWeek(props.date.getDay());
@@ -167,12 +185,7 @@ const DoneAttendBox = (props) => {
   }
 
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
-      }}>
+    <AsgContainer>
       <View
         style={{
           flexDirection: 'column',
@@ -196,19 +209,19 @@ const DoneAttendBox = (props) => {
           justifyContent: 'center',
         }}>
         <View style={{padding: 20}}>
-          <RowView style={{marginBottom: 10}}>
-            <View style={{ alignItems: 'center' }}>
-              <StyledText content={`${month}.${day}`} fontSize={20} />
-              <StyledText content={dayOfTheWeek} fontSize={20} />
+          <RowView style={{marginVertical: 10}}>
+            <View style={{alignItems: 'center'}}>
+              <StyledSubText content={`${month}.${day}`} fontSize={20} />
+              <StyledSubText content={dayOfTheWeek} fontSize={20} />
             </View>
             <View style={{flex: 1, marginLeft: 20}}>
-              <StyledText content={props.title} fontSize={20} />
+              <StyledText content={props.title} fontSize={18} />
             </View>
           </RowView>
         </View>
       </View>
-    </View>
-  )
+    </AsgContainer>
+  );
 };
 
 const renderAttenItem = ({item}) => {
@@ -218,7 +231,8 @@ const renderAttenItem = ({item}) => {
   let sessionDateNoTime = new Date(sessionDate);
   sessionDateNoTime.setHours(0, 0, 0, 0);
 
-  if (todayNoTime <= sessionDateNoTime) { //현재+미래의 세션
+  if (todayNoTime <= sessionDateNoTime) {
+    //현재+미래의 세션
     return (
       <InProgressAttendBox
         status={item.attend_id}
@@ -228,8 +242,9 @@ const renderAttenItem = ({item}) => {
         isFace={item.is_face}
         attenType={item.type}
       />
-    )
-  } else if (todayNoTime > sessionDateNoTime) { //과거의 세션
+    );
+  } else if (todayNoTime > sessionDateNoTime) {
+    //과거의 세션
     return (
       <DoneAttendBox
         status={item.attend_id}
@@ -237,17 +252,19 @@ const renderAttenItem = ({item}) => {
         date={sessionDate}
         attenType={item.type}
       />
-    )
+    );
   }
 };
 
 const AttendanceScreen = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [attendance, setAttendance] = useState([]);
   const [initialScrollIndex, setInitialScrollIndex] = useState(0);
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const toggleBottomSheet = () => {
     setBottomSheetVisible(!isBottomSheetVisible);
   };
+  // 로딩화면
 
   //현재 진행중인 세션 인덱스 찾기
 
@@ -262,6 +279,7 @@ const AttendanceScreen = () => {
     try {
       const fetchAttenData = await fetchPost(url, body);
       setAttendance(fetchAttenData.sessions);
+      setIsLoading(false);
       // setInitialScrollIndex(6);
       // console.log('받은 데이터: ', attendance);
 
@@ -278,27 +296,36 @@ const AttendanceScreen = () => {
   return (
     <StyledContainer>
       <HeaderDetail title={'출석'} />
-      <View style={{flex: 1}}>
-        <FlatList
-          data={attendance}
-          renderItem={renderAttenItem}
-          keyExtractor={item => item.session_id}
-          initialScrollIndex={initialScrollIndex}
-        />
-      </View>
-      <View style={{ zIndex: 999, marginBottom: 20, marginHorizontal: 10 }}>
-        <MainButton height={60} content={'출석하기'} onPress={toggleBottomSheet}/>
-      </View>
-      {/* 출석코드입력 모달 */}
-      <Modal 
-        isVisible={isBottomSheetVisible}
-        onBackdropPress={toggleBottomSheet}
-        style={{ justifyContent: 'flex-end', margin: 0 }}
-        >
-          <View style={styles.modalContainer}>
-            <Codepad />
+      {!!isLoading ? (
+        <MediumLoader />
+      ) : (
+        <>
+          <View style={{flex: 1, padding: 20, paddingLeft: 10}}>
+            <FlatList
+              data={attendance}
+              renderItem={renderAttenItem}
+              keyExtractor={item => item.session_id}
+              initialScrollIndex={initialScrollIndex}
+            />
           </View>
-        </Modal>
+          <View style={{zIndex: 999, marginBottom: 20, marginHorizontal: 10}}>
+            <MainButton
+              height={60}
+              content={'출석하기'}
+              onPress={toggleBottomSheet}
+            />
+          </View>
+          {/* 출석코드입력 모달 */}
+          <Modal
+            isVisible={isBottomSheetVisible}
+            onBackdropPress={toggleBottomSheet}
+            style={{justifyContent: 'flex-end', margin: 0}}>
+            <View style={styles.modalContainer}>
+              <Codepad />
+            </View>
+          </Modal>
+        </>
+      )}
     </StyledContainer>
   );
 };
@@ -314,17 +341,32 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     justifyContent: 'center',
     alignItems: 'center',
-    },
-    isFaceText: {
-      color: 'black',
-      fontSize: 16,
-    },
-    modalContainer: {
-      backgroundColor: `${COLORS.gray}`,
-      padding: 16, 
-      minHeight: 500, 
-      borderTopRightRadius: 20, 
-      borderTopLeftRadius: 20,
-      paddingHorizontal: 30,
-    },
+  },
+  isFaceText: {
+    color: 'black',
+    fontSize: 16,
+  },
+  modalContainer: {
+    backgroundColor: `${COLORS.gray}`,
+    padding: 16,
+    minHeight: 500,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    paddingHorizontal: 30,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    backgroundColor: COLORS.bg_black,
+  },
+  loadingTextContainer: {
+    height: 100,
+  },
+  loadingText: {
+    color: 'white',
+    fontSize: 20,
+  },
 });

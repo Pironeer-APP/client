@@ -22,6 +22,8 @@ import {MainButton} from '../components/Button';
 import {useRoute} from '@react-navigation/native';
 import {fetchGet, fetchPost, getData} from '../utils';
 import useUserInfo from '../use-userInfo';
+import {MediumLoader} from '../components/Loader';
+import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -87,23 +89,32 @@ const RenderItem = ({item}) => (
 
 const FirstRoute = ({posts}) => (
   <View style={{flex: 1}}>
-    <FlatList
-      data={posts}
-      renderItem={RenderItem}
-      keyExtractor={item => item.post_id}
-    />
+    {posts.length === 0 ? (
+      <MsgForEmptyScreen content={'등록된 공지글이 없습니다.'} />
+    ) : (
+      <FlatList
+        data={posts}
+        renderItem={RenderItem}
+        keyExtractor={item => item.post_id}
+      />
+    )}
   </View>
 );
 
 const FilteredItems = ({category, posts}) => {
   const filteredPosts = posts?.filter(item => item.category === category);
+
   return (
     <View style={{flex: 1}}>
-      <FlatList
-        data={filteredPosts}
-        renderItem={RenderItem}
-        keyExtractor={item => item.post_id}
-      />
+      {filteredPosts.length === 0 ? (
+        <MsgForEmptyScreen content={'등록된 공지글이 없습니다.'} />
+      ) : (
+        <FlatList
+          data={filteredPosts}
+          renderItem={RenderItem}
+          keyExtractor={item => item.post_id}
+        />
+      )}
     </View>
   );
 };
@@ -124,13 +135,14 @@ const AnnouncementScreen = ({navigation}) => {
 
   const [posts, setPosts] = useState([]);
   const isFocused = useIsFocused();
-
+  const [isLoading, setIsLoading] = useState(true);
   const getPosts = async () => {
     const url = '/post/all';
-    userToken = await getData('user_token'); 
-    body = {userToken}
+    userToken = await getData('user_token');
+    body = {userToken};
     const res = await fetchPost(url, body);
     setPosts(res.posts);
+    setIsLoading(false);
   };
   useEffect(() => {
     getPosts();
@@ -159,41 +171,47 @@ const AnnouncementScreen = ({navigation}) => {
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
-      <TabView
-        navigationState={{index, routes}}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{width: layout.width}}
-        renderTabBar={props => (
-          <TabBar
-            {...props}
-            indicatorStyle={{
-              backgroundColor: `${COLORS.green}`,
-              height: 47,
-              borderWidth: 5,
-              borderRadius: 15,
-              borderColor: `${COLORS.icon_gray}`,
-            }}
-            style={{
-              backgroundColor: `${COLORS.icon_gray}`,
-              fontWeight: 'bold',
-              shadowOffset: {height: 0, width: 0},
-              shadowColor: 'transparent',
-              borderRadius: 15,
-            }}
-            pressColor={'transparent'}
-            renderLabel={({route, focused}) => (
-              <TabLabel focused={focused}>{route.title}</TabLabel>
+      {!!isLoading ? (
+        <MediumLoader />
+      ) : (
+        <View style={{flex: 1, paddingHorizontal: 20}}>
+          <TabView
+            navigationState={{index, routes}}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={{width: layout.width}}
+            renderTabBar={props => (
+              <TabBar
+                {...props}
+                indicatorStyle={{
+                  backgroundColor: `${COLORS.green}`,
+                  height: 47,
+                  borderWidth: 5,
+                  borderRadius: 15,
+                  borderColor: `${COLORS.icon_gray}`,
+                }}
+                style={{
+                  backgroundColor: `${COLORS.icon_gray}`,
+                  fontWeight: 'bold',
+                  shadowOffset: {height: 0, width: 0},
+                  shadowColor: 'transparent',
+                  borderRadius: 15,
+                }}
+                pressColor={'transparent'}
+                renderLabel={({route, focused}) => (
+                  <TabLabel focused={focused}>{route.title}</TabLabel>
+                )}
+              />
             )}
           />
-        )}
-      />
-      {!!userInfoFromServer.is_admin && (
-        <MainButton
-          content={'글 작성하기'}
-          onPress={() => navigation.navigate('AdminCreateNotice')}
-          height={60}
-        />
+          {!!userInfoFromServer.is_admin && (
+            <MainButton
+              content={'글 작성하기'}
+              onPress={() => navigation.navigate('AdminCreateNotice')}
+              height={60}
+            />
+          )}
+        </View>
       )}
     </StyledContainer>
   );
