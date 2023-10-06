@@ -1,4 +1,4 @@
-import {View, Text, TextInput, KeyboardAvoidingView} from 'react-native';
+import {View, Text, TextInput, KeyboardAvoidingView, Alert} from 'react-native';
 import React, {useState} from 'react';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
@@ -42,17 +42,20 @@ const AdminCreateAssignment = () => {
   //  보낼 값
 
   const dateData = `${date.getFullYear()}-${RenderMonth}-${date.getDate()} ${RenderHour}:${RenderMinutes}:00`;
-  console.log(dateData);
+
   const createAssign = async () => {
     const userToken = await getData('user_token');
     const url = `/assign/createAssign`;
     const body = {userToken, title, dateData};
-    // console.log(level, body);
-    try {
-      await fetchPost(url, body);
-      navigation.goBack();
-    } catch (error) {
-      console.error('Error sending data:', error);
+    if (title.length === 0) {
+      Alert.alert('제목 입력해');
+    } else {
+      try {
+        await fetchPost(url, body);
+        navigation.goBack();
+      } catch (error) {
+        console.error('Error sending data:', error);
+      }
     }
   };
 

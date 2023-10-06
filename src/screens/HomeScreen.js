@@ -174,8 +174,6 @@ const HomeScreen = ({navigation}) => {
     setAssignProgress(cAssign.getTime() - now.getTime());
 
     setHomeProgress(Math.trunc((assignProgress / assignLimit) * 100));
-
-    setIsTimerLoading(false);
   };
   useEffect(() => {
     setTimeout(() => {
@@ -203,7 +201,7 @@ const HomeScreen = ({navigation}) => {
           <Header />
           <Gap />
           <StyledText
-            content={`${userInfoFromServer.level}기 ${userInfoFromServer.name}님 \n오늘은 대면 세션 날이에요`}
+            content={`${userInfoFromServer.level}기 ${userInfoFromServer.name}님 \n환영합니다`}
             fontSize={24}
           />
           <Gap />
