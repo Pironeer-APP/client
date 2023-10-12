@@ -10,14 +10,35 @@ import React from 'react';
 import {FontStyledText, StyledText} from './Text';
 import {COLORS} from '../assets/Theme';
 
-export const MainButton = ({height = 70, content, onPress, fontSize = 22, marginBottom = 40}) => {
+export const ButtonContainer = ({
+  outline=false,
+  paddingH=20,
+  paddingV=15,
+  onPress,
+  children
+}) => {
   return (
     <TouchableOpacity
-      style={[styles.container, {height: height, marginBottom: marginBottom}]}
+      style={btnStyles({
+        outline,
+        paddingH,
+        paddingV,
+      }).btnContainer}
       onPress={onPress}>
-      <FontStyledText style={[styles.text, {fontSize: fontSize}]}>
-        {content}
-      </FontStyledText>
+        {children}
+    </TouchableOpacity>
+  )
+}
+
+export const MainButton = ({content, onPress, fontSize = 22, marginBottom = 40}) => {
+  return (
+    <TouchableOpacity
+      style={[styles.container, {marginBottom: marginBottom}]}
+      onPress={onPress}>
+      <StyledText
+        content={content}
+        fontSize={fontSize}
+        color={COLORS.bg_black} />
     </TouchableOpacity>
   );
 };
@@ -102,17 +123,12 @@ export const ConfirmSmallBtn = ({content}) => {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
+    alignItems: 'center',
     width: '100%',
-    height: 70,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
     backgroundColor: COLORS.green,
     borderRadius: 15,
-  },
-  text: {
-    // fontSize: 22,
-    textAlign: 'center',
-    color: '#000000',
-    fontWeight: '600',
-    alignItems: 'center',
   },
   loginContainer: {
     justifyContent: 'center',
@@ -161,7 +177,7 @@ const miniStyles = ({outline}) =>
   StyleSheet.create({
     miniContainer: {
       justifyContent: 'center',
-      width: '100%',
+      flex: 1,
       height: 50,
       backgroundColor: outline ? 'transparent' : COLORS.green,
       borderRadius: 13,
@@ -174,3 +190,20 @@ const miniStyles = ({outline}) =>
       color: outline ? 'white' : '#000000',
     },
   });
+
+const btnStyles = (props) => (
+  StyleSheet.create({
+    btnContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: props.paddingH,
+      paddingVertical: props.paddingV,
+      backgroundColor: props.outline ? 'transparent' : COLORS.green,
+      borderRadius: 15,
+      borderColor: props.outline ? COLORS.green : 'none',
+      borderWidth: props.outline ? 3 : 0,
+      marginBottom: 20,
+      flexDirection: 'row'
+    }
+  })
+)

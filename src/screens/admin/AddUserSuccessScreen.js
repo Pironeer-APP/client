@@ -4,6 +4,7 @@ import { MiniButton } from '../../components/Button'
 import { COLORS } from '../../assets/Theme'
 import StyledContainer from '../../components/StyledContainer'
 import { useNavigation } from '@react-navigation/native';
+import { GapH } from '../../components/Gap'
 
 export default function AddUserSuccessScreen() {
   const navigation = useNavigation();
@@ -20,12 +21,9 @@ export default function AddUserSuccessScreen() {
       <Image source={require('../../assets/icons/success.png')} style={styles.image} />
       <Text style={styles.desc}>회원 정보 추가 완료</Text>
       <View style={styles.btnContainer}>
-        <View style={styles.touchable}>
         <MiniButton outline={true} onPress={onPress}>홈으로</MiniButton>
-        </View>
-        <View style={styles.touchable}>
+        <GapH />
         <MiniButton outline={false} onPress={onPressKeep}>계속 추가</MiniButton>
-        </View>
       </View>
     </StyledContainer>
   )

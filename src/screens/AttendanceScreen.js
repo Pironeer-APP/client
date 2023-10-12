@@ -148,7 +148,7 @@ const InProgressAttendBox = props => {
             <Gap height={14} />
             {props.isFace === 1 ? (
               <>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{flexDirection: 'row', alignItems: 'center', paddingRight: 30}}>
                   <Image
                     source={require('../assets/images/location_icon.png')}
                     style={{width: 15, height: 15}}
@@ -295,7 +295,8 @@ const AttendanceScreen = () => {
           setIsTodaySession(true);
         }
       })
-      console.log(isTodaySession);
+      // 테스트용 지워야해
+      setIsTodaySession(true);
 
       //데이터 안 세션들 중에서 오늘 날짜와 동일한 날짜인 세션 인덱스 찾기
       setInitialScrollIndex(fetchAttenData.nextSessionIdx);
@@ -332,13 +333,15 @@ const AttendanceScreen = () => {
     const attenResult = await fetchPost(url, body);
     setCodeConfirmed(attenResult.result);
     setBottomSheetVisible(!isBottomSheetVisible);
-    setModalVisible(true);
-    // setModalVisible(!isModalVisible);
+    setTimeout(() => {
+      setModalVisible(true);
+    }, 1000);
     setTimeout(() => {
       setModalVisible(false);
-    }, 1500);
+    }, 3000);
     console.log('btm', isBottomSheetVisible);
     console.log('mod', isModalVisible);
+    setCodes('');
   };
 
   return (
@@ -402,11 +405,11 @@ const AttendanceScreen = () => {
             ) : (
               <>
                 <Image
-                  source={require('../assets/images/attend_late.png')}
+                  source={require('../assets/images/attend_failed.png')}
                   resizeMode="contain"
                   style={{width: 120, height: 120}}
                 />
-                <StyledText content={'지각처리 되었습니다'} fontSize={25} />
+                <StyledText content={'출석 실패'} fontSize={25} />
               </>
               )}
             </View>
