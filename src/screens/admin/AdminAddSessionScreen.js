@@ -18,6 +18,7 @@ import {StyledText} from '../../components/Text';
 import {fetchPost, localeDate} from '../../utils';
 import HeaderDetail from '../../components/Header';
 import useUserInfo from '../../use-userInfo';
+import useFormattedTime from '../../use-formattedTime';
 
 export default function AdminAddSessionScreen() {
   const [face, setFace] = useState(false);
@@ -40,12 +41,11 @@ export default function AdminAddSessionScreen() {
   }, []);
 
   const onPressConfirm = async () => {
-    console.log('클라이언트 저장 직전 date', date);
-    console.log('클라이언트 저장 직전 locale date', localeDate(date));
+    console.log(useFormattedTime(date));
     const url = '/session/addSchedule';
     const body = {
       title: sessionTitle,
-      date: localeDate(date),
+      date: useFormattedTime(date),
       face: face,
       place: sessionPlace,
       userToken: userToken,
@@ -82,15 +82,17 @@ export default function AdminAddSessionScreen() {
             value={sessionTitle}
             onChangeText={setSessionTitle}
           />
-          {/* 지도 api 적용해보기 */}
-          <TextInput
-            style={styles.titleInput}
-            placeholder="장소"
-            placeholderTextColor={COLORS.light_gray}
-            color={COLORS.textColor}
-            value={sessionPlace}
-            onChangeText={setSessionPlace}
-          />
+          {!!face && (
+            <TextInput
+              style={styles.titleInput}
+              placeholder="장소"
+              placeholderTextColor={COLORS.light_gray}
+              color={COLORS.textColor}
+              value={sessionPlace}
+              onChangeText={setSessionPlace}
+            />
+          )}
+
           <PaddingBox>
             <ToggleItem
               text="대면"
@@ -112,27 +114,30 @@ export default function AdminAddSessionScreen() {
                 fontSize={20}
               />
               <StyledText
-                content={`${date.getHours().toLocaleString().padStart(2, '0')}:${date
+                content={`${date
+                  .getHours()
+                  .toLocaleString()
+                  .padStart(2, '0')}:${date
                   .getMinutes()
-                  .toLocaleString().padStart(2, '0')}`}
+                  .toLocaleString()
+                  .padStart(2, '0')}`}
                 fontSize={20}
               />
             </View>
           </PaddingBox>
           <StyledContainer>
             <View style={{flex: 1, alignItems: 'center'}}>
-            <DatePicker
-              date={date}
-              onDateChange={setDate}
-              androidVariant="iosClone"
-              locale="ko"
-              textColor={COLORS.textColor}
-              theme="dark"
-              minuteInterval={5}
-              fadeToColor="none"
-              is24hourSource="locale"
-              defaultValue={date}
-            />
+              <DatePicker
+                date={date}
+                onDateChange={setDate}
+                androidVariant="iosClone"
+                locale="ko"
+                textColor={COLORS.textColor}
+                theme="dark"
+                minuteInterval={5}
+                fadeToColor="none"
+                defaultValue={date}
+              />
             </View>
           </StyledContainer>
         </View>

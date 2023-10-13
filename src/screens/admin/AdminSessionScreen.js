@@ -26,6 +26,7 @@ import {fetchPost, getData} from '../../utils';
 import useProgress from '../../use-progress';
 import IsFaceBox from '../../components/IsFaceBox';
 import {GapH} from '../../components/Gap';
+import useClientTime from '../../use-clientTime';
 
 const StatusCircle = () => {
   return <View style={styles.statusCircle} />;
@@ -85,14 +86,10 @@ const InProgressAsgBox = props => {
       ]),
     ).start();
   }, []);
-  const [itemDate, setItemDate] = useState(new Date(props.item.date));
-  const [hour, setHour] = useState(0);
-  const [minute, setMinute] = useState(0);
 
-  useEffect(() => {
-    setHour(itemDate.getUTCHours());
-    setMinute(itemDate.getUTCMinutes());
-  }, []);
+  const {renderMonth, renderDate, renderDay, renderHour, renderMinute} =
+    useClientTime(props.item.date);
+
   return (
     <Pressable
       onLongPress={() => onLongPressDelete(props.item.session_id)}
@@ -145,7 +142,7 @@ const InProgressAsgBox = props => {
           <View style={{paddingHorizontal: 17, paddingVertical: 10}}>
             <RowView style={{marginBottom: 10}}>
               <StyledSubText
-                content={`${props.item.month}.${props.item.day} ${props.item.day_en}`}
+                content={`${renderMonth}.${renderDate} ${renderDay}`}
               />
               <IsFaceBox isFace={props.item.is_face} />
             </RowView>
@@ -172,7 +169,7 @@ const InProgressAsgBox = props => {
                 resizeMode="contain"
               />
               <GapH width={9} />
-              <StyledSubText content={`${hour}:${minute}`} />
+              <StyledSubText content={`${renderHour}:${renderMinute}`} />
             </View>
           </View>
         </Box>
@@ -181,6 +178,7 @@ const InProgressAsgBox = props => {
   );
 };
 const DoneAsgBox = ({item}) => {
+  const {renderMonth, renderDate, renderDay} = useClientTime(item.date);
   return (
     <Pressable
       onLongPress={() => onLongPressDelete(item.session_id)}
@@ -214,10 +212,10 @@ const DoneAsgBox = ({item}) => {
           <RowView style={{marginVertical: 10}}>
             <View style={{alignItems: 'center'}}>
               <StyledSubText
-                content={`${item.month}.${item.day}`}
+                content={`${renderMonth}.${renderDate}`}
                 fontSize={20}
               />
-              <StyledSubText content={item.day_en} fontSize={20} />
+              <StyledSubText content={`${renderDay}`} fontSize={20} />
             </View>
             <View style={{flex: 1, marginLeft: 20}}>
               <StyledText content={item.title} fontSize={20} />

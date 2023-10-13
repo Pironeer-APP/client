@@ -24,6 +24,7 @@ import {COLORS} from '../assets/Theme';
 import styled from 'styled-components';
 import {Box} from '../components/Box';
 import AutoHeightImage from 'react-native-auto-height-image';
+import useClientTime from '../use-clientTime';
 
 const StyledBottomLine = styled.View`
   height: 1px;
@@ -89,10 +90,8 @@ const AnnouncementDetail = ({navigation}) => {
     }
   };
 
-  const dateString = `${post.created_at}`;
-  const date = new Date(dateString);
-  // date.setHours(date.getHours() + 9);
-  const RenderDate = dayjs(date.getTime()).format('MM.DD ddd').toUpperCase();
+  const {renderMonth, renderDate, renderDay} = useClientTime(post.created_at);
+  const RenderDate = `${renderMonth}.${renderDate} ${renderDay}`;
 
   const windowWidth = Dimensions.get('window').width;
 

@@ -15,6 +15,7 @@ import {fetchPost, getData} from '../../utils';
 import dayjs from 'dayjs';
 import MsgForEmptyScreen from '../../components/MsgForEmptyScreen';
 import {MediumLoader} from '../../components/Loader';
+import useClientTime from '../../use-clientTime';
 
 const ModalBox = styled.View`
   background-color: ${COLORS.gray};
@@ -37,10 +38,9 @@ const AssignmentBox = ({
   getAssigns,
 }) => {
   const navigation = useNavigation();
-  const dateString = createdAt;
-  const dateString2 = new Date(dateString);
-  // dateString2.setHours(dateString2.getHours() + 9);
-  const formattedDate = dayjs(dateString2.getTime()).format('MM.DD ddd');
+
+  const {renderMonth, renderDate, renderDay} = useClientTime(createdAt);
+  const formattedDate = `${renderMonth}.${renderDate} ${renderDay}`;
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     getAssigns();
