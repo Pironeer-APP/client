@@ -24,6 +24,8 @@ import {fetchGet, fetchPost, getData} from '../utils';
 import useUserInfo from '../use-userInfo';
 import {MediumLoader} from '../components/Loader';
 import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
+import {create} from 'react-test-renderer';
+import useClientTime from '../use-clientTime';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -59,10 +61,12 @@ const PostBox = ({title, sort, date, id, read}) => {
       post_id: id,
     });
   };
-  const dateString = date;
-  const date2 = new Date(dateString);
-  // date2.setHours(date2.getHours() + 9);
-  const formattedDate = dayjs(date2.getTime()).format('MM.DD ddd').toUpperCase();
+
+  const {renderMonth, renderDate, renderDay, renderHour, renderMinute} =
+    useClientTime(date);
+
+  const formattedDate = `${renderMonth}.${renderDate} ${renderDay} ${renderHour}:${renderMinute}`;
+
   return (
     <View>
       <TouchableOpacity onPress={goToAncDet}>
