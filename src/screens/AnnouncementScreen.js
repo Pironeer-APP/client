@@ -1,6 +1,7 @@
 import {
   FlatList,
   Platform,
+  RefreshControl,
   Text,
   TouchableOpacity,
   View,
@@ -91,7 +92,7 @@ const RenderItem = ({item}) => (
   />
 );
 
-const FirstRoute = ({posts}) => (
+const FirstRoute = ({posts, refreshing, getPosts}) => (
   <View style={{flex: 1}}>
     {posts.length === 0 ? (
       <MsgForEmptyScreen content={'등록된 공지글이 없습니다.'} />
@@ -100,12 +101,19 @@ const FirstRoute = ({posts}) => (
         data={posts}
         renderItem={RenderItem}
         keyExtractor={item => item.post_id}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={getPosts}
+            tintColor={COLORS.green}
+          />
+        }
       />
     )}
   </View>
 );
 
-const FilteredItems = ({category, posts}) => {
+const FilteredItems = ({category, posts, refreshing, getPosts}) => {
   const filteredPosts = posts?.filter(item => item.category === category);
 
   return (
@@ -117,17 +125,46 @@ const FilteredItems = ({category, posts}) => {
           data={filteredPosts}
           renderItem={RenderItem}
           keyExtractor={item => item.post_id}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={getPosts}
+              tintColor={COLORS.green}
+            />
+          }
         />
       )}
     </View>
   );
 };
 
-const SecondRoute = ({posts}) => <FilteredItems category={1} posts={posts} />;
-const ThirdRoute = ({posts}) => <FilteredItems category={2} posts={posts} />;
-const FourthRoute = ({posts}) => <FilteredItems category={3} posts={posts} />;
+const SecondRoute = ({posts, refreshing, getPosts}) => (
+  <FilteredItems
+    category={1}
+    posts={posts}
+    refreshing={refreshing}
+    getPosts={getPosts}
+  />
+);
+const ThirdRoute = ({posts, refreshing, getPosts}) => (
+  <FilteredItems
+    category={2}
+    posts={posts}
+    refreshing={refreshing}
+    getPosts={getPosts}
+  />
+);
+const FourthRoute = ({posts, refreshing, getPosts}) => (
+  <FilteredItems
+    category={3}
+    posts={posts}
+    refreshing={refreshing}
+    getPosts={getPosts}
+  />
+);
 
 const AnnouncementScreen = ({navigation}) => {
+  const [refreshing, setRefreshing] = useState(false);
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -141,12 +178,14 @@ const AnnouncementScreen = ({navigation}) => {
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true);
   const getPosts = async () => {
+    setRefreshing(true);
     const url = '/post/all';
     userToken = await getData('user_token');
     body = {userToken};
     const res = await fetchPost(url, body);
     setPosts(res.posts);
     setIsLoading(false);
+    setRefreshing(false);
   };
   useEffect(() => {
     getPosts();
@@ -155,13 +194,37 @@ const AnnouncementScreen = ({navigation}) => {
   const renderScene = ({route}) => {
     switch (route.key) {
       case 'first':
-        return <FirstRoute posts={posts} />;
+        return (
+          <FirstRoute
+            posts={posts}
+            refreshing={refreshing}
+            getPosts={getPosts}
+          />
+        );
       case 'second':
-        return <SecondRoute posts={posts} />;
+        return (
+          <SecondRoute
+            posts={posts}
+            refreshing={refreshing}
+            getPosts={getPosts}
+          />
+        );
       case 'third':
-        return <ThirdRoute posts={posts} />;
+        return (
+          <ThirdRoute
+            posts={posts}
+            refreshing={refreshing}
+            getPosts={getPosts}
+          />
+        );
       case 'fourth':
-        return <FourthRoute posts={posts} />;
+        return (
+          <FourthRoute
+            posts={posts}
+            refreshing={refreshing}
+            getPosts={getPosts}
+          />
+        );
       default:
         return null;
     }

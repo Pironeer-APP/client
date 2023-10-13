@@ -5,6 +5,7 @@ import {
   FlatList,
   StyleSheet,
   Pressable,
+  RefreshControl,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Modal from 'react-native-modal';
@@ -127,7 +128,7 @@ const Student = ({
 
   return (
     <>
-       <Modal
+      <Modal
         isVisible={modalVisible}
         animationIn={'fadeIn'}
         animationOut={'fadeOut'}
@@ -232,17 +233,19 @@ const AdminGradingScreen = () => {
   const [stdGrade, setStdGrade] = useState(null);
   const [stdInfo, setStdInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   // console.log(level, title, assignId);
   const getStdsData = async () => {
+    setRefreshing(true);
     const userToken = await getData('user_token');
     const url = `/assign/readAssign/detail`;
     const body = {assignId, userToken};
     try {
       const stdDatas = await fetchPost(url, body);
-
       setStdInfo(stdDatas.data);
       setIsLoading(false);
+      setRefreshing(false);
     } catch (error) {
       console.error('Error sending data:', error);
     }
@@ -284,6 +287,13 @@ const AdminGradingScreen = () => {
             data={stdInfo}
             renderItem={renderItem}
             keyExtractor={item => item.studentId}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={getStdsData}
+                tintColor={COLORS.green}
+              />
+            }
           />
         </View>
       )}

@@ -7,6 +7,7 @@ import {
   Easing,
   Image,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import StyledContainer from '../components/StyledContainer';
@@ -140,7 +141,10 @@ const InProgressAttendBox = props => {
           <View style={{paddingHorizontal: 17, paddingVertical: 10}}>
             <RowView style={{marginBottom: 10}}>
               <StyledSubText
-                content={`${month.padStart(2, '0')}.${day.padStart(2, '0')} ${dayOfTheWeek}`}
+                content={`${month.padStart(2, '0')}.${day.padStart(
+                  2,
+                  '0',
+                )} ${dayOfTheWeek}`}
               />
               <IsFaceBox isFace={props.isFace} />
             </RowView>
@@ -148,7 +152,12 @@ const InProgressAttendBox = props => {
             <Gap height={14} />
             {props.isFace === 1 ? (
               <>
-                <View style={{flexDirection: 'row', alignItems: 'center', paddingRight: 30}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingRight: 30,
+                  }}>
                   <Image
                     source={require('../assets/images/location_icon.png')}
                     style={{width: 15, height: 15}}
@@ -167,7 +176,9 @@ const InProgressAttendBox = props => {
                 resizeMode="contain"
               />
               <GapH width={9} />
-              <StyledSubText content={`${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`} />
+              <StyledSubText
+                content={`${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`}
+              />
             </View>
           </View>
         </Box>
@@ -211,7 +222,10 @@ const DoneAttendBox = props => {
         <View style={{padding: 20}}>
           <RowView style={{marginVertical: 10}}>
             <View style={{alignItems: 'center'}}>
-              <StyledSubText content={`${month.padStart(2, '0')}.${day.padStart(2, '0')}`} fontSize={20} />
+              <StyledSubText
+                content={`${month.padStart(2, '0')}.${day.padStart(2, '0')}`}
+                fontSize={20}
+              />
               <StyledSubText content={dayOfTheWeek} fontSize={20} />
             </View>
             <View style={{flex: 1, marginLeft: 20}}>
@@ -264,6 +278,7 @@ const AttendanceScreen = () => {
   const [isTodaySession, setIsTodaySession] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [codeConfirmed, setCodeConfirmed] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const toggleBottomSheet = () => {
     setBottomSheetVisible(!isBottomSheetVisible);
   };
@@ -274,6 +289,7 @@ const AttendanceScreen = () => {
   // const isFocused = useIsFocused();
 
   const userSessionInfo = async () => {
+    setRefreshing(true);
     const userToken = await getData('user_token');
     const url = `/attend/getSessionAndAttend`;
     const body = {
@@ -283,18 +299,19 @@ const AttendanceScreen = () => {
       const fetchAttenData = await fetchPost(url, body);
       setAttendance(fetchAttenData.sessions);
       setIsLoading(false);
+      setRefreshing(false);
       // setInitialScrollIndex(6);
       // console.log('받은 데이터: ', fetchAttenData.sessions);
-      
+
       // 오늘 세션있는지 확인
       const today = new Date();
       const month = String(Number(today.getMonth()) + 1).padStart(2, '0');
       const day = String(Number(today.getDate())).padStart(2, '0');
-      fetchAttenData.sessions.map((session) => {
+      fetchAttenData.sessions.map(session => {
         if (month == session.month && day == session.day) {
           setIsTodaySession(true);
         }
-      })
+      });
       // 테스트용 지워야해
       setIsTodaySession(true);
 
@@ -320,14 +337,14 @@ const AttendanceScreen = () => {
   // };
 
   const [codes, setCodes] = useState('');
-  
+
   //출석코드 일치 확인
   const confirmCode = async () => {
     const userToken = await getData('user_token');
     const url = `/attend/addAttend`;
     const body = {
       token: userToken,
-      input_code: codes
+      input_code: codes,
       // input_code: 1234
     };
     const attenResult = await fetchPost(url, body);
@@ -350,12 +367,20 @@ const AttendanceScreen = () => {
       {!!isLoading ? (
         <MediumLoader />
       ) : (
-        <View style={{flex:1}}>
-          <View style={{flex: 1, padding: 20, paddingLeft: 10}}>
+        <View style={{flex: 1}}>
+          <View style={{flex: 1, paddingRight: 20, paddingLeft: 10}}>
             <FlatList
               data={attendance}
               renderItem={renderAttenItem}
               keyExtractor={item => item.session_id}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={userSessionInfo}
+                  tintColor={COLORS.green}
+                />
+              }
+
               // getItemLayout={getItemLayout} // 자동스크롤
               // initialScrollIndex={initialScrollIndex}
             />
@@ -366,51 +391,50 @@ const AttendanceScreen = () => {
                 content={'출석하기'}
                 onPress={toggleBottomSheet}
                 marginBottom={0}
-              /> 
-            ) : null
-            }
+              />
+            ) : null}
           </View>
-          
+
           {/* 출석코드입력 모달 */}
           <Modal
             isVisible={isBottomSheetVisible}
             onBackdropPress={toggleBottomSheet}
             style={{justifyContent: 'flex-end', margin: 0}}>
             <View style={styles.modalContainer}>
-              <Codepad 
-              confirmCode={confirmCode}
-              codes={codes}
-              setCodes={setCodes}
+              <Codepad
+                confirmCode={confirmCode}
+                codes={codes}
+                setCodes={setCodes}
               />
             </View>
           </Modal>
 
           {/* 출석성공실패 모달 */}
           <Modal
-          isVisible={isModalVisible}
-          // onBackdropPress={toggleModal}
-          animationIn={'fadeIn'}
-          animationOut={'fadeOut'}
-          style={styles.centeredView}>
-          <View style={styles.modalView}>
-            {!!codeConfirmed ? (
-              <>
-                <Image
-                  source={require('../assets/images/attend_success.png')}
-                  resizeMode="contain"
-                  style={{width: 120, height: 120}}
-                />
-                <StyledText content={'출석 성공'} fontSize={25} />
+            isVisible={isModalVisible}
+            // onBackdropPress={toggleModal}
+            animationIn={'fadeIn'}
+            animationOut={'fadeOut'}
+            style={styles.centeredView}>
+            <View style={styles.modalView}>
+              {!!codeConfirmed ? (
+                <>
+                  <Image
+                    source={require('../assets/images/attend_success.png')}
+                    resizeMode="contain"
+                    style={{width: 120, height: 120}}
+                  />
+                  <StyledText content={'출석 성공'} fontSize={25} />
                 </>
-            ) : (
-              <>
-                <Image
-                  source={require('../assets/images/attend_failed.png')}
-                  resizeMode="contain"
-                  style={{width: 120, height: 120}}
-                />
-                <StyledText content={'출석 실패'} fontSize={25} />
-              </>
+              ) : (
+                <>
+                  <Image
+                    source={require('../assets/images/attend_failed.png')}
+                    resizeMode="contain"
+                    style={{width: 120, height: 120}}
+                  />
+                  <StyledText content={'출석 실패'} fontSize={25} />
+                </>
               )}
             </View>
           </Modal>
