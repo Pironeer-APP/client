@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Image} from 'react-native';
+import {View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Image, Button} from 'react-native';
 import Modal from 'react-native-modal';
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
@@ -13,6 +13,8 @@ import Gap, {GapH} from '../../components/Gap';
 import useUserInfo from '../../use-userInfo';
 import {fetchPost, getData} from '../../utils';
 import {ButtonContainer, MainButton, MiniButton} from '../../components/Button';
+import BottomSheetModal from '../../components/BottomSheetModal';
+import BottomTouchModal from '../../components/BottomTouchModal';
 
 const DateContainer = styled.View`
   border-radius: 12px;
@@ -181,6 +183,36 @@ const DeleteFailedModal = ({del_code}) => (
   </View>
 )
 
+const EndFailedModal = ({content}) => (
+  <View style={styles.modalView}>
+    <Image
+      source={require('../../assets/images/attend_failed.png')}
+      resizeMode="contain"
+      style={{width: 120, height: 120}}
+    />
+    <Gap />
+    <StyledText
+      content={content}
+      fontSize={20}
+    />
+  </View>
+)
+
+const EndFinModal = () => (
+  <View style={styles.modalView}>
+    <Image
+      source={require('../../assets/images/attend_success.png')}
+      resizeMode="contain"
+      style={{width: 120, height: 120}}
+    />
+    <Gap />
+    <StyledText
+      content={'오늘 출결 종료'}
+      fontSize={20}
+    />
+  </View>
+)
+
 const AdminAttendanceScreen = () => {
   const [sessions, setSessions] = useState();
   const [sessionForHighlight, setSessionForHighlight] = useState();
@@ -298,10 +330,19 @@ const AdminAttendanceScreen = () => {
     setModalVisible(!isModalVisible);
   };
   
+  // 출석 삭제를 위한 코드
   const [deleteCode, setDeleteCode] = useState();
+  // 삭제 완료
   const [deleteFinModalVisible, setDeleteFinModalVisible] = useState(false);
+  // 코드 없음
   const [nullCodeModalVisible, setNullCodeModalVisible] = useState(false);
+  // 삭제 실패
   const [deleteFailedModalVisible, setDeleteFailedModalVisible] = useState(false);
+  // 종료 실패
+  const [endFailedModalVisible, setEndFailedModalVisible] = useState(false);
+  const [endFailedContent, setEndFailedContent] = useState('');
+  // 종료 성공
+  const [endFinModalVisible, setEndFinModalVisible] = useState(false);
 
   //출석 삭제 함수
   const onPressDeleteAttend = async () => {
@@ -337,13 +378,49 @@ const AdminAttendanceScreen = () => {
     }
   }
 
+  // 출결 종료 함수
+  const onPressEndAttend = async () => {
+    const userToken = await getData('user_token');
+    const url = '/attend/endAttend';
+    const body = {
+      userToken: userToken
+    };
+    const res = await fetchPost(url, body);
+    if(res.result === '오늘 세션 없음') {
+      setEndFailedContent('오늘 세션 없음');
+      setEndFailedModalVisible(true);
+      setTimeout(() => {
+        setEndFailedModalVisible(false);
+      }, 2000);
+    } else if(res.result === '종료 실패') {
+      setEndFailedContent('종료 실패');
+      setEndFailedModalVisible(true);
+      setTimeout(() => {
+        setEndFailedModalVisible(false);
+      }, 2000);
+    } else if(res.result == false) {
+      setEndFailedContent('출결 저장 실패: 출결 3회 이상 진행 됨');
+      setEndFailedModalVisible(true);
+      setTimeout(() => {
+        setEndFailedModalVisible(false);
+      }, 2000);
+    } else if(res.result == true) {
+      setEndFinModalVisible(true);
+      setTimeout(() => {
+        setEndFinModalVisible(false);
+      }, 2000);
+    }
+  }
+
   return (
     <TouchableWithoutFeedback
       onPress={() => setModalVisible(false)}
     >
     <StyledContainer>
       <HeaderDetail title={'출석'} />
-      <ScrollView>
+      <ScrollView
+        style={styles.scrollContainer}
+      >
         {sessions?.map((item, index) => (
           <WeekContainer key={index} week={index + 1} item={item} />
         ))}
@@ -396,8 +473,29 @@ const AdminAttendanceScreen = () => {
           del_code={deleteCode} />
       </Modal>
 
+      {/* 출결 종료 오류 모달 */}
+      <Modal
+        isVisible={endFailedModalVisible}
+        onBackdropPress={toggleModal}
+        animationIn={'fadeIn'}
+        animationOut={'fadeOut'}
+      >
+        <EndFailedModal
+          content={endFailedContent} />
+      </Modal>
+
+      {/* 삭제 완료 모달 */}
+      <Modal
+        isVisible={endFinModalVisible}
+        onBackdropPress={toggleModal}
+        animationIn={'fadeIn'}
+        animationOut={'fadeOut'}
+      >
+        <EndFinModal />
+      </Modal>
+
       {!!isToday ? (
-        <View>
+        <BottomTouchModal>
           <ButtonContainer
               onPress={onPressGenerateCode}>
             <View style={styles.codeTextView}>
@@ -417,13 +515,23 @@ const AdminAttendanceScreen = () => {
               </View>
             ) : null}
           </ButtonContainer>
-          <MainButton
-            height={60}
-            content={'출결 삭제'}
-            onPress={toggleModal}
-            marginBottom={20}
-          />
-        </View>
+          <ButtonContainer
+            onPress={toggleModal}>
+            <StyledText
+              fontSize={22}
+              color={COLORS.bg_black}
+              content={'출결 삭제'}
+            />
+          </ButtonContainer>
+          <ButtonContainer
+            onPress={onPressEndAttend}>
+            <StyledText
+              fontSize={22}
+              color={COLORS.bg_black}
+              content={'오늘 출결 종료'}
+            />
+          </ButtonContainer>
+        </BottomTouchModal>
       ) : null}
     </StyledContainer>
     </TouchableWithoutFeedback>
@@ -432,6 +540,9 @@ const AdminAttendanceScreen = () => {
 
 //스타일시트
 const styles = StyleSheet.create({
+  scrollContainer: {
+    marginBottom: 50
+  },
   codeTextView: {
     flex: 1,
     alignItems: 'center'
