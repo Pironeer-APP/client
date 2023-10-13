@@ -12,25 +12,22 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {RowView} from '../HomeScreen';
 import Gap from '../../components/Gap';
 import {fetchPost, getData} from '../../utils';
+import useClientTime from '../../use-clientTime';
+import useFormattedTime from '../../use-formattedTime';
 
 const AdminCreateAssignment = () => {
   const navigation = useNavigation();
   const [title, setTitle] = useState('');
-  const [date, setDate] = useState(new Date());
-  const route = useRoute();
-
-  // const sendLevel = level - 1;
-
-  //  보낼 값
-  useEffect(() => {
+  const [date, setDate] = useState(() => {
     const newDate = new Date();
     newDate.setHours(10, 0, 0, 0);
-    setDate(newDate);
-  }, []);
-  
-  
+    return newDate;
+  });
+
   const createAssign = async () => {
-    const dateData = `${date.getFullYear()}-${Number(date.getMonth())+1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:00`;
+    console.log(date); // UTC
+    const dateData = useFormattedTime(date); // UTC로 보낸다
+
     const userToken = await getData('user_token');
     const url = `/assign/createAssign`;
     const body = {userToken, title, dateData};
@@ -84,6 +81,8 @@ const AdminCreateAssignment = () => {
                 minuteInterval={5}
                 fadeToColor="none"
                 defaultValue={date}
+                // timeZoneOffsetInMinutes={0} // clientTime으로 저장
+                // 하지만 2023-10-13 13:00:00으로 바꾸는 과정이 UTC로 저장되어야 더 편하기 때문에 직접 변환하겠음.
               />
             </View>
           </View>

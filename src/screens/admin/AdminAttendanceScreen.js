@@ -13,6 +13,7 @@ import Gap, {GapH} from '../../components/Gap';
 import useUserInfo from '../../use-userInfo';
 import {fetchPost, getData} from '../../utils';
 import {ButtonContainer, MainButton, MiniButton} from '../../components/Button';
+import useClientTime from '../../use-clientTime';
 import BottomSheetModal from '../../components/BottomSheetModal';
 import BottomTouchModal from '../../components/BottomTouchModal';
 
@@ -24,9 +25,7 @@ const DateContainer = styled.View`
 const DateBox = props => {
   const navigation = useNavigation();
   const sessionDate = new Date(props.date.date);
-
-  const month = String(sessionDate.getMonth() + 1).padStart(2, '0');
-  const day = String(sessionDate.getDate()).padStart(2, '0');
+  const {renderMonth: month, renderDate: day} = useClientTime(sessionDate);
 
   // 오늘 일정인지
   let isToday = false;
@@ -87,44 +86,33 @@ const WeekContainer = props => {
   );
 };
 
-const DeleteAttendModal = (props) => {
+const DeleteAttendModal = props => {
   return (
     <KeyboardAvoidingView style={styles.modalView}>
-      <StyledText
-        content={'삭제할 출석 데이터에 해당하는'}
-        fontSize={18}
-        />
-      <StyledText
-        content={'출석 코드를 입력하세요'}
-        fontSize={18}
-      />
+      <StyledText content={'삭제할 출석 데이터에 해당하는'} fontSize={18} />
+      <StyledText content={'출석 코드를 입력하세요'} fontSize={18} />
       <View style={styles.modalInputContainer}>
         <TextInput
           style={styles.modalInput}
-          placeholder='0000'
+          placeholder="0000"
           placeholderTextColor={COLORS.light_gray}
           fontSize={18}
           color={COLORS.textColor}
           autoFocus={true}
-          keyboardType='numeric'
+          keyboardType="numeric"
           onChangeText={props.setDeleteCode}
           value={props.deleteCode}
           maxLength={4}
         />
         <TouchableOpacity
           style={styles.deleteBtn}
-          onPress={props.onPressDeleteAttend}
-        >
-          <StyledText
-            content={'삭제'}
-            fontSize={18}
-            color={COLORS.bg_black}
-          />
+          onPress={props.onPressDeleteAttend}>
+          <StyledText content={'삭제'} fontSize={18} color={COLORS.bg_black} />
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
-  )
-}
+  );
+};
 
 const DeleteFinModal = ({del_code}) => (
   <View style={styles.modalView}>
@@ -134,16 +122,10 @@ const DeleteFinModal = ({del_code}) => (
       style={{width: 120, height: 120}}
     />
     <Gap />
-    <StyledText
-      content={del_code}
-      fontSize={20}
-    />
-    <StyledText
-      content={'출결 제거 완료'}
-      fontSize={20}
-    />
+    <StyledText content={del_code} fontSize={20} />
+    <StyledText content={'출결 제거 완료'} fontSize={20} />
   </View>
-)
+);
 
 const NullCodeModal = ({del_code}) => (
   <View style={styles.modalView}>
@@ -153,16 +135,10 @@ const NullCodeModal = ({del_code}) => (
       style={{width: 120, height: 120}}
     />
     <Gap />
-    <StyledText
-      content={del_code}
-      fontSize={20}
-    />
-    <StyledText
-      content={'코드 출결 없음'}
-      fontSize={20}
-    />
+    <StyledText content={del_code} fontSize={20} />
+    <StyledText content={'코드 출결 없음'} fontSize={20} />
   </View>
-)
+);
 
 const DeleteFailedModal = ({del_code}) => (
   <View style={styles.modalView}>
@@ -172,16 +148,10 @@ const DeleteFailedModal = ({del_code}) => (
       style={{width: 120, height: 120}}
     />
     <Gap />
-    <StyledText
-      content={del_code}
-      fontSize={20}
-    />
-    <StyledText
-      content={'출결 제거 실패'}
-      fontSize={20}
-    />
+    <StyledText content={del_code} fontSize={20} />
+    <StyledText content={'출결 제거 실패'} fontSize={20} />
   </View>
-)
+);
 
 const EndFailedModal = ({content}) => (
   <View style={styles.modalView}>
@@ -217,7 +187,7 @@ const AdminAttendanceScreen = () => {
   const [sessions, setSessions] = useState();
   const [sessionForHighlight, setSessionForHighlight] = useState();
   const [isToday, setIsToday] = useState(false);
-  const [codeText, setCodeText] = useState("출석코드 생성");
+  const [codeText, setCodeText] = useState('출석코드 생성');
   const [isModalVisible, setModalVisible] = useState(false);
   const [sessionId, setSessionId] = useState();
   const [attendStatusContent, setAttendStatusContent] = useState('출결 저장');
@@ -232,25 +202,25 @@ const AdminAttendanceScreen = () => {
     const body = {userToken};
 
     const res = await fetchPost(url, body);
-    if(res.code) {
+    if (res.code) {
       setCodeText(res.code.code);
       let timeout = new Date(res.code.created_at);
       timeout.setMinutes(timeout.getMinutes() + 3); // 3분 더한 기간으로 변환
       setCodeTimeOut(timeout);
     }
-  }
+  };
   useEffect(() => {
     getTodayCode();
   }, []);
 
   // 현재 시간 대비 코드 남은 기간
   useEffect(() => {
-    if(codeTimeOut) {
+    if (codeTimeOut) {
       setTimeout(() => {
         const now = new Date();
-        if(codeTimeOut) {
+        if (codeTimeOut) {
           const limit = new Date(codeTimeOut.getTime() - now.getTime());
-          if(limit <= 0) {
+          if (limit <= 0) {
             setCodeText('출석코드 생성');
             setCodeTimeoutText(null);
             setCodeTimeOut(null);
@@ -285,26 +255,28 @@ const AdminAttendanceScreen = () => {
     console.log('result: ', result.sessions);
     setSessionForHighlight(result.sessions);
   };
-  
+
   useEffect(() => {
     getSessionsByWeek();
     getSessions();
   }, []);
-  
+
   // 오늘세션 있는지 확인
   const checkToday = () => {
     const today = new Date();
     if (sessionForHighlight) {
       sessionForHighlight.map(session => {
         const sessionDate = new Date(session.date);
-        if (today.getMonth() === sessionDate.getMonth()
-        && today.getDate() === sessionDate.getDate()) {
+        if (
+          today.getMonth() === sessionDate.getMonth() &&
+          today.getDate() === sessionDate.getDate()
+        ) {
           setIsToday(true);
           setSessionId(session.session_id);
         }
       });
     }
-  }
+  };
 
   useEffect(() => {
     checkToday();
@@ -312,14 +284,14 @@ const AdminAttendanceScreen = () => {
 
   //출석코드 생성 함수
   const onPressGenerateCode = async () => {
-    const userToken = await getData('user_token');    
+    const userToken = await getData('user_token');
     const url = '/attend/generateCode';
     const body = {
       token: userToken,
     };
     setCodeLoading(true);
     await fetchPost(url, body);
-    
+
     await getTodayCode();
     setCodeLoading(false);
   };
@@ -329,13 +301,15 @@ const AdminAttendanceScreen = () => {
     setDeleteCode(null);
     setModalVisible(!isModalVisible);
   };
-  
+
   // 출석 삭제를 위한 코드
+
   const [deleteCode, setDeleteCode] = useState();
   // 삭제 완료
   const [deleteFinModalVisible, setDeleteFinModalVisible] = useState(false);
   // 코드 없음
   const [nullCodeModalVisible, setNullCodeModalVisible] = useState(false);
+
   // 삭제 실패
   const [deleteFailedModalVisible, setDeleteFailedModalVisible] = useState(false);
   // 종료 실패
@@ -344,31 +318,32 @@ const AdminAttendanceScreen = () => {
   // 종료 성공
   const [endFinModalVisible, setEndFinModalVisible] = useState(false);
 
+
   //출석 삭제 함수
   const onPressDeleteAttend = async () => {
     const userToken = await getData('user_token');
     const url = '/attend/deleteTempAttend';
     const body = {
       userToken: userToken,
-      deleteCode: deleteCode
+      deleteCode: deleteCode,
     };
     const res = await fetchPost(url, body);
     setModalVisible(!isModalVisible);
-    if(res.result === '삭제 완료') {
+    if (res.result === '삭제 완료') {
       setTimeout(() => {
         setDeleteFinModalVisible(true);
       }, 500);
       setTimeout(() => {
         setDeleteFinModalVisible(false);
       }, 3000);
-    } else if(res.result === '코드 없음') {
+    } else if (res.result === '코드 없음') {
       setTimeout(() => {
         setNullCodeModalVisible(true);
       }, 500);
       setTimeout(() => {
         setNullCodeModalVisible(false);
       }, 3000);
-    } else if(res.result === '삭제 실패') {
+    } else if (res.result === '삭제 실패') {
       setTimeout(() => {
         setDeleteFailedModalVisible(true);
       }, 500);
@@ -376,7 +351,7 @@ const AdminAttendanceScreen = () => {
         setDeleteFailedModalVisible(false);
       }, 3000);
     }
-  }
+  };
 
   // 출결 종료 함수
   const onPressEndAttend = async () => {
@@ -413,6 +388,7 @@ const AdminAttendanceScreen = () => {
   }
 
   return (
+
     <TouchableWithoutFeedback
       onPress={() => setModalVisible(false)}
     >
@@ -440,38 +416,38 @@ const AdminAttendanceScreen = () => {
         />
       </Modal>
 
-      {/* 삭제 완료 모달 */}
-      <Modal
-        isVisible={deleteFinModalVisible}
-        onBackdropPress={toggleModal}
-        animationIn={'fadeIn'}
-        animationOut={'fadeOut'}
-      >
-        <DeleteFinModal
-          del_code={deleteCode} />
-      </Modal>
 
-      {/* 코드 없음 모달 */}
-      <Modal
-        isVisible={nullCodeModalVisible}
-        onBackdropPress={toggleModal}
-        animationIn={'fadeIn'}
-        animationOut={'fadeOut'}
-      >
-        <NullCodeModal
-          del_code={deleteCode} />
-      </Modal>
+        {/* 출결 삭제 코드 입력 모달 */}
+        <Modal
+          isVisible={isModalVisible}
+          onBackdropPress={toggleModal}
+          animationIn={'fadeIn'}
+          animationOut={'fadeOut'}>
+          <DeleteAttendModal
+            deleteCode={deleteCode}
+            setDeleteCode={setDeleteCode}
+            onPressDeleteAttend={onPressDeleteAttend}
+          />
+        </Modal>
 
-      {/* 삭제 실패 모달 */}
-      <Modal
-        isVisible={deleteFailedModalVisible}
-        onBackdropPress={toggleModal}
-        animationIn={'fadeIn'}
-        animationOut={'fadeOut'}
-      >
-        <DeleteFailedModal
-          del_code={deleteCode} />
-      </Modal>
+        {/* 삭제 완료 모달 */}
+        <Modal
+          isVisible={deleteFinModalVisible}
+          onBackdropPress={toggleModal}
+          animationIn={'fadeIn'}
+          animationOut={'fadeOut'}>
+          <DeleteFinModal del_code={deleteCode} />
+        </Modal>
+
+        {/* 코드 없음 모달 */}
+        <Modal
+          isVisible={nullCodeModalVisible}
+          onBackdropPress={toggleModal}
+          animationIn={'fadeIn'}
+          animationOut={'fadeOut'}>
+          <NullCodeModal del_code={deleteCode} />
+        </Modal>
+
 
       {/* 출결 종료 오류 모달 */}
       <Modal
@@ -510,9 +486,10 @@ const AdminAttendanceScreen = () => {
                 <StyledText
                   fontSize={22}
                   color={COLORS.bg_black}
-                  content={codeTimeoutText}
+                  content={codeLoading ? '생성중...' : codeText}
                 />
               </View>
+
             ) : null}
           </ButtonContainer>
           <ButtonContainer
@@ -534,6 +511,7 @@ const AdminAttendanceScreen = () => {
         </BottomTouchModal>
       ) : null}
     </StyledContainer>
+
     </TouchableWithoutFeedback>
   );
 };
@@ -545,7 +523,7 @@ const styles = StyleSheet.create({
   },
   codeTextView: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   centeredView: {
     flex: 1,
@@ -562,7 +540,7 @@ const styles = StyleSheet.create({
   modalInputContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20
+    marginTop: 20,
   },
   modalInput: {
     flex: 1,
@@ -570,7 +548,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.green,
     borderWidth: 3,
     paddingHorizontal: 20,
-    marginRight: 10
+    marginRight: 10,
   },
   deleteBtn: {
     justifyContent: 'center',
