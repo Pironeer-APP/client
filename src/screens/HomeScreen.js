@@ -59,6 +59,10 @@ export const ProgressBar = ({status}) => {
   const animatedValue = useRef(new Animated.Value(width)).current;
 
   useEffect(() => {
+    // finalValue가 100을 넘어가지 않도록
+    if(status > 1) {
+      status = 1;
+    }
     const finalValue = Math.floor(width * status);
 
     Animated.timing(animatedValue, {

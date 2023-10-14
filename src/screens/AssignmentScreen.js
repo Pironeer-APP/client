@@ -84,31 +84,47 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
     ).start();
   }, []);
 
-  // 프로그레스 표기
-  // lastAssginDueDate는 dayjs객체임
+  /*
+    프로그레스
+    1. 각 item의 created_at에서 시간을 10:00:00으로 맞춘다
+    2. 전체 제한 기간 limit = due_date - 변환된 created_at
+    3. 남은 기간 status = due_date - now
+    4. progress = status / limit
+  */
   const [limit, setLimit] = useState();
-  const [status, setStatus] = useState(NaN);
-  const [isTimerLoading, setIsTimerLoading] = useState(true);
-  const getProgress = () => {
-    // const now = dayjs();
-    // const itemDueDate = dayjs(item.due_date);
-    // const full = itemDueDate.diff(lastAssignDueDate);
-    // setLimit(itemDueDate.diff(now));
-    // setStatus(Math.trunc((limit / full) * 100));
-  };
+  const [status, setStatus] = useState();
+  const [progress, setProgress] = useState(NaN);
+
+  const calcProgress = (item) => {
+    const created_at = new Date(item?.created_at);
+    // 생성 시각을 정확하게 고정
+    created_at.setHours(10);
+    created_at.setMinutes(0);
+    created_at.setSeconds(0);
+
+    const due_date = new Date(item?.due_date);
+    const now = new Date();
+
+    setLimit(due_date - created_at);
+    setStatus(due_date - now);
+  }
 
   useEffect(() => {
     setTimeout(() => {
-      getProgress();
+      calcProgress(item);
+      setProgress(status / limit);
     }, 1000);
-  });
+  }, [status]);
+
+  const [isTimerLoading, setIsTimerLoading] = useState(true);
+
   useEffect(() => {
     isNaN(status) ? setIsTimerLoading(true) : setIsTimerLoading(false);
   }, [status]);
 
   const {convertTime} = useProgress();
 
-  const {hour, min, sec} = convertTime(Math.trunc(limit / 1000));
+  const {hour, min, sec} = convertTime(Math.trunc(status / 1000));
 
   return (
     <AsgContainer
@@ -157,7 +173,7 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
             </RowView>
             <StyledText content={title} fontSize={20} />
             <RowView style={{marginTop: 10}}>
-              <ProgressBar status={status ? status * 0.01 : 1} />
+              <ProgressBar status={progress ? progress : 1} />
               {!!isTimerLoading ? (
                 <View style={{width: 75, alignItems: 'center'}}>
                   <TinyLoader />
@@ -228,6 +244,26 @@ const AssignmentScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [assignment, setAssignment] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  
+  /*
+    다가오는 과제인지 지나간 과제인지 계산
+    1. 현재 시간과 due_date를 비교
+    2. due_date가 먼저 날짜라면 직전에 종료된 괴제 (과제는 due_date 내림차순 정렬되어 있기 때문)
+    3. 해당 데이터의 인덱스를 기억, flatlist 렌더링 시 참고
+  */
+
+  const [lastAssign, setLastAssign] = useState(); // 직전에 종료된 과제 기억
+
+  const findLastAssign = (assignments) => {
+    const now = new Date();
+    for(let i = 0; i < assignments.length; i++) {
+      const assign_due_date = new Date(assignments[i].due_date);
+      if(now > assign_due_date) {
+        setLastAssign(assignments[i]);
+        break;
+      }
+    }
+  }
 
   const saveUserId = async () => {
     setRefreshing(true);
@@ -240,7 +276,7 @@ const AssignmentScreen = () => {
     try {
       const fetchData = await fetchPost(url, body);
       setAssignment(fetchData.data);
-      // console.log('성공  받아온 data: ', fetchData);
+      findLastAssign(fetchData.data);
       setIsLoading(false);
       setRefreshing(false);
     } catch (error) {
@@ -253,48 +289,13 @@ const AssignmentScreen = () => {
     saveUserId();
   }, []);
 
-  // 프로그레스 구현, 과제는 2개 이상일 수 있으므로 세션과 다름
-  const [lastAssignment, setLastAssignment] = useState(null);
-  const [lastIndex, setLastIndex] = useState(-1);
-  const [lastAssignDueDate, setLastAssignDueDate] = useState(
-    dayjs().subtract(3, 'day'),
-  );
-
-  const getLastAssign = () => {
-    // 지난 마지막 assignment와 index 알아내기
-    const now = dayjs();
-    for (let i = assignment.length - 1; i >= 0; i--) {
-      const assignDueDate = dayjs(assignment[i].due_date);
-      if (now.isBefore(assignDueDate)) {
-        // 지금부터가 다가오는 과제
-        if (i === assignment.length - 1) {
-          // 다가오는 과제가 가장 첫 번째 과제인 경우
-          setLastAssignment(null);
-          setLastIndex(-1);
-          setLastAssignDueDate(dayjs().subtract(3, 'day'));
-        }
-        setLastAssignment(assignment[i + 1]); // 그 이전 과제가 마지막 과제 (진행 완료)
-        setLastIndex(assignment[i + 1].AssignId - 1); // 가장 마지막에 진행 완료된 과제의 index (기준)
-        setLastAssignDueDate(dayjs(assignment[i + 1].due_date));
-
-        break;
-      }
-    }
-  };
-  console.log(lastAssignment);
-  console.log(lastIndex);
-
-  useEffect(() => {
-    getLastAssign();
-  }, [assignment]);
-
   let FIRST_ITEM = assignment[0]?.title;
   let LAST_ITEM = assignment[assignment.length - 1]?.title;
 
   const Item = props => {
     return (
       <>
-        {props.lastIndex === -1 || props.lastIndex > props.index ? (
+        {props.lastAssign === null || props.lastAssign.AssignId - 1 > props.index ? (
           <InProgressAsgBox
             grade={props.item.grade}
             title={props.item.title}
@@ -330,8 +331,7 @@ const AssignmentScreen = () => {
             renderItem={({item, index}) => (
               <Item
                 item={item}
-                lastIndex={lastIndex}
-                // lastAssignDueDate={lastAssignDueDate}
+                lastAssign={lastAssign}
                 index={index}
               />
             )}

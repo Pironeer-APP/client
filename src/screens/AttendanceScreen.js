@@ -312,8 +312,6 @@ const AttendanceScreen = () => {
           setIsTodaySession(true);
         }
       });
-      // 테스트용 지워야해
-      setIsTodaySession(true);
 
       //데이터 안 세션들 중에서 오늘 날짜와 동일한 날짜인 세션 인덱스 찾기
       setInitialScrollIndex(fetchAttenData.nextSessionIdx);
