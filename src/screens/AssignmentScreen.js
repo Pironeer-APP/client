@@ -25,6 +25,7 @@ import useProgress from '../use-progress';
 import {GapH} from '../components/Gap';
 import {MediumLoader, TinyLoader} from '../components/Loader';
 import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
+import useClientTime from '../use-clientTime';
 
 export const StatusCircle = ({grade = 4}) => {
   let imageSource;
@@ -49,17 +50,20 @@ const StatusLine = () => {
     <View style={{backgroundColor: `${COLORS.icon_gray}`, width: 1, flex: 1}} />
   );
 };
-const InProgressAsgBox = ({
-  grade,
-  title,
-  due,
-  lastAssignDueDate,
-  item,
-  firstItem,
-  lastItem,
-}) => {
+const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
   const [scale] = useState(new Animated.Value(1)); // 초기 크기 1
-
+  const {
+    renderMonth: createdMonth,
+    renderDate: createdDate,
+    renderDay: createdDay,
+  } = useClientTime(item.created_at);
+  const {
+    renderMonth: dueMonth,
+    renderDate: dueDate,
+    renderDay: dueDay,
+    renderHour: dueHour,
+    renderMinute: dueMinute,
+  } = useClientTime(item.due_date);
   useEffect(() => {
     // 크기 애니메이션 설정
     Animated.loop(
@@ -86,11 +90,11 @@ const InProgressAsgBox = ({
   const [status, setStatus] = useState(NaN);
   const [isTimerLoading, setIsTimerLoading] = useState(true);
   const getProgress = () => {
-    const now = dayjs();
-    const itemDueDate = dayjs(item.due_date);
-    const full = itemDueDate.diff(lastAssignDueDate);
-    setLimit(itemDueDate.diff(now));
-    setStatus(Math.trunc((limit / full) * 100));
+    // const now = dayjs();
+    // const itemDueDate = dayjs(item.due_date);
+    // const full = itemDueDate.diff(lastAssignDueDate);
+    // setLimit(itemDueDate.diff(now));
+    // setStatus(Math.trunc((limit / full) * 100));
   };
 
   useEffect(() => {
@@ -147,8 +151,9 @@ const InProgressAsgBox = ({
         <Box>
           <View style={{padding: 20}}>
             <RowView style={{marginBottom: 10}}>
-              <StyledSubText content={`${item.createdDate}`} />
-              <StyledSubText content={`DUE ${due}`} />
+              <StyledSubText
+                content={`${createdMonth}.${createdDate} ${createdDay} ~ ${dueMonth}.${dueDate} ${dueDay} ${dueHour}:${dueMinute}`}
+              />
             </RowView>
             <StyledText content={title} fontSize={20} />
             <RowView style={{marginTop: 10}}>
@@ -176,46 +181,48 @@ const InProgressAsgBox = ({
   );
 };
 
-const DoneAsgBox = ({grade, title, due, item, firstItem, lastItem}) => (
-  <AsgContainer>
-    <View
-      style={{
-        flexDirection: 'column',
-      }}>
+const DoneAsgBox = ({grade, title, due, item, firstItem, lastItem}) => {
+  const {renderMonth, renderDate, renderDay} = useClientTime(item.created_at);
+
+  return (
+    <AsgContainer>
       <View
         style={{
+          flexDirection: 'column',
+        }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: 50,
+          }}>
+          {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />}
+          <StatusCircle grade={grade} />
+          {title === lastItem ? <View style={{flex: 1}} /> : <StatusLine />}
+        </View>
+      </View>
+      <View
+        style={{
+          flexDirection: 'column',
           flex: 1,
           justifyContent: 'center',
-          alignItems: 'center',
-          width: 50,
         }}>
-        {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />}
-        <StatusCircle grade={grade} />
-        {title === lastItem ? <View style={{flex: 1}} /> : <StatusLine />}
+        <View style={{padding: 20}}>
+          <RowView style={{marginVertical: 10}}>
+            <View style={{alignItems: 'center'}}>
+              <StyledSubText content={`${renderMonth}.${renderDate}`} />
+              <StyledSubText content={`${renderDay}`} />
+            </View>
+            <View style={{flex: 1, marginLeft: 20}}>
+              <StyledText content={title} fontSize={18} />
+            </View>
+          </RowView>
+        </View>
       </View>
-    </View>
-    <View
-      style={{
-        flexDirection: 'column',
-        flex: 1,
-        justifyContent: 'center',
-      }}>
-      <View style={{padding: 20}}>
-        <RowView style={{marginVertical: 10}}>
-          <View>
-            <StyledSubText
-              content={item.createdDate.split(' ')[0]}
-              fontSize={20}
-            />
-          </View>
-          <View style={{flex: 1, marginLeft: 20}}>
-            <StyledText content={title} fontSize={18} />
-          </View>
-        </RowView>
-      </View>
-    </View>
-  </AsgContainer>
-);
+    </AsgContainer>
+  );
+};
 
 const AssignmentScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -276,7 +283,6 @@ const AssignmentScreen = () => {
   };
   console.log(lastAssignment);
   console.log(lastIndex);
-  console.log(lastAssignDueDate);
 
   useEffect(() => {
     getLastAssign();
@@ -292,8 +298,6 @@ const AssignmentScreen = () => {
           <InProgressAsgBox
             grade={props.item.grade}
             title={props.item.title}
-            due={props.item.dueDate}
-            lastAssignDueDate={props.lastAssignDueDate}
             item={props.item}
             firstItem={FIRST_ITEM} // title과 비교해서 첫번째면 첫 StatusLine 지우기
             lastItem={LAST_ITEM} // title과 비교해서 마지막이면 두번째 StatusLine 지우기
@@ -327,7 +331,7 @@ const AssignmentScreen = () => {
               <Item
                 item={item}
                 lastIndex={lastIndex}
-                lastAssignDueDate={lastAssignDueDate}
+                // lastAssignDueDate={lastAssignDueDate}
                 index={index}
               />
             )}
