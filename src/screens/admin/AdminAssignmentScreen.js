@@ -46,8 +46,18 @@ const AssignmentBox = ({
 }) => {
   const navigation = useNavigation();
 
-  const {renderMonth, renderDate, renderDay} = useClientTime(createdAt);
+  const {renderMonth, renderDate, renderDay, renderHour, renderMinute} =
+    useClientTime(createdAt);
+  const {
+    renderMonth: dueMonth,
+    renderDate: dueDate,
+    renderDay: dueDay,
+    renderHour: dueHour,
+    renderMinute: dueMinute,
+  } = useClientTime(due);
+
   const formattedDate = `${renderMonth}.${renderDate} ${renderDay}`;
+  const formattedDue = `${dueMonth}.${dueDate} ${dueDay}`;
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     getAssigns();
@@ -88,7 +98,7 @@ const AssignmentBox = ({
         <ModalBox>
           <View style={{padding: 20, alignItems: 'center', gap: 5}}>
             <StyledText content={title} />
-            <StyledSubText content={formattedDate} />
+            <StyledSubText content={`${formattedDate} ~ ${formattedDue}`} />
           </View>
           <View
             style={{
@@ -145,7 +155,8 @@ const AssignmentBox = ({
           }}>
           <RowView>
             <View>
-              <StyledSubText content={`${formattedDate}`} />
+              <StyledSubText content={`${formattedDate} ~ ${formattedDue}`} />
+              {/* <StyledSubText content={`~ ${formattedDue}`} /> */}
               <Gap height={5} />
               <StyledText content={title} fontSize={20} />
             </View>
