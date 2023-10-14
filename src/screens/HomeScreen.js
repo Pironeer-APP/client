@@ -138,51 +138,74 @@ const HomeScreen = ({navigation}) => {
     navigation.navigate('AdminSessionScreen');
   };
 
-  const [curAssign, setCurAssign] = useState();
-  const [curAssignCnt, setCurAssignCnt] = useState();
-  const [recentAssign, setRecentAssign] = useState();
+  /*
+    프로그레스 계산
+    1. /assign/readAssign/all 경로로 요청, 모든 과제 가져옴(생성시각 오름차순)
+    2. 과제 중 현재 시간보다 늦은 과제 포착
+    2-1. 전체 과제 개수 - 해당 과제까지의 인덱스 = 다음 과제 개수
+    3. 해당 과제의 created_at을 10:00:00으로 맞추고
+    4. 변환된 created_at과 due_date의 차이가 limit
+    5. now와 due_date의 차이가 status
+    6. progress = status / limit
+  */
 
-  // 다가오는 과제
-  // 지나간 과제 하나
-  const getCurrentRecentAssigns = async () => {
-    const userToken = await getData('user_token');
-    const cUrl = '/assign/getCurrentAssigns';
-    const body = {userToken};
-    const cRes = await fetchPost(cUrl, body);
-
-    setCurAssign(cRes.currentAssign);
-    setCurAssignCnt(cRes.currentAssignCnt);
-
-    const rUrl = '/assign/getRecentAssign';
-    const rRes = await fetchPost(rUrl, body);
-
-    setRecentAssign(rRes.recentAssign);
-  };
-  useEffect(() => {
-    getCurrentRecentAssigns();
-  }, []);
-
-  // 프로그레스 계산
-  const [assignLimit, setAssignLimit] = useState();
-  const [assignProgress, setAssignProgress] = useState();
+  const [limit, setLimit] = useState();
+  const [status, setStatus] = useState();
   const [homeProgress, setHomeProgress] = useState(NaN);
-  const [isTimerLoading, setIsTimerLoading] = useState(true);
 
-  const getProgress = () => {
+  // 3-5번
+  const calcProgress = (next_assign) => {
+    const created_at = new Date(next_assign?.created_at);
+    // 생성 시각을 정확하게 고정
+    created_at.setHours(10);
+    created_at.setMinutes(0);
+    created_at.setSeconds(0);
+
+    const due_date = new Date(next_assign?.due_date);
     const now = new Date();
-    const cAssign = new Date(curAssign?.due_date);
-    const rAssign = new Date(recentAssign?.due_date);
 
-    setAssignLimit(cAssign.getTime() - rAssign.getTime());
-    setAssignProgress(cAssign.getTime() - now.getTime());
+    setLimit(due_date - created_at);
+    setStatus(due_date - now);
+  }
 
-    setHomeProgress(Math.trunc((assignProgress / assignLimit) * 100));
-  };
+  const [nextAssign, setNextAssgin] = useState();
+  const [assignCnt, setAssignCnt] = useState();
+
+  // 2번
+  const findNextAssign = (assigns) => {
+    const now = new Date();
+    for(let assign of assigns) {
+      const assign_due_date = new Date(assign.due_date);
+      if(now <= assign_due_date) {
+        setNextAssgin(assign);
+        setAssignCnt(assigns.length - assign.NewAssignId + 1); // 10개 데이터 중 8번째가 다음 과제. 남은 건 다음 과제까지 포함해서 1 더함
+        break;
+      }
+    }
+  }
+
+  // 1번
+  const getAssigns = async () => {
+    const userToken = await getData('user_token');
+    const url = '/assign/getAssigns';
+    const body = {userToken};
+    const res = await fetchPost(url, body);
+    
+    findNextAssign(res.data);
+  }
+
+  useEffect(() => {
+    getAssigns();
+  }, []);
   useEffect(() => {
     setTimeout(() => {
-      getProgress();
+      calcProgress(nextAssign);
+      setHomeProgress(status / limit);
     }, 1000);
-  });
+  }, [status]);
+
+  // 프로그레스 로딩
+  const [isTimerLoading, setIsTimerLoading] = useState(false);
 
   useEffect(() => {
     isNaN(homeProgress) ? setIsTimerLoading(true) : setIsTimerLoading(false);
@@ -190,12 +213,12 @@ const HomeScreen = ({navigation}) => {
 
   const {convertTime} = useProgress();
 
-  const {hour, min, sec} = convertTime(Math.trunc(assignProgress / 1000));
+  const {hour, min, sec} = convertTime(Math.trunc(status / 1000));
 
   const curTitle =
-    curAssignCnt > 1
-      ? `${curAssign?.title} 외 ${curAssignCnt - 1}개`
-      : curAssign?.title;
+    assignCnt > 1
+      ? `${nextAssign?.title} 외 ${assignCnt - 1}개`
+      : nextAssign?.title;
 
   return (
     <StyledContainer>
@@ -218,12 +241,12 @@ const HomeScreen = ({navigation}) => {
                 <UnTouchableRightArrow />
               </RowView>
 
-              {curAssignCnt > 0 ? (
+              {assignCnt > 0 ? (
                 <>
                   <StyledText content={curTitle} fontSize={18} />
                   <RowView style={{marginTop: 10}}>
                     <ProgressBar
-                      status={homeProgress ? homeProgress * 0.01 : 1}
+                      status={homeProgress ? homeProgress : 1}
                     />
 
                     {!!isTimerLoading ? (
