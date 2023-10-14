@@ -174,7 +174,7 @@ const AdminAttendanceElement = ({
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginTop: 60,
+              marginVertical: 20,
             }}>
             <AttendanceStatusButton
               content={'출석'}
