@@ -22,10 +22,10 @@ import {COLORS} from '../../assets/Theme';
 import HeaderDetail from '../../components/Header';
 import {MainButton} from '../../components/Button';
 import useUserInfo from '../../use-userInfo';
-import {fetchPost, getData} from '../../utils';
+import {dayOfWeek, fetchPost, getData, getLocal} from '../../utils';
 import useProgress from '../../use-progress';
 import IsFaceBox from '../../components/IsFaceBox';
-import {GapH} from '../../components/Gap';
+import Gap, {GapH} from '../../components/Gap';
 import useClientTime from '../../use-clientTime';
 
 const StatusCircle = () => {
@@ -35,32 +35,6 @@ const StatusCircle = () => {
 const StatusLine = () => {
   return (
     <View style={{backgroundColor: `${COLORS.icon_gray}`, width: 1, flex: 1}} />
-  );
-};
-
-const onLongPressDelete = session_id => {
-  Alert.alert(
-    '일정을 삭제하시겠습니까?',
-    '일정과 관련된 출석 정보가 모두 삭제 됩니다',
-    [
-      {
-        text: '취소',
-        style: 'cancel',
-      },
-      {
-        text: '삭제',
-        onPress: async () => {
-          const userToken = await getData('user_token');
-          const url = '/session/deleteSchedule';
-          const body = {
-            userToken: userToken,
-            session_id: session_id,
-          };
-          const res = await fetchPost(url, body);
-          console.log(res);
-        },
-      },
-    ],
   );
 };
 
@@ -92,7 +66,7 @@ const InProgressAsgBox = props => {
 
   return (
     <Pressable
-      onLongPress={() => onLongPressDelete(props.item.session_id)}
+      onLongPress={() => props.onLongPressDelete(props.item.session_id)}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -112,7 +86,7 @@ const InProgressAsgBox = props => {
           }}>
           <StatusLine />
           <View>
-            {props.isNextSchedule ? (
+            {props.nextSessionId === props.item.session_id ? (
               <Animated.Image
                 source={require('../../assets/icons/circle_onair.png')}
                 style={{
@@ -157,7 +131,9 @@ const InProgressAsgBox = props => {
                     resizeMode="contain"
                   />
                   <GapH width={9} />
+                  <View style={{paddingRight: 30}}>
                   <StyledSubText content={props.item.location} />
+                  </View>
                 </View>
                 <Gap height={5} />
               </>
@@ -181,7 +157,7 @@ const DoneAsgBox = ({item}) => {
   const {renderMonth, renderDate, renderDay} = useClientTime(item.date);
   return (
     <Pressable
-      onLongPress={() => onLongPressDelete(item.session_id)}
+      onLongPress={() => props.onLongPressDelete(item.session_id)}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -227,30 +203,19 @@ const DoneAsgBox = ({item}) => {
   );
 };
 const Item = props => {
-  let isFutureSchedule = false;
-  let isNextSchedule = false;
-  const itemDate = new Date(props.item.date);
-  const itemDateTime = itemDate.getTime();
-  const now = new Date();
-  if (props.item.session_id === props.nextSessionId) {
-    isFutureSchedule = true;
-    isNextSchedule = true;
-  } else if (itemDateTime >= now.getTime()) {
-    isFutureSchedule = true;
-    isNextSchedule = false;
-  }
-
+  const comming = props.item.cnt <= props.initialScrollIndex;
   return (
     <>
-      {isFutureSchedule ? (
+      {comming ? (
         <InProgressAsgBox
-          isNextSchedule={isNextSchedule}
+          nextSessionId={props.nextSessionId}
           item={props.item}
-          limit={props.limit}
-          status={props.status}
+          onLongPressDelete={props.onLongPressDelete}
         />
       ) : (
-        <DoneAsgBox item={props.item} />
+        <DoneAsgBox
+          item={props.item}
+          onLongPressDelete={props.onLongPressDelete} />
       )}
     </>
   );
@@ -259,7 +224,20 @@ const Item = props => {
 const AssignmentScreen = ({navigation}) => {
   const [sessionData, setSessionData] = useState([]);
   const [initialScrollIndex, setInitialScrollIndex] = useState(0);
+  const [nextSessionId, setNextSessionId] = useState(0);
   const isFocused = useIsFocused();
+
+  const findNextSession = (sessions) => {
+    const now = new Date();
+    for(let i = 0; i < sessions.length; i++) {
+      const sessionDate = new Date(sessions[i].date);
+      if(sessionDate < now) {
+        setNextSessionId(sessions[i-1].session_id);
+        setInitialScrollIndex(sessions[i-1].cnt);
+        break;
+      }
+    }
+  }
 
   const getSessions = async () => {
     const userToken = await getData('user_token'); // token 받아올 땐 fetch랑 같이...
@@ -270,9 +248,7 @@ const AssignmentScreen = ({navigation}) => {
     const res = await fetchPost(url, body);
 
     setSessionData(res.sessions);
-    console.log('서버로부터 받은 세션들', res.sessions);
-    setInitialScrollIndex(res.nextSessionIdx);
-    console.log(res.nextSessionIdx);
+    findNextSession(res.sessions);
   };
 
   useEffect(() => {
@@ -283,15 +259,6 @@ const AssignmentScreen = ({navigation}) => {
     navigation.navigate('AdminAddSessionScreen');
   };
 
-  const {lastScheduleId, nextScheduleId, limit, status, getTimeLimit} =
-    useProgress();
-
-  useEffect(() => {
-    setTimeout(() => {
-      getTimeLimit(sessionData);
-    }, 1000);
-  });
-
   // need to be changed [wonchae]
   // const getItemLayout = (data, index) => {
   //   return {
@@ -300,6 +267,32 @@ const AssignmentScreen = ({navigation}) => {
   //     index,
   //   };
   // };
+
+const onLongPressDelete = session_id => {
+  Alert.alert(
+    '일정을 삭제하시겠습니까?',
+    '일정과 관련된 출석 정보가 모두 삭제 됩니다',
+    [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {
+        text: '삭제',
+        onPress: async () => {
+          const userToken = await getData('user_token');
+          const url = '/session/deleteSchedule';
+          const body = {
+            userToken: userToken,
+            session_id: session_id,
+          };
+          await fetchPost(url, body);
+          await getSessions();
+        },
+      },
+    ],
+  );
+};
 
   return (
     <StyledContainer>
@@ -310,10 +303,9 @@ const AssignmentScreen = ({navigation}) => {
           renderItem={({item}) => (
             <Item
               item={item}
-              lastSessionId={lastScheduleId}
-              nextSessionId={nextScheduleId}
-              limit={limit}
-              status={status}
+              initialScrollIndex={initialScrollIndex}
+              nextSessionId={nextSessionId}
+              onLongPressDelete={onLongPressDelete}
             />
           )}
           keyExtractor={item => item.session_id}

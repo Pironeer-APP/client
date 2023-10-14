@@ -1,13 +1,14 @@
-import {View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Image, Button} from 'react-native';
+import {View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Image, Dimensions} from 'react-native';
 import Modal from 'react-native-modal';
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
+import * as Progress from 'react-native-progress';
+import {useNavigation} from '@react-navigation/native';
+
 import {COLORS} from '../../assets/Theme';
 import {StyledSubText, StyledText} from '../../components/Text';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
-import {Dimensions} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import AdminAttendanceDetailScreen from './AdminAttendanceDetailScreen';
 import Gap, {GapH} from '../../components/Gap';
 import useUserInfo from '../../use-userInfo';
@@ -318,9 +319,12 @@ const AdminAttendanceScreen = () => {
   // 종료 성공
   const [endFinModalVisible, setEndFinModalVisible] = useState(false);
 
+  // 로딩
+  const [loading, setLoading] = useState(false);
 
   //출석 삭제 함수
   const onPressDeleteAttend = async () => {
+    setLoading(true);
     const userToken = await getData('user_token');
     const url = '/attend/deleteTempAttend';
     const body = {
@@ -328,6 +332,7 @@ const AdminAttendanceScreen = () => {
       deleteCode: deleteCode,
     };
     const res = await fetchPost(url, body);
+    setLoading(false);
     setModalVisible(!isModalVisible);
     if (res.result === '삭제 완료') {
       setTimeout(() => {
@@ -355,36 +360,48 @@ const AdminAttendanceScreen = () => {
 
   // 출결 종료 함수
   const onPressEndAttend = async () => {
-    const userToken = await getData('user_token');
-    const url = '/attend/endAttend';
-    const body = {
-      userToken: userToken
-    };
-    const res = await fetchPost(url, body);
-    if(res.result === '오늘 세션 없음') {
-      setEndFailedContent('오늘 세션 없음');
-      setEndFailedModalVisible(true);
-      setTimeout(() => {
-        setEndFailedModalVisible(false);
-      }, 2000);
-    } else if(res.result === '종료 실패') {
-      setEndFailedContent('종료 실패');
-      setEndFailedModalVisible(true);
-      setTimeout(() => {
-        setEndFailedModalVisible(false);
-      }, 2000);
-    } else if(res.result == false) {
-      setEndFailedContent('출결 저장 실패: 출결 3회 이상 진행 됨');
-      setEndFailedModalVisible(true);
-      setTimeout(() => {
-        setEndFailedModalVisible(false);
-      }, 2000);
-    } else if(res.result == true) {
-      setEndFinModalVisible(true);
-      setTimeout(() => {
-        setEndFinModalVisible(false);
-      }, 2000);
-    }
+    Alert.alert(
+      '오늘 출결을 종료하시겠습니까?',
+      '',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '확인',
+          onPress: async () => {
+            setLoading(true);
+            const userToken = await getData('user_token');
+            const url = '/attend/endAttend';
+            const body = {
+              userToken: userToken,
+              session_id: sessionId
+            };
+            const res = await fetchPost(url, body);
+            setLoading(false);
+            if(res.result == false) {
+              setEndFailedContent('출결 저장 실패: 출결 3회 이상 진행 됨');
+              setEndFailedModalVisible(true);
+              setTimeout(() => {
+                setEndFailedModalVisible(false);
+              }, 2000);
+            } else if(res.result == true) {
+              setEndFinModalVisible(true);
+              setTimeout(() => {
+                setEndFinModalVisible(false);
+              }, 2000);
+            } else {
+              setEndFailedContent(res.result);
+              setEndFailedModalVisible(true);
+              setTimeout(() => {
+                setEndFailedModalVisible(false);
+              }, 2000);
+            }
+          },
+        },
+      ],
+    );
   }
 
   return (
@@ -401,6 +418,16 @@ const AdminAttendanceScreen = () => {
           <WeekContainer key={index} week={index + 1} item={item} />
         ))}
       </ScrollView>
+
+      {/* 로딩 */}
+      <Modal animationType="slide" transparent={true} visible={loading}>
+        <View style={styles.circles}>
+          <Progress.CircleSnail
+            style={styles.progress}
+            color={COLORS.green}
+          />
+        </View>
+      </Modal>
       
       {/* 출결 삭제 코드 입력 모달 */}
       <Modal
@@ -518,6 +545,15 @@ const AdminAttendanceScreen = () => {
 
 //스타일시트
 const styles = StyleSheet.create({
+  progress: {
+    margin: 10,
+  },
+  circles: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   scrollContainer: {
     marginBottom: 50
   },
@@ -552,7 +588,6 @@ const styles = StyleSheet.create({
   },
   deleteBtn: {
     justifyContent: 'center',
-    height: 50,
     paddingHorizontal: 20,
     borderRadius: 13,
     backgroundColor: COLORS.green,

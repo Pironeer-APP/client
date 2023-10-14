@@ -18,7 +18,7 @@ import {StyledText} from '../../components/Text';
 import {fetchPost, localeDate} from '../../utils';
 import HeaderDetail from '../../components/Header';
 import useUserInfo from '../../use-userInfo';
-import useFormattedTime from '../../use-formattedTime';
+import Gap from '../../components/Gap';
 
 export default function AdminAddSessionScreen() {
   const [face, setFace] = useState(false);
@@ -40,12 +40,16 @@ export default function AdminAddSessionScreen() {
     setDate(newDate);
   }, []);
 
+  useEffect(() => {
+    console.log('date..', date);
+  }, [date]);
+
   const onPressConfirm = async () => {
-    console.log(useFormattedTime(date));
+    console.log('클라이언트 시간 직전', date);
     const url = '/session/addSchedule';
     const body = {
       title: sessionTitle,
-      date: useFormattedTime(date),
+      date: date,
       face: face,
       place: sessionPlace,
       userToken: userToken,
@@ -124,9 +128,8 @@ export default function AdminAddSessionScreen() {
                 fontSize={20}
               />
             </View>
-          </PaddingBox>
-          <StyledContainer>
-            <View style={{flex: 1, alignItems: 'center'}}>
+            <Gap />
+            <View style={{alignItems: 'center'}}>
               <DatePicker
                 date={date}
                 onDateChange={setDate}
@@ -139,7 +142,7 @@ export default function AdminAddSessionScreen() {
                 defaultValue={date}
               />
             </View>
-          </StyledContainer>
+          </PaddingBox>
         </View>
       </StyledContainer>
     </TouchableWithoutFeedback>
