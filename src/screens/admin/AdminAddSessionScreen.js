@@ -18,6 +18,7 @@ import {StyledText} from '../../components/Text';
 import {fetchPost, localeDate} from '../../utils';
 import HeaderDetail from '../../components/Header';
 import useUserInfo from '../../use-userInfo';
+import Gap from '../../components/Gap';
 
 export default function AdminAddSessionScreen() {
   const [face, setFace] = useState(false);
@@ -45,7 +46,7 @@ export default function AdminAddSessionScreen() {
     const url = '/session/addSchedule';
     const body = {
       title: sessionTitle,
-      date: localeDate(date),
+      date: date,
       face: face,
       place: sessionPlace,
       userToken: userToken,
@@ -118,23 +119,22 @@ export default function AdminAddSessionScreen() {
                 fontSize={20}
               />
             </View>
-          </PaddingBox>
-          <StyledContainer>
-            <View style={{flex: 1, alignItems: 'center'}}>
-            <DatePicker
-              date={date}
-              onDateChange={setDate}
-              androidVariant="iosClone"
-              locale="ko"
-              textColor={COLORS.textColor}
-              theme="dark"
-              minuteInterval={5}
-              fadeToColor="none"
-              is24hourSource="locale"
-              defaultValue={date}
-            />
+            <Gap />
+            <View style={{alignItems: 'center'}}>
+              <DatePicker
+                date={date}
+                onDateChange={setDate}
+                androidVariant="iosClone"
+                locale="ko"
+                textColor={COLORS.textColor}
+                theme="dark"
+                minuteInterval={5}
+                fadeToColor="none"
+                is24hourSource="locale"
+                defaultValue={date}
+              />
             </View>
-          </StyledContainer>
+          </PaddingBox>
         </View>
       </StyledContainer>
     </TouchableWithoutFeedback>

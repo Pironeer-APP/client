@@ -126,3 +126,21 @@ export const localeDate = (dateTime) => {
 
   return dateformat;
 }
+
+export const getLocal = (datetime) => {
+  const itemDate = new Date(datetime);
+  
+  const month = String(itemDate.getMonth() + 1).padStart(2, '0');
+  const date = String(itemDate.getDate()).padStart(2, '0');
+  const day = dayOfWeek(itemDate.getDay());
+  const hour = String(itemDate.getHours()).padStart(2, '0');
+  const min = String(itemDate.getMinutes()).padStart(2, '0');
+
+  return {
+    month,
+    date,
+    day,
+    hour,
+    min
+  }
+}
