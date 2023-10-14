@@ -513,7 +513,7 @@ const AdminAttendanceScreen = () => {
                 <StyledText
                   fontSize={22}
                   color={COLORS.bg_black}
-                  content={codeLoading ? '생성중...' : codeText}
+                  content={codeTimeoutText}
                 />
               </View>
 
