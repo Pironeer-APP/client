@@ -7,6 +7,7 @@ import {
   Dimensions,
   ScrollView,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import React, {useState, useEffect, useMemo} from 'react';
 import dayjs from 'dayjs';
@@ -24,6 +25,7 @@ import {COLORS} from '../assets/Theme';
 import styled from 'styled-components';
 import {Box} from '../components/Box';
 import AutoHeightImage from 'react-native-auto-height-image';
+import useClientTime from '../use-clientTime';
 
 const StyledBottomLine = styled.View`
   height: 1px;
@@ -39,6 +41,7 @@ export function convertToUrl(url) {
   return FULL_URL.replace(/\\/g, '/');
 }
 const AnnouncementDetail = ({navigation}) => {
+  const [refreshing, setRefreshing] = useState(false);
   const [post, setPost] = useState([]);
   const [images, setImages] = useState([]);
   const route = useRoute();
@@ -51,12 +54,14 @@ const AnnouncementDetail = ({navigation}) => {
 
   const isFocused = useIsFocused();
   const getPost = async () => {
+    setRefreshing(true);
     const url = `/post/detail`;
     const userToken = await getData('user_token');
     const body = {userToken, post_id};
     const res = await fetchPost(url, body);
     setPost(res.post);
     setImages(res.result);
+    setRefreshing(false);
   };
   useEffect(() => {
     getPost();
@@ -89,10 +94,8 @@ const AnnouncementDetail = ({navigation}) => {
     }
   };
 
-  const dateString = `${post.created_at}`;
-  const date = new Date(dateString);
-  // date.setHours(date.getHours() + 9);
-  const RenderDate = dayjs(date.getTime()).format('MM.DD ddd').toUpperCase();
+  const {renderMonth, renderDate, renderDay} = useClientTime(post.created_at);
+  const RenderDate = `${renderMonth}.${renderDate} ${renderDay}`;
 
   const windowWidth = Dimensions.get('window').width;
 
@@ -100,7 +103,14 @@ const AnnouncementDetail = ({navigation}) => {
     <StyledContainer>
       <HeaderDetail title={'공지'} />
       <View style={{paddingHorizontal: 20, flex: 1}}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={getPost}
+              tintColor={COLORS.green}
+            />
+          }>
           <RowView>
             <RowView style={{gap: 10}}>
               <StyledSubText content={`${RenderDate}`} />

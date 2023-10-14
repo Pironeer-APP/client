@@ -1,4 +1,11 @@
-import {View, Text, TouchableOpacity, FlatList, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Pressable,
+  RefreshControl,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import StyledContainer from '../../components/StyledContainer';
@@ -15,6 +22,7 @@ import {fetchPost, getData} from '../../utils';
 import dayjs from 'dayjs';
 import MsgForEmptyScreen from '../../components/MsgForEmptyScreen';
 import {MediumLoader} from '../../components/Loader';
+import useClientTime from '../../use-clientTime';
 
 const ModalBox = styled.View`
   background-color: ${COLORS.gray};
@@ -37,10 +45,9 @@ const AssignmentBox = ({
   getAssigns,
 }) => {
   const navigation = useNavigation();
-  const dateString = createdAt;
-  const dateString2 = new Date(dateString);
-  // dateString2.setHours(dateString2.getHours() + 9);
-  const formattedDate = dayjs(dateString2.getTime()).format('MM.DD ddd');
+
+  const {renderMonth, renderDate, renderDay} = useClientTime(createdAt);
+  const formattedDate = `${renderMonth}.${renderDate} ${renderDay}`;
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     getAssigns();
@@ -157,6 +164,7 @@ const AdminAssignmentScreen = ({route}) => {
   const isFocused = useIsFocused();
   const getLevel = route.params.userLevel;
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const renderItem = ({item}) => {
     // console.log(item);
@@ -172,6 +180,7 @@ const AdminAssignmentScreen = ({route}) => {
     );
   };
   const getAssigns = async () => {
+    setRefreshing(true);
     const userToken = await getData('user_token');
     const url = `/assign/readAssign/all`;
     const body = {
@@ -183,6 +192,7 @@ const AdminAssignmentScreen = ({route}) => {
       console.log('받아온 데이터: ', responseData);
       setAssigns(responseData.data);
       setIsLoading(false);
+      setRefreshing(false);
     } catch (error) {
       // 네트워크 오류 또는 예외 처리
       console.error(error);
@@ -216,6 +226,13 @@ const AdminAssignmentScreen = ({route}) => {
               data={assigns}
               renderItem={renderItem}
               keyExtractor={item => item.assignschedule_id}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={getAssigns}
+                  tintColor={COLORS.green}
+                />
+              }
             />
           </View>
           <MainButton

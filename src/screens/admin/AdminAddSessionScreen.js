@@ -40,9 +40,12 @@ export default function AdminAddSessionScreen() {
     setDate(newDate);
   }, []);
 
+  useEffect(() => {
+    console.log('date..', date);
+  }, [date]);
+
   const onPressConfirm = async () => {
-    console.log('클라이언트 저장 직전 date', date);
-    console.log('클라이언트 저장 직전 locale date', localeDate(date));
+    console.log('클라이언트 시간 직전', date);
     const url = '/session/addSchedule';
     const body = {
       title: sessionTitle,
@@ -83,15 +86,17 @@ export default function AdminAddSessionScreen() {
             value={sessionTitle}
             onChangeText={setSessionTitle}
           />
-          {/* 지도 api 적용해보기 */}
-          <TextInput
-            style={styles.titleInput}
-            placeholder="장소"
-            placeholderTextColor={COLORS.light_gray}
-            color={COLORS.textColor}
-            value={sessionPlace}
-            onChangeText={setSessionPlace}
-          />
+          {!!face && (
+            <TextInput
+              style={styles.titleInput}
+              placeholder="장소"
+              placeholderTextColor={COLORS.light_gray}
+              color={COLORS.textColor}
+              value={sessionPlace}
+              onChangeText={setSessionPlace}
+            />
+          )}
+
           <PaddingBox>
             <ToggleItem
               text="대면"
@@ -113,9 +118,13 @@ export default function AdminAddSessionScreen() {
                 fontSize={20}
               />
               <StyledText
-                content={`${date.getHours().toLocaleString().padStart(2, '0')}:${date
+                content={`${date
+                  .getHours()
+                  .toLocaleString()
+                  .padStart(2, '0')}:${date
                   .getMinutes()
-                  .toLocaleString().padStart(2, '0')}`}
+                  .toLocaleString()
+                  .padStart(2, '0')}`}
                 fontSize={20}
               />
             </View>
@@ -130,7 +139,6 @@ export default function AdminAddSessionScreen() {
                 theme="dark"
                 minuteInterval={5}
                 fadeToColor="none"
-                is24hourSource="locale"
                 defaultValue={date}
               />
             </View>
