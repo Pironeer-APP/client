@@ -188,7 +188,7 @@ const AdminAttendanceScreen = () => {
   const [sessions, setSessions] = useState();
   const [sessionForHighlight, setSessionForHighlight] = useState();
   const [isToday, setIsToday] = useState(false);
-  const [codeText, setCodeText] = useState('출석코드 생성');
+  const [codeText, setCodeText] = useState('코드 생성');
   const [isModalVisible, setModalVisible] = useState(false);
   const [sessionId, setSessionId] = useState();
   const [attendStatusContent, setAttendStatusContent] = useState('출결 저장');
@@ -277,6 +277,8 @@ const AdminAttendanceScreen = () => {
         }
       });
     }
+    //지워야해
+    setIsToday(true);
   };
 
   useEffect(() => {
@@ -404,6 +406,45 @@ const AdminAttendanceScreen = () => {
     );
   }
 
+  const onPressCancelAttend = () => {
+    Alert.alert(
+      '오늘 출결을 취소하시겠습니까?',
+      '저장된 오늘 세션 출결이 삭제됩니다',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '확인',
+          onPress: async () => {
+            setLoading(true);
+            const userToken = await getData('user_token');
+            const url = '/attend/cancelAttend';
+            const body = {
+              userToken: userToken,
+              session_id: sessionId
+            };
+            const res = await fetchPost(url, body);
+            setLoading(false);
+            if(res.result == true) {
+              setEndFinModalVisible(true);
+              setTimeout(() => {
+                setEndFinModalVisible(false);
+              }, 2000);
+            } else {
+              setEndFailedContent(res.result);
+              setEndFailedModalVisible(true);
+              setTimeout(() => {
+                setEndFailedModalVisible(false);
+              }, 2000);
+            }
+          },
+        },
+      ],
+    );
+  }
+
   return (
 
     <TouchableWithoutFeedback
@@ -499,8 +540,9 @@ const AdminAttendanceScreen = () => {
 
       {!!isToday ? (
         <BottomTouchModal>
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
           <ButtonContainer
-              onPress={onPressGenerateCode}>
+            onPress={onPressGenerateCode}>
             <View style={styles.codeTextView}>
               <StyledText
                 fontSize={22}
@@ -516,9 +558,9 @@ const AdminAttendanceScreen = () => {
                   content={codeTimeoutText}
                 />
               </View>
-
             ) : null}
           </ButtonContainer>
+          <GapH />
           <ButtonContainer
             onPress={toggleModal}>
             <StyledText
@@ -527,14 +569,26 @@ const AdminAttendanceScreen = () => {
               content={'출결 삭제'}
             />
           </ButtonContainer>
+          </View>
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
           <ButtonContainer
             onPress={onPressEndAttend}>
             <StyledText
               fontSize={22}
               color={COLORS.bg_black}
-              content={'오늘 출결 종료'}
+              content={'출결 종료'}
             />
           </ButtonContainer>
+          <GapH />
+          <ButtonContainer
+            onPress={onPressCancelAttend}>
+            <StyledText
+              fontSize={22}
+              color={COLORS.bg_black}
+              content={'출결 취소'}
+            />
+          </ButtonContainer>
+          </View>
         </BottomTouchModal>
       ) : null}
     </StyledContainer>
@@ -558,7 +612,6 @@ const styles = StyleSheet.create({
     marginBottom: 50
   },
   codeTextView: {
-    flex: 1,
     alignItems: 'center',
   },
   centeredView: {

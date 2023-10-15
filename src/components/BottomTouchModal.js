@@ -8,7 +8,7 @@ export default function BottomTouchModal({children}) {
 
   const springUp = () => {
     Animated.spring(springAnim, {
-      toValue: {x: 0, y: -250},
+      toValue: {x: 0, y: -350},
       useNativeDriver: true
     }).start();
     console.log('up!');
@@ -45,8 +45,8 @@ export default function BottomTouchModal({children}) {
 const styles = StyleSheet.create({
   modalContainer: {
     position: 'absolute',
-    height: 300,
-    bottom: -250,
+    height: 400,
+    bottom: -350,
     width: '100%',
     alignItems: 'center',
     backgroundColor: COLORS.gray,

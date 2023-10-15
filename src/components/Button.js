@@ -194,6 +194,7 @@ const miniStyles = ({outline}) =>
 const btnStyles = (props) => (
   StyleSheet.create({
     btnContainer: {
+      flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: props.paddingH,
@@ -203,7 +204,6 @@ const btnStyles = (props) => (
       borderColor: props.outline ? COLORS.green : 'none',
       borderWidth: props.outline ? 3 : 0,
       marginBottom: 20,
-      flexDirection: 'row'
     }
   })
 )
