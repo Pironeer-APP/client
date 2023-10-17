@@ -5,6 +5,7 @@ import {
   ScrollView,
   Button,
   StyleSheet,
+  Image,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import React, {useEffect, useState} from 'react';
@@ -44,12 +45,21 @@ const AmountContainer = styled.View`
   flex-direction: row;
 `;
 
-const AttendanceCircle = styled.View`
-  width: 30px;
-  height: 30px;
-  border-radius: 50px;
-  background-color: ${COLORS.light_gray};
-`;
+const AttenCircle = ({type}) => {
+  let imageSource;
+  if (type === '결석') {
+    imageSource = require(`../../assets/icons/circle_ex.png`);
+  } else if (type === '지각') {
+    imageSource = require(`../../assets/icons/circle_semo.png`);
+  } else if (type === '출석') {
+    imageSource = require(`../../assets/icons/circle_donggrami.png`);
+  }
+  return (
+    <View>
+      <Image source={imageSource} style={{width: 30, height: 30}} />
+    </View>
+  );
+};
 
 //출석, 지각, 결석 버튼
 const AttendanceStatusButton = props => {
@@ -88,10 +98,10 @@ const AdminAttendanceElement = ({
   userInfo,
   month,
   day,
+  type,
 }) => {
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const navigation = useNavigation();
-
   const toggleBottomSheet = () => {
     setBottomSheetVisible(!isBottomSheetVisible);
   };
@@ -121,7 +131,6 @@ const AdminAttendanceElement = ({
       session_id: session_id,
     };
     const result = await fetchPost(url, body);
-    console.log(result);
     setBottomSheetVisible(!isBottomSheetVisible);
     setSelectedBtn(0);
     setRerender(!rerender);
@@ -132,7 +141,7 @@ const AdminAttendanceElement = ({
       <DepositContainer onPress={toggleBottomSheet}>
         <FontStyledText style={{fontSize: 20}}>{userInfo.name}</FontStyledText>
         <AmountContainer>
-          <AttendanceCircle />
+          <AttenCircle type={type} />
         </AmountContainer>
       </DepositContainer>
       {/* 바텀 모달 */}
@@ -232,6 +241,7 @@ const AdminAttendanceList = props => {
           day={props.day}
           rerender={props.rerender}
           setRerender={props.setRerender}
+          type={user.type}
         />
       ))}
     </ScrollView>
