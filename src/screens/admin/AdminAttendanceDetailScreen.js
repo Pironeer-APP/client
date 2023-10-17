@@ -53,6 +53,8 @@ const AttenCircle = ({type}) => {
     imageSource = require(`../../assets/icons/circle_semo.png`);
   } else if (type === '출석') {
     imageSource = require(`../../assets/icons/circle_donggrami.png`);
+  } else {
+    imageSource = require(`../../assets/icons/circle_none.png`);
   }
   return (
     <View>
