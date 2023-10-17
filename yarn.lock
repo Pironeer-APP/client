@@ -6208,10 +6208,10 @@ react-native-image-picker@^7.0.0:
   resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-7.0.0.tgz"
   integrity sha512-eiDj0mJUPivranQJX/pwkGf/Ar9QrQ+BF3y0D8frHU3S7U86IGOnOzHN7Wh6ofXEnafRij0TpmRCdrSebBMV+Q==
 
-react-native-ionicons@^4.6.5:
-  version "4.6.5"
-  resolved "https://registry.npmjs.org/react-native-ionicons/-/react-native-ionicons-4.6.5.tgz"
-  integrity sha512-s2Ia7M5t609LE9LWygMj3ALVPUlKhK7R9XcMb67fP4EYJv0oLcwg5pc+8ftv9XXaUuTW/WgL3zJlBYxAvtvMJg==
+react-native-ionicons@^4.4.5:
+  version "4.4.5"
+  resolved "https://registry.npmjs.org/react-native-ionicons/-/react-native-ionicons-4.4.5.tgz"
+  integrity sha512-LMrGpKf7C5t/OsgWJBGlsaQY0ukzAsBMQ3xY6hv8tWNpA9fRj2/IEnXO/C4cEAeSNXjbLfU7lTpynmey8kxGGw==
 
 react-native-modal@^13.0.1:
   version "13.0.1"
