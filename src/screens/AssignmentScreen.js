@@ -252,7 +252,7 @@ const AssignmentScreen = () => {
     3. 해당 데이터의 인덱스를 기억, flatlist 렌더링 시 참고
   */
 
-  const [lastAssign, setLastAssign] = useState(); // 직전에 종료된 과제 기억
+  const [lastAssign, setLastAssign] = useState(null); // 직전에 종료된 과제 기억
 
   const findLastAssign = (assignments) => {
     const now = new Date();
