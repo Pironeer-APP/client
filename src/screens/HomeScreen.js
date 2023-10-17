@@ -153,8 +153,8 @@ const HomeScreen = ({navigation}) => {
     6. progress = status / limit
   */
 
-  const [limit, setLimit] = useState();
-  const [status, setStatus] = useState();
+  const [limit, setLimit] = useState(0);
+  const [status, setStatus] = useState(0);
   const [homeProgress, setHomeProgress] = useState(NaN);
 
   // 3-5번
@@ -172,8 +172,17 @@ const HomeScreen = ({navigation}) => {
     setStatus(due_date - now);
   }
 
-  const [nextAssign, setNextAssgin] = useState();
-  const [assignCnt, setAssignCnt] = useState();
+  const [nextAssign, setNextAssgin] = useState(null);
+  const [assignCnt, setAssignCnt] = useState(0);
+
+  // reset
+  const resetState = () => {
+    setLimit(0)
+    setStatus(0)
+    setHomeProgress(NaN)
+    setNextAssgin(null)
+    setAssignCnt(0)
+  }
 
   // 2번
   const findNextAssign = (assigns) => {
@@ -190,6 +199,7 @@ const HomeScreen = ({navigation}) => {
 
   // 1번
   const getAssigns = async () => {
+    resetState();
     const userToken = await getData('user_token');
     const url = '/assign/getAssigns';
     const body = {userToken};
@@ -197,10 +207,9 @@ const HomeScreen = ({navigation}) => {
     
     findNextAssign(res.data);
   }
-
   useEffect(() => {
     getAssigns();
-  }, []);
+  }, [isFocused]);
   useEffect(() => {
     setTimeout(() => {
       calcProgress(nextAssign);

@@ -1,5 +1,7 @@
 import {View, Text, ScrollView} from 'react-native';
 import React from 'react';
+import {useNavigation} from '@react-navigation/native';
+
 import StyledContainer from '../components/StyledContainer';
 import {StyledText} from '../components/Text';
 import {SettingsItem} from '../settings/UserSection';
@@ -9,6 +11,9 @@ import Gap, {GapH} from '../components/Gap';
 import {RowView} from './HomeScreen';
 
 export default function OperationPolicyScreen() {
+  const navigation = useNavigation();
+  const onPressOSS = () => navigation.push('OSSScreen');
+
   return (
     <StyledContainer>
       <HeaderDetail title="이용안내" />
@@ -28,7 +33,7 @@ export default function OperationPolicyScreen() {
             <SettingsItem text="서비스 이용 약관" />
           </PaddingBox>
           <PaddingBox>
-            <SettingsItem text="오픈소스 라이센스" />
+            <SettingsItem text="오픈소스 라이선스" onPress={onPressOSS} />
           </PaddingBox>
           <PaddingBox>
             <SettingsItem text="실험실" />
