@@ -69,17 +69,15 @@ const PostBox = ({title, sort, date, id, read}) => {
   const formattedDate = `${renderMonth}.${renderDate} ${renderDay} ${renderHour}:${renderMinute}`;
 
   return (
-    <View>
-      <TouchableOpacity onPress={goToAncDet}>
-        <PaddingBox style={{marginTop: 0}}>
-          <RowView>
-            <StyledSubText content={formattedDate} />
-            <Badge sort={sort} />
-          </RowView>
-          <StyledText content={title} fontSize={24} />
-        </PaddingBox>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity onPress={goToAncDet}>
+      <PaddingBox style={{marginTop: 0}}>
+        <RowView>
+          <StyledSubText content={formattedDate} />
+          <Badge sort={sort} />
+        </RowView>
+        <StyledText content={title} fontSize={24} />
+      </PaddingBox>
+    </TouchableOpacity>
   );
 };
 const RenderItem = ({item}) => (
@@ -98,6 +96,7 @@ const FirstRoute = ({posts, refreshing, getPosts}) => (
       <MsgForEmptyScreen content={'등록된 공지글이 없습니다.'} />
     ) : (
       <FlatList
+        style={{paddingHorizontal: 20, marginBottom: 20}}
         data={posts}
         renderItem={RenderItem}
         keyExtractor={item => item.post_id}
@@ -122,6 +121,7 @@ const FilteredItems = ({category, posts, refreshing, getPosts}) => {
         <MsgForEmptyScreen content={'등록된 공지글이 없습니다.'} />
       ) : (
         <FlatList
+          style={{paddingHorizontal: 20, marginBottom: 20}}
           data={filteredPosts}
           renderItem={RenderItem}
           keyExtractor={item => item.post_id}
@@ -241,42 +241,46 @@ const AnnouncementScreen = ({navigation}) => {
       {!!isLoading ? (
         <MediumLoader />
       ) : (
-        <View style={{flex: 1, paddingHorizontal: 20}}>
+        <View style={{flex: 1}}>
           <TabView
             navigationState={{index, routes}}
             renderScene={renderScene}
             onIndexChange={setIndex}
             initialLayout={{width: layout.width}}
             renderTabBar={props => (
-              <TabBar
-                {...props}
-                indicatorStyle={{
-                  backgroundColor: `${COLORS.green}`,
-                  height: 47,
-                  borderWidth: 5,
-                  borderRadius: 15,
-                  borderColor: `${COLORS.icon_gray}`,
-                }}
-                style={{
-                  backgroundColor: `${COLORS.icon_gray}`,
-                  fontWeight: 'bold',
-                  shadowOffset: {height: 0, width: 0},
-                  shadowColor: 'transparent',
-                  borderRadius: 15,
-                }}
-                pressColor={'transparent'}
-                renderLabel={({route, focused}) => (
-                  <TabLabel focused={focused}>{route.title}</TabLabel>
-                )}
-              />
+              <View style={{paddingHorizontal: 20}}>
+                <TabBar
+                  {...props}
+                  indicatorStyle={{
+                    backgroundColor: `${COLORS.green}`,
+                    height: '99%',
+                    borderWidth: 5,
+                    borderRadius: 15,
+                    borderColor: `${COLORS.icon_gray}`,
+                  }}
+                  style={{
+                    backgroundColor: `${COLORS.icon_gray}`,
+                    fontWeight: 'bold',
+                    shadowOffset: {height: 0, width: 0},
+                    shadowColor: 'transparent',
+                    borderRadius: 15,
+                  }}
+                  pressColor={'transparent'}
+                  renderLabel={({route, focused}) => (
+                    <TabLabel focused={focused}>{route.title}</TabLabel>
+                  )}
+                />
+              </View>
             )}
           />
           {!!userInfoFromServer.is_admin && (
+            <View style={{paddingHorizontal: 20}}>
             <MainButton
               content={'글 작성하기'}
               onPress={() => navigation.navigate('AdminCreateNotice')}
               height={60}
             />
+            </View>
           )}
         </View>
       )}

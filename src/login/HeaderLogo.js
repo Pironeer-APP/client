@@ -5,6 +5,7 @@ export default function HeaderLogo() {
   return (
     <View style={styles.imageContainer}>
       <Image
+        style={{width: 100, height: 100}}
        source={require('../assets/images/headerLogo.png')}
       />
     </View>

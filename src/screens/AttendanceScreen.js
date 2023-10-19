@@ -9,7 +9,9 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
+import { Shadow } from 'react-native-shadow-2';
+
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
 import {dayOfWeek, fetchPost, getData} from '../utils';
@@ -28,6 +30,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderLogo from '../login/HeaderLogo';
 import Loader, {MediumLoader, TinyLoader} from '../components/Loader';
 import {AsgContainer} from './AssignmentScreen';
+import OnAirCircle from '../components/OnAirCircle';
 
 //데이터 날짜순으로 배열하기
 
@@ -57,22 +60,17 @@ const StatusLine = () => {
 
 const InProgressAttendBox = props => {
   const today = new Date();
-  const month = String(Number(props.date.getMonth()) + 1);
-  const day = String(props.date.getDate());
+  const todayMonth = String(today.getMonth() + 1).padStart(2, '0');
+  const todayDate = String(today.getDate()).padStart(2, '0');
+
+  const month = String(Number(props.date.getMonth()) + 1).padStart(2, '0');
+  const day = String(props.date.getDate()).padStart(2, '0');
   const dayOfTheWeek = dayOfWeek(props.date.getDay());
-  let hour = String(props.date.getUTCHours());
-  const minute = String(props.date.getUTCMinutes());
-  let dayWithZero = day;
+  const hour = String(props.date.getHours()).padStart(2, '0');
+  const minute = String(props.date.getMinutes()).padStart(2, '0');
 
-  if (day < 9) {
-    dayWithZero = '0' + day;
-  }
-  // 1 -> 01, 2 -> 02 ...
-  if (hour < 10) {
-    hour = '0' + hour;
-  }
-
-  const [scale] = useState(new Animated.Value(1)); // 초기 크기 1
+  const scale = useRef(new Animated.Value(1)).current; // 초기 크기 1
+  const unscale = useRef(new Animated.Value(1)).current; // 초기 크기 1
 
   useEffect(() => {
     // 크기 애니메이션 설정
@@ -93,6 +91,26 @@ const InProgressAttendBox = props => {
       ]),
     ).start();
   }, []);
+  useEffect(() => {
+    // 크기 애니메이션 반대로 설정
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(unscale, {
+          toValue: 0.8,
+          duration: 1000,
+          easing: Easing.easeInOut,
+          useNativeDriver: false,
+        }),
+        Animated.timing(unscale, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.easeInOut,
+          useNativeDriver: false,
+        }),
+      ]),
+    ).start();
+  }, []);
+
   return (
     <AsgContainer
       style={{
@@ -113,15 +131,8 @@ const InProgressAttendBox = props => {
           {/*  {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />} */}
           <StatusLine />
           <View>
-            {today.getMonth() + 1 === month && today.getDate() === day ? (
-              <Animated.Image
-                source={require('../assets/icons/circle_onair.png')}
-                style={{
-                  width: 50,
-                  height: 50,
-                  transform: [{scale}], // 크기 애니메이션 적용
-                }}
-              />
+            {todayMonth === month && todayDate === day ? (
+              <OnAirCircle />
             ) : (
               <AttenStatusCircle type={props.attenType} />
             )}
@@ -366,8 +377,9 @@ const AttendanceScreen = () => {
         <MediumLoader />
       ) : (
         <View style={{flex: 1}}>
-          <View style={{flex: 1, paddingRight: 20, paddingLeft: 10}}>
+          <View style={{flex: 1}}>
             <FlatList
+              style={{paddingRight: 20, paddingLeft: 10}}
               data={attendance}
               renderItem={renderAttenItem}
               keyExtractor={item => item.session_id}
@@ -384,12 +396,16 @@ const AttendanceScreen = () => {
             />
             {/* 오늘 세션이 있는 경우에만 출석하기 버튼 나타남  */}
             {!!isTodaySession ? (
-              <MainButton
-                height={60}
-                content={'출석하기'}
-                onPress={toggleBottomSheet}
-                marginBottom={0}
-              />
+              <View
+                style={{paddingHorizontal: 20}}
+              >
+                <MainButton
+                  height={60}
+                  content={'출석하기'}
+                  onPress={toggleBottomSheet}
+                  marginBottom={0}
+                />
+              </View>
             ) : null}
           </View>
 
@@ -496,4 +512,20 @@ const styles = StyleSheet.create({
     gap: 20,
     position: 'absolute',
   },
+  onAirCircleBack: {
+    width: 20,
+    height: 20,
+    backgroundColor: COLORS.green,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  onAirCircle: {
+    width: 30,
+    height: 30,
+    backgroundColor: COLORS.green,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: COLORS.textColor,
+  }
 });

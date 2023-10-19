@@ -17,9 +17,7 @@ export default function UpdateSuccessScreen({route}) {
       <Image source={require('../../assets/icons/success.png')} style={styles.image} />
       <Text style={styles.desc}>{route.params.type} 수정 완료</Text>
       <View style={styles.btnContainer}>
-        <View style={styles.touchable}>
         <MiniButton outline={true} onPress={onPress}>홈으로</MiniButton>
-        </View>
       </View>
     </StyledContainer>
   )

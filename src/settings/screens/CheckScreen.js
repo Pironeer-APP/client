@@ -4,6 +4,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Alert,
+  ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import StyledContainer from '../../components/StyledContainer';
@@ -14,7 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import {SettingInput} from '../../components/Input';
 import Gap from '../../components/Gap';
 import useUserInfo from '../../use-userInfo';
-import {autoHyphen, fetchPost} from '../../utils';
+import {autoHyphen, fetchPost, getData} from '../../utils';
 
 const infoType = {
   phone: {
@@ -43,13 +44,8 @@ export default function CheckScreen({route}) {
   const [data, setData] = useState('');
   const navigation = useNavigation();
 
-  const {userToken, getUserToken} = useUserInfo();
-
-  useEffect(() => {
-    getUserToken();
-  }, []);
-
   const compareInfo = async () => {
+    const userToken = await getData('user_token');
     const url = `/auth/compareInfo/${route.params.type}`;
     const body = {
       data: data,
@@ -88,7 +84,7 @@ export default function CheckScreen({route}) {
           style={styles.formContainer}
           keyboardVerticalOffset={45}
           behavior={Platform.select({ios: 'padding', android: undefined})}>
-          <View style={{flex: 1}}>
+          <ScrollView style={{flexGrow: 1}}>
             <Gap />
             <StyledText
               fontSize={25}
@@ -108,8 +104,8 @@ export default function CheckScreen({route}) {
               secureTextEntry={route.params.type === 'password'}
               keyboardType={route.params.type === 'phone' ? 'numeric' : null}
             />
-          </View>
-          <MainButton content="다음" onPress={onPressOriginInfo} />
+          </ScrollView>
+          <MainButton content="다음" onPress={onPressOriginInfo} marginBottom={10} />
         </KeyboardAvoidingView>
       </View>
     </StyledContainer>

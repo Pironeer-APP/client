@@ -4,12 +4,12 @@
     "project_id": "pirogramming-97844",
     "storage_bucket": "pirogramming-97844.appspot.com"
   },
-  "client": [
+  "pirogramming": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:955713730873:android:4b76d6d3e1ad7fd25790e8",
         "android_client_info": {
-          "package_name": "com.client"
+          "package_name": "com.pirogramming"
         }
       },
       "oauth_client": [],
