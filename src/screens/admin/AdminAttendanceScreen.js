@@ -222,7 +222,7 @@ const AdminAttendanceScreen = () => {
         if (codeTimeOut) {
           const limit = new Date(codeTimeOut.getTime() - now.getTime());
           if (limit <= 0) {
-            setCodeText('출석코드 생성');
+            setCodeText('코드 생성');
             setCodeTimeoutText(null);
             setCodeTimeOut(null);
           } else {
