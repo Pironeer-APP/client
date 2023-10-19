@@ -137,6 +137,12 @@ export const OSSLIST = [
         copyright: 'Copyright (c) 2023 Jang Haemin (jhaemin.com)',
         license: 'SIL Open Font License 1.1',
     },
+    {
+        licenseName: 'react-native-shadow-2',
+        github: 'https://github.com/SrBrahma/react-native-shadow-2',
+        copyright: 'Copyright (c) 2021 Henrique Bruno Fantauzzi de Almeida',
+        license: 'MIT License',
+    },
     //backend
     {
         licenseName: 'bcrypt',
