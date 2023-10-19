@@ -11,7 +11,7 @@ import {
   Pressable,
   Alert,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 
 import {ProgressBar, RowView} from '../HomeScreen';
@@ -27,10 +27,8 @@ import useProgress from '../../use-progress';
 import IsFaceBox from '../../components/IsFaceBox';
 import Gap, {GapH} from '../../components/Gap';
 import useClientTime from '../../use-clientTime';
-
-const StatusCircle = () => {
-  return <View style={styles.statusCircle} />;
-};
+import OnAirCircle from '../../components/OnAirCircle';
+import StatusCircle from '../../components/StatusCircle';
 
 const StatusLine = () => {
   return (
@@ -39,28 +37,6 @@ const StatusLine = () => {
 };
 
 const InProgressAsgBox = props => {
-  const [scale] = useState(new Animated.Value(1)); // 초기 크기 1
-
-  useEffect(() => {
-    // 크기 애니메이션 설정
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(scale, {
-          toValue: 1.2,
-          duration: 1000,
-          easing: Easing.easeInOut,
-          useNativeDriver: false,
-        }),
-        Animated.timing(scale, {
-          toValue: 1,
-          duration: 1000,
-          easing: Easing.easeInOut,
-          useNativeDriver: false,
-        }),
-      ]),
-    ).start();
-  }, []);
-
   const {renderMonth, renderDate, renderDay, renderHour, renderMinute} =
     useClientTime(props.item.date);
 
@@ -85,23 +61,11 @@ const InProgressAsgBox = props => {
             width: 50,
           }}>
           <StatusLine />
-          <View>
             {props.nextSessionId === props.item.session_id ? (
-              <Animated.Image
-                source={require('../../assets/icons/circle_onair.png')}
-                style={{
-                  width: 50,
-                  height: 50,
-                  transform: [{scale}], // 크기 애니메이션 적용
-                }}
-              />
+              <OnAirCircle />
             ) : (
-              <Image
-                source={require(`../../assets/icons/circle_none.png`)}
-                style={{width: 30, height: 30}}
-              />
+              <StatusCircle />
             )}
-          </View>
           <StatusLine />
         </View>
       </View>
@@ -297,8 +261,9 @@ const onLongPressDelete = session_id => {
   return (
     <StyledContainer>
       <HeaderDetail title={'세션'} />
-      <View style={{flex: 1, paddingRight: 20, paddingLeft: 10}}>
+      <View style={{flex: 1}}>
         <FlatList
+          style={{paddingRight: 20, paddingLeft: 10}}
           data={sessionData}
           renderItem={({item}) => (
             <Item
@@ -312,23 +277,16 @@ const onLongPressDelete = session_id => {
           // getItemLayout={getItemLayout}
           // initialScrollIndex={initialScrollIndex}
         />
-        <MainButton
-          content="일정 추가하기"
-          onPress={onPressAddSchedule}
-          height={60}
-        />
+        <View style={{paddingHorizontal: 20}}>
+          <MainButton
+            content="일정 추가하기"
+            onPress={onPressAddSchedule}
+            height={60}
+          />
+        </View>
       </View>
     </StyledContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  statusCircle: {
-    width: 30,
-    height: 30,
-    backgroundColor: COLORS.light_gray,
-    borderRadius: 100,
-  },
-});
 
 export default AssignmentScreen;

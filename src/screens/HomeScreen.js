@@ -235,8 +235,8 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <StyledContainer>
-      <View style={{padding: 20}}>
-        <ScrollView>
+      <ScrollView>
+        <View style={{padding: 20}}>
           <Header />
           <Gap />
           <StyledText
@@ -435,8 +435,8 @@ const HomeScreen = ({navigation}) => {
             </Box>
           </View>
           <Gap height={50} />
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
     </StyledContainer>
   );
 };

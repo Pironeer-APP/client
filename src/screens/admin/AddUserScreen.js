@@ -46,8 +46,8 @@ export default function AddUserScreen({navigation}) {
 
   return (
     <StyledContainer>
-      <HeaderAdmin onPress={onPressBack} />
       <View style={{paddingHorizontal: 20, flex: 1}}>
+      <HeaderAdmin onPress={onPressBack} />
         <KeyboardAvoidingView
           keyboardVerticalOffset={45}
           behavior={Platform.select({ios: 'padding', android: undefined})}
@@ -65,8 +65,8 @@ export default function AddUserScreen({navigation}) {
               onInputEmail={onInputEmail}
             />
 
-            <MainButton height={60} content="다음" onPress={onPressNext} />
           </View>
+          <MainButton height={60} marginBottom={20} content="다음" onPress={onPressNext} />
         </KeyboardAvoidingView>
       </View>
     </StyledContainer>

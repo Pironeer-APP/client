@@ -1,4 +1,4 @@
-import {ScrollView, View} from 'react-native';
+import { ScrollView, View } from 'react-native';
 import React from 'react';
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
@@ -14,8 +14,8 @@ export default function Settings() {
   return (
     <StyledContainer>
       <HeaderDetail title="설정" />
-      <View style={{paddingHorizontal: 20}}>
-        <ScrollView>
+      <ScrollView>
+        <View style={{ paddingHorizontal: 20 }}>
           <UserSection />
           <Gap />
           <NotiSection />
@@ -24,8 +24,8 @@ export default function Settings() {
           <LogoutSection />
           <UnregisterSection />
           <Gap height={100} />
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
     </StyledContainer>
   );
 }

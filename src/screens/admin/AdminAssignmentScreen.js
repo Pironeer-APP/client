@@ -231,9 +231,10 @@ const AdminAssignmentScreen = ({route}) => {
           />
         </View>
       ) : (
-        <View style={{flex: 1, paddingHorizontal: 20}}>
+        <View style={{flex: 1}}>
           <View style={{flex: 1}}>
             <FlatList
+              style={{paddingHorizontal: 20}}
               data={assigns}
               renderItem={renderItem}
               keyExtractor={item => item.assignschedule_id}
@@ -246,6 +247,9 @@ const AdminAssignmentScreen = ({route}) => {
               }
             />
           </View>
+          <View
+           style={{paddingHorizontal: 20}}
+          >
           <MainButton
             content={'과제 등록하기'}
             onPress={() => {
@@ -253,6 +257,7 @@ const AdminAssignmentScreen = ({route}) => {
             }}
             height={60}
           />
+          </View>
         </View>
       )}
     </StyledContainer>

@@ -4,6 +4,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Alert,
+  ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import StyledContainer from '../../components/StyledContainer';
@@ -88,7 +89,7 @@ export default function CheckScreen({route}) {
           style={styles.formContainer}
           keyboardVerticalOffset={45}
           behavior={Platform.select({ios: 'padding', android: undefined})}>
-          <View style={{flex: 1}}>
+          <ScrollView style={{flexGrow: 1}}>
             <Gap />
             <StyledText
               fontSize={25}
@@ -108,8 +109,8 @@ export default function CheckScreen({route}) {
               secureTextEntry={route.params.type === 'password'}
               keyboardType={route.params.type === 'phone' ? 'numeric' : null}
             />
-          </View>
-          <MainButton content="다음" onPress={onPressOriginInfo} />
+          </ScrollView>
+          <MainButton content="다음" onPress={onPressOriginInfo} marginBottom={10} />
         </KeyboardAvoidingView>
       </View>
     </StyledContainer>

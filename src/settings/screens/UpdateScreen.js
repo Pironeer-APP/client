@@ -4,6 +4,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Alert,
+  ScrollView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import StyledContainer from '../../components/StyledContainer';
@@ -97,7 +98,7 @@ export default function UpdateScreen({route}) {
           style={styles.formContainer}
           keyboardVerticalOffset={45}
           behavior={Platform.select({ios: 'padding', android: undefined})}>
-          <View style={{flex: 1}}>
+          <ScrollView style={{flexGrow: 1}}>
             <Gap />
             <StyledText
               fontSize={25}
@@ -125,7 +126,7 @@ export default function UpdateScreen({route}) {
                   : null
               }
             />
-          </View>
+          </ScrollView>
           <MainButton content="다음" onPress={onPressNewInfo} />
         </KeyboardAvoidingView>
       </View>
