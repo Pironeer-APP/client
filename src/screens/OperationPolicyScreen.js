@@ -13,6 +13,7 @@ import {RowView} from './HomeScreen';
 export default function OperationPolicyScreen() {
   const navigation = useNavigation();
   const onPressOSS = () => navigation.push('OSSScreen');
+  const onPressLab = () => navigation.push('LabScreen');
 
   return (
     <StyledContainer>
@@ -36,7 +37,7 @@ export default function OperationPolicyScreen() {
             <SettingsItem text="오픈소스 라이선스" onPress={onPressOSS} />
           </PaddingBox>
           <PaddingBox>
-            <SettingsItem text="실험실" />
+            <SettingsItem text="실험실" onPress={onPressLab} />
           </PaddingBox>
         </ScrollView>
       </View>

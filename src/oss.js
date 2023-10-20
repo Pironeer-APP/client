@@ -143,6 +143,18 @@ export const OSSLIST = [
         copyright: 'Copyright (c) 2021 Henrique Bruno Fantauzzi de Almeida',
         license: 'MIT License',
     },
+    {
+        licenseName: 'react-native-gesture-handler',
+        github: 'https://github.com/software-mansion/react-native-gesture-handler',
+        copyright: 'Copyright (c) 2016 Software Mansion <swmansion.com>',
+        license: 'MIT License',
+    },
+    {
+        licenseName: 'react-native-reanimated',
+        github: 'https://github.com/software-mansion/react-native-reanimated',
+        copyright: 'Copyright (c) 2016 Software Mansion <swmansion.com>',
+        license: 'MIT License',
+    },
     //backend
     {
         licenseName: 'bcrypt',

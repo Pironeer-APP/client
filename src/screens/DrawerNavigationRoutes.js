@@ -26,6 +26,7 @@ import AdminCreateAssignment from './admin/AdminCreateAssignment';
 import AdminGradingScreen from './admin/AdminGradingScreen';
 import AdminUpdateAssign from './admin/AdminUpdateAssign';
 import OSSScreen from './OSSScreen';
+import LabScreen from './LabScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +56,10 @@ export default function DrawerNavigationRoutes() {
       <Stack.Screen
         name="OSSScreen"
         component={OSSScreen}
+      />
+      <Stack.Screen
+        name="LabScreen"
+        component={LabScreen}
       />
 
       {/* 관리자 */}
