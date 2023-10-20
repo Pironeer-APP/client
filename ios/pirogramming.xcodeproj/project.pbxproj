@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* clientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* clientTests.m */; };
-		0C80B921A6F3F58F76C31292 /* libPods-client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-client.a */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		7699B88040F8A987B510C191 /* libPods-client-clientTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-client-clientTests.a */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		358C26202F3896CB17888C94 /* libPods-pirogramming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE050C41C005F6D1D47A22F1 /* libPods-pirogramming.a */; };
+		6B4AAE74C509E54AF79ED4C2 /* libPods-pirogramming-pirogrammingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 74E5C7F2BDE6A47BBFB6EFF7 /* libPods-pirogramming-pirogrammingTests.a */; };
 		DFCEA0AE2AC0585D00A44096 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = DFCEA0AD2AC0585D00A44096 /* Fonts */; };
+		DFFA9C222AE28FBE00C338B0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DFFA9C212AE28FBE00C338B0 /* LaunchScreen.storyboard */; };
+		DFFA9C242AE28FD900C338B0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFFA9C232AE28FD900C338B0 /* Images.xcassets */; };
+		DFFA9C262AE2900E00C338B0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DFFA9C252AE2900E00C338B0 /* main.m */; };
+		DFFA9C282AE2902000C338B0 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFFA9C272AE2902000C338B0 /* AppDelegate.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,23 +28,31 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* clientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* pirogrammingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pirogrammingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* clientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = clientTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = client.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* pirogramming.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pirogramming.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = client/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = client/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = client/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = client/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = client/main.m; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-client-clientTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-client-clientTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		28D01E396EBBF4BC5CC31195 /* Pods-pirogramming.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pirogramming.release.xcconfig"; path = "Target Support Files/Pods-pirogramming/Pods-pirogramming.release.xcconfig"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-client.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-client.debug.xcconfig"; path = "Target Support Files/Pods-client/Pods-client.debug.xcconfig"; sourceTree = "<group>"; };
+		3C6ADE5682F0186CA3B16744 /* Pods-pirogramming-pirogrammingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pirogramming-pirogrammingTests.debug.xcconfig"; path = "Target Support Files/Pods-pirogramming-pirogrammingTests/Pods-pirogramming-pirogrammingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-client.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-client.release.xcconfig"; path = "Target Support Files/Pods-client/Pods-client.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-client-clientTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-client-clientTests.debug.xcconfig"; path = "Target Support Files/Pods-client-clientTests/Pods-client-clientTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-client.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-client.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		74E5C7F2BDE6A47BBFB6EFF7 /* libPods-pirogramming-pirogrammingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-pirogramming-pirogrammingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = client/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-client-clientTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-client-clientTests.release.xcconfig"; path = "Target Support Files/Pods-client-clientTests/Pods-client-clientTests.release.xcconfig"; sourceTree = "<group>"; };
+		AB61B130BE3C7BAEF9154B0E /* Pods-pirogramming.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pirogramming.debug.xcconfig"; path = "Target Support Files/Pods-pirogramming/Pods-pirogramming.debug.xcconfig"; sourceTree = "<group>"; };
+		CE050C41C005F6D1D47A22F1 /* libPods-pirogramming.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-pirogramming.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D689099E5333D846FB15B991 /* Pods-pirogramming-pirogrammingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pirogramming-pirogrammingTests.release.xcconfig"; path = "Target Support Files/Pods-pirogramming-pirogrammingTests/Pods-pirogramming-pirogrammingTests.release.xcconfig"; sourceTree = "<group>"; };
 		DFCEA0AD2AC0585D00A44096 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
+		DFFA9C212AE28FBE00C338B0 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = pirogramming/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		DFFA9C232AE28FD900C338B0 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = pirogramming/Images.xcassets; sourceTree = "<group>"; };
+		DFFA9C252AE2900E00C338B0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = pirogramming/main.m; sourceTree = "<group>"; };
+		DFFA9C272AE2902000C338B0 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = pirogramming/AppDelegate.mm; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -53,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-client-clientTests.a in Frameworks */,
+				6B4AAE74C509E54AF79ED4C2 /* libPods-pirogramming-pirogrammingTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,7 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-client.a in Frameworks */,
+				358C26202F3896CB17888C94 /* libPods-pirogramming.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,8 +110,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-client.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-client-clientTests.a */,
+				CE050C41C005F6D1D47A22F1 /* libPods-pirogramming.a */,
+				74E5C7F2BDE6A47BBFB6EFF7 /* libPods-pirogramming-pirogrammingTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -118,6 +126,10 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				DFFA9C272AE2902000C338B0 /* AppDelegate.mm */,
+				DFFA9C252AE2900E00C338B0 /* main.m */,
+				DFFA9C232AE28FD900C338B0 /* Images.xcassets */,
+				DFFA9C212AE28FBE00C338B0 /* LaunchScreen.storyboard */,
 				DFCEA0AD2AC0585D00A44096 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* client */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -134,8 +146,8 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* client.app */,
-				00E356EE1AD99517003FC87E /* clientTests.xctest */,
+				13B07F961A680F5B00A75B9A /* pirogramming.app */,
+				00E356EE1AD99517003FC87E /* pirogrammingTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -147,6 +159,10 @@
 				5709B34CF0A7D63546082F79 /* Pods-client.release.xcconfig */,
 				5B7EB9410499542E8C5724F5 /* Pods-client-clientTests.debug.xcconfig */,
 				89C6BE57DB24E9ADA2F236DE /* Pods-client-clientTests.release.xcconfig */,
+				AB61B130BE3C7BAEF9154B0E /* Pods-pirogramming.debug.xcconfig */,
+				28D01E396EBBF4BC5CC31195 /* Pods-pirogramming.release.xcconfig */,
+				3C6ADE5682F0186CA3B16744 /* Pods-pirogramming-pirogrammingTests.debug.xcconfig */,
+				D689099E5333D846FB15B991 /* Pods-pirogramming-pirogrammingTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -154,9 +170,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* clientTests */ = {
+		00E356ED1AD99517003FC87E /* pirogrammingTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "clientTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "pirogrammingTests" */;
 			buildPhases = (
 				A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -170,14 +186,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = clientTests;
+			name = pirogrammingTests;
 			productName = clientTests;
-			productReference = 00E356EE1AD99517003FC87E /* clientTests.xctest */;
+			productReference = 00E356EE1AD99517003FC87E /* pirogrammingTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* client */ = {
+		13B07F861A680F5B00A75B9A /* pirogramming */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "client" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "pirogramming" */;
 			buildPhases = (
 				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -192,9 +208,9 @@
 			);
 			dependencies = (
 			);
-			name = client;
+			name = pirogramming;
 			productName = client;
-			productReference = 13B07F961A680F5B00A75B9A /* client.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* pirogramming.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -214,7 +230,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "client" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "pirogramming" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -227,8 +243,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* client */,
-				00E356ED1AD99517003FC87E /* clientTests */,
+				13B07F861A680F5B00A75B9A /* pirogramming */,
+				00E356ED1AD99517003FC87E /* pirogrammingTests */,
 			);
 		};
 /* End PBXProject section */
@@ -245,8 +261,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				DFFA9C242AE28FD900C338B0 /* Images.xcassets in Resources */,
+				DFFA9C222AE28FBE00C338B0 /* LaunchScreen.storyboard in Resources */,
 				DFCEA0AE2AC0585D00A44096 /* Fonts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -276,15 +292,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-client/Pods-client-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-pirogramming/Pods-pirogramming-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-client/Pods-client-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-pirogramming/Pods-pirogramming-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-client/Pods-client-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-pirogramming/Pods-pirogramming-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
@@ -302,7 +318,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-client-clientTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-pirogramming-pirogrammingTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -324,7 +340,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-client-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-pirogramming-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -337,15 +353,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-client-clientTests/Pods-client-clientTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-pirogramming-pirogrammingTests/Pods-pirogramming-pirogrammingTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-client-clientTests/Pods-client-clientTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-pirogramming-pirogrammingTests/Pods-pirogramming-pirogrammingTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-client-clientTests/Pods-client-clientTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-pirogramming-pirogrammingTests/Pods-pirogramming-pirogrammingTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
@@ -354,15 +370,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-client/Pods-client-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-pirogramming/Pods-pirogramming-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-client/Pods-client-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-pirogramming/Pods-pirogramming-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-client/Pods-client-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-pirogramming/Pods-pirogramming-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
@@ -371,15 +387,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-client-clientTests/Pods-client-clientTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-pirogramming-pirogrammingTests/Pods-pirogramming-pirogrammingTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-client-clientTests/Pods-client-clientTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-pirogramming-pirogrammingTests/Pods-pirogramming-pirogrammingTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-client-clientTests/Pods-client-clientTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-pirogramming-pirogrammingTests/Pods-pirogramming-pirogrammingTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -416,8 +432,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				DFFA9C282AE2902000C338B0 /* AppDelegate.mm in Sources */,
+				DFFA9C262AE2900E00C338B0 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -426,7 +442,7 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* client */;
+			target = 13B07F861A680F5B00A75B9A /* pirogramming */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -434,7 +450,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-client-clientTests.debug.xcconfig */;
+			baseConfigurationReference = 3C6ADE5682F0186CA3B16744 /* Pods-pirogramming-pirogrammingTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -455,13 +471,13 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/client.app/client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/pirogramming.app/pirogramming";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-client-clientTests.release.xcconfig */;
+			baseConfigurationReference = D689099E5333D846FB15B991 /* Pods-pirogramming-pirogrammingTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -479,19 +495,20 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/client.app/client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/pirogramming.app/pirogramming";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-client.debug.xcconfig */;
+			baseConfigurationReference = AB61B130BE3C7BAEF9154B0E /* Pods-pirogramming.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BTGB376XB7;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = client/Info.plist;
+				INFOPLIST_FILE = pirogramming/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "피로그래밍";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -503,8 +520,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = client;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pirogramming;
+				PRODUCT_NAME = pirogramming;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -513,12 +530,13 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-client.release.xcconfig */;
+			baseConfigurationReference = 28D01E396EBBF4BC5CC31195 /* Pods-pirogramming.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = client/Info.plist;
+				DEVELOPMENT_TEAM = BTGB376XB7;
+				INFOPLIST_FILE = pirogramming/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "피로그래밍";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -530,8 +548,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = client;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pirogramming;
+				PRODUCT_NAME = pirogramming;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -679,7 +697,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "clientTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "pirogrammingTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -688,7 +706,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "client" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "pirogramming" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -697,7 +715,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "client" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "pirogramming" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

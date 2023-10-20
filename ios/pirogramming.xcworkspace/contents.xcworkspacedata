@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/hwanheejung/2023-workspace/pironeer1-workspace/Pironeer-App/client/ios/pirogramming.xcodeproj">
+      location = "group:pirogramming.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
