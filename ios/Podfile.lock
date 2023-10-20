@@ -379,8 +379,6 @@ PODS:
     - React-Core
   - react-native-image-picker (7.0.0):
     - React-Core
-  - react-native-ionicons (4.6.5):
-    - React
   - react-native-pager-view (6.2.1):
     - React-Core
   - react-native-safe-area-context (4.7.2):
@@ -559,7 +557,6 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
-  - react-native-ionicons (from `../node_modules/react-native-ionicons`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -651,8 +648,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-date-picker"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
-  react-native-ionicons:
-    :path: "../node_modules/react-native-ionicons"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
@@ -740,7 +735,6 @@ SPEC CHECKSUMS:
   React-logger: da1ebe05ae06eb6db4b162202faeafac4b435e77
   react-native-date-picker: 1d61c76315098a6ad4c643a356f005916c7d4875
   react-native-image-picker: ddbbe4d226d9c82a82360f5de66bf71a657a42e6
-  react-native-ionicons: 7ce04a8e61c6de2fc3b6798e8b9621b865cb18b1
   react-native-pager-view: d211379f61895b6349bd7e571b44a26d005c2975
   react-native-safe-area-context: 7aa8e6d9d0f3100a820efb1a98af68aa747f9284
   React-NativeModulesApple: edb5ace14f73f4969df6e7b1f3e41bef0012740f
@@ -769,6 +763,6 @@ SPEC CHECKSUMS:
   Yoga: 3efc43e0d48686ce2e8c60f99d4e6bd349aff981
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: cb02e8ddf8059f17ac431d8cd79bac1fdb2a4e89
+PODFILE CHECKSUM: 2ec8997430a430395d25b47fd689b1d05e543e73
 
 COCOAPODS: 1.13.0
