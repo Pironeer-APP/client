@@ -4,10 +4,7 @@ import Modal from 'react-native-modal';
 import {useRoute} from '@react-navigation/native';
 import styled from 'styled-components';
 import HeaderDetail from '../../components/Header';
-import StyledContainer from '../../components/StyledContainer';
-import BottomSheetModal from '../../components/BottomSheetModal';
-import {StyledText} from '../../components/Text';
-import {CouponButton, MainButton} from '../../components/Button';
+import {CouponButton} from '../../components/Button';
 import Gap from '../../components/Gap';
 import {fetchPost} from '../../utils';
 import DepositHistory from '../../deposit/DepositHistory';
@@ -15,7 +12,6 @@ import useDepositDetail from '../../deposit/use-depositDetail';
 import DepositHistoryHeader from '../../deposit/DepositHistoryHeader';
 import useUserInfo from '../../use-userInfo';
 import {COLORS} from '../../assets/Theme';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function AdminDepositDetail() {

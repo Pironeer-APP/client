@@ -1,6 +1,7 @@
 import { View, Text, Animated, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import React, {useRef, useState} from 'react'
 import { COLORS } from '../assets/Theme'
+import Modal from 'react-native-modal';
 
 export default function BottomTouchModal({children}) {
   const [isVisible, setIsVisible] = useState(false);
@@ -39,6 +40,7 @@ export default function BottomTouchModal({children}) {
       </TouchableWithoutFeedback>
       <View style={styles.sheetContent}>{children}</View>
     </Animated.View>
+ 
   )
 }
 
@@ -47,6 +49,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: 400,
     bottom: -350,
+    bottom: 0,
     width: '100%',
     alignItems: 'center',
     backgroundColor: COLORS.gray,
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'start',
     alignItems: 'center',
-    paddingTop: 10,
+    paddingVertical: 10,
   },
   touchHandle: {
     width: 100,

@@ -18,6 +18,7 @@ import useClientTime from '../../use-clientTime';
 import BottomSheetModal from '../../components/BottomSheetModal';
 import BottomTouchModal from '../../components/BottomTouchModal';
 
+
 const DateContainer = styled.View`
   border-radius: 12px;
   padding: 10px;
@@ -277,8 +278,6 @@ const AdminAttendanceScreen = () => {
         }
       });
     }
-    //지워야해
-    setIsToday(true);
   };
 
   useEffect(() => {
@@ -444,7 +443,10 @@ const AdminAttendanceScreen = () => {
       ],
     );
   }
-
+  const [bottomModalVisible, setBottomModalVisible] = useState(false);
+  const toggleBottomModal = () => {
+    setBottomModalVisible(!bottomModalVisible);
+  };
   return (
 
     <TouchableWithoutFeedback
@@ -537,66 +539,98 @@ const AdminAttendanceScreen = () => {
       >
         <EndFinModal />
       </Modal>
-
+      <BottomModalBtn onPress={toggleBottomModal}>
+        <DarkModalBar />
+      </BottomModalBtn>
       {!!isToday ? (
-        <BottomTouchModal>
-          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-          <ButtonContainer
-            onPress={onPressGenerateCode}>
-            <View style={styles.codeTextView}>
-              <StyledText
-                fontSize={22}
-                color={COLORS.bg_black}
-                content={codeLoading ? '생성중...' : codeText}
-                />
-            </View>
-            {codeTimeoutText ? (
-              <View style={styles.codeTextView}>
+        <Modal 
+         isVisible={bottomModalVisible}
+         onBackdropPress={toggleBottomModal}
+         style={{justifyContent: 'flex-end', margin: 0 }}>
+          <BottomModalContainer>
+            <DarkModalBar />
+            <Gap height={20} />
+            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+              <ButtonContainer
+                onPress={onPressGenerateCode}>
+                <View style={styles.codeTextView}>
+                  <StyledText
+                    fontSize={22}
+                    color={COLORS.bg_black}
+                    content={codeLoading ? '생성중...' : codeText}
+                    />
+                </View>
+                {codeTimeoutText ? (
+                  <View style={styles.codeTextView}>
+                    <StyledText
+                      fontSize={22}
+                      color={COLORS.bg_black}
+                      content={codeTimeoutText}
+                    />
+                  </View>
+                ) : null}
+              </ButtonContainer>
+              <GapH />
+              <ButtonContainer
+                onPress={toggleBottomModal}>
                 <StyledText
                   fontSize={22}
                   color={COLORS.bg_black}
-                  content={codeTimeoutText}
+                  content={'출결 삭제'}
                 />
-              </View>
-            ) : null}
-          </ButtonContainer>
-          <GapH />
-          <ButtonContainer
-            onPress={toggleModal}>
-            <StyledText
-              fontSize={22}
-              color={COLORS.bg_black}
-              content={'출결 삭제'}
-            />
-          </ButtonContainer>
-          </View>
-          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-          <ButtonContainer
-            onPress={onPressEndAttend}>
-            <StyledText
-              fontSize={22}
-              color={COLORS.bg_black}
-              content={'출결 종료'}
-            />
-          </ButtonContainer>
-          <GapH />
-          <ButtonContainer
-            onPress={onPressCancelAttend}>
-            <StyledText
-              fontSize={22}
-              color={COLORS.bg_black}
-              content={'출결 취소'}
-            />
-          </ButtonContainer>
-          </View>
-        </BottomTouchModal>
+              </ButtonContainer>
+            </View>
+       
+            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+            <ButtonContainer
+              onPress={onPressEndAttend}>
+              <StyledText
+                fontSize={22}
+                color={COLORS.bg_black}
+                content={'출결 종료'}
+              />
+            </ButtonContainer>
+            <GapH />
+            <ButtonContainer
+              onPress={onPressCancelAttend}>
+              <StyledText
+                fontSize={22}
+                color={COLORS.bg_black}
+                content={'출결 취소'}
+              />
+            </ButtonContainer>
+            </View>
+          </BottomModalContainer>
+        </Modal>
       ) : null}
     </StyledContainer>
 
     </TouchableWithoutFeedback>
   );
 };
-
+const DarkModalBar = styled.View`
+  height: 5px;
+  width: 15%;
+  border-radius: 10px;
+  background-color: ${COLORS.light_gray};
+`;
+const BottomModalBtn = styled.TouchableOpacity`
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  height: 50px;
+  background-color: ${COLORS.gray};
+  width: 100%;
+  align-items: center;
+  padding: 16px;
+`;
+const BottomModalContainer = styled.View`
+  background-color: ${COLORS.gray};
+  height: 250px;
+  padding: 16px;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  align-items: center;
+`
 //스타일시트
 const styles = StyleSheet.create({
   progress: {
@@ -609,7 +643,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContainer: {
-    marginBottom: 50
+    flex: 1,
   },
   codeTextView: {
     alignItems: 'center',
