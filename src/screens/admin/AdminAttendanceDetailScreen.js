@@ -6,6 +6,7 @@ import {
   Button,
   StyleSheet,
   Image,
+  Alert
 } from 'react-native';
 import Modal from 'react-native-modal';
 import React, {useEffect, useState} from 'react';
@@ -81,8 +82,23 @@ const AttendanceStatusButton = props => {
   );
 };
 
-//해당 학생 이름, 날짜, 출석상태
+//해당 출석상태
 const AttendanceStatus = props => {
+  return (
+    <View>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5}}>
+        <StyledSubText content={props.title} />
+        <TouchableOpacity onPress={props.onPressReset}>
+          <StyledSubText content="초기화" />
+        </TouchableOpacity>
+      </View>
+      <StyledText content={props.content} fontSize={props.fontSize} />
+    </View>
+  );
+};
+
+//해당 학생 이름, 날짜
+const AttendanceDetail = props => {
   return (
     <View>
       <View style={{marginBottom: 5}}>
@@ -138,6 +154,32 @@ const AdminAttendanceElement = ({
     setRerender(!rerender);
   };
 
+  // 출석 초기화 (제거)
+  const onPressReset = async () => {
+    Alert.alert(
+      `${userInfo.name}님의 출결을 제거하시겠습니까?`,
+      '',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '확인',
+          onPress: async () => {
+            const url = '/attend/removeAttend';
+            const body = {
+              user_id: userInfo.user_id,
+              session_id: session_id
+            };
+            await fetchPost(url, body);
+            setRerender(!rerender);
+          }
+        }
+      ]
+    );
+  }
+
   return (
     <View>
       <DepositContainer onPress={toggleBottomSheet}>
@@ -156,7 +198,7 @@ const AdminAttendanceElement = ({
             <StyledText content={'출석 사항 변경'} fontSize={25} />
           </View>
           <View style={{marginVertical: 35}}>
-            <AttendanceStatus
+            <AttendanceDetail
               title={'Name'}
               content={userInfo.name}
               fontSize={35}
@@ -166,20 +208,23 @@ const AdminAttendanceElement = ({
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-between',
             }}>
-            <AttendanceStatus
+            <View style={{flex: 1}}>
+            <AttendanceDetail
               title={'Date'}
               content={`${month}월 ${day}일`}
               fontSize={25}
               style={{}}
             />
+            </View>
+            <View style={{flex: 1}}>
             <AttendanceStatus
               title={'Status'}
               content={userInfo.type}
               fontSize={25}
+              onPressReset={onPressReset}
             />
-            <AttendanceStatus title={''} content={''} fontSize={25} />
+            </View>
           </View>
           <View
             style={{
