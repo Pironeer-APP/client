@@ -169,8 +169,9 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
             <RowView style={{marginTop: 10}}>
               {/* <ProgressBar status={progress ? progress : 1} /> */}
               <Progress.Bar
+                style={{flex: 1}}
+                width={null}
                 progress={progress ? progress : 1}
-                width={150}
                 color={COLORS.green}
                 borderWidth={0}
                 unfilledColor={COLORS.icon_gray}
@@ -178,11 +179,11 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
                 animationConfig={{duration: 1000}}
                 animationType="timing" />
               {!!isTimerLoading ? (
-                <View style={{width: 75, alignItems: 'center'}}>
+                <View style={{flex: 0.5, alignItems: 'center'}}>
                   <TinyLoader />
                 </View>
               ) : (
-                <View style={{width: 75, alignItems: 'flex-end'}}>
+                <View style={{flex: 0.5, alignItems: 'flex-end'}}>
                   <StyledText content={`${hour}:${min}:${sec}`} fontSize={14} />
                 </View>
               )}
@@ -328,8 +329,9 @@ const AssignmentScreen = () => {
       ) : assignment.length === 0 ? (
         <MsgForEmptyScreen content={'등록된 과제가 없습니다'} />
       ) : (
-        <View style={{flex: 1, paddingRight: 20, paddingLeft: 10}}>
+        <View style={{flex: 1}}>
           <FlatList
+            style={{paddingRight: 20, paddingLeft: 10}}
             data={assignment}
             renderItem={({item, index}) => (
               <Item

@@ -266,8 +266,9 @@ const HomeScreen = ({navigation}) => {
                       status={homeProgress ? homeProgress : 1}
                     /> */}
                     <Progress.Bar
+                      style={{flex: 1}}
+                      width={null}
                       progress={homeProgress ? homeProgress : 1}
-                      width={200}
                       color={COLORS.green}
                       borderWidth={0}
                       unfilledColor={COLORS.icon_gray}
@@ -275,25 +276,21 @@ const HomeScreen = ({navigation}) => {
                       animationConfig={{duration: 1000}}
                       animationType="timing" />
                     {!!isTimerLoading ? (
-                      <View
-                        style={{
-                          width: 90,
-                          alignItems: 'center',
-                        }}>
-                        <TinyLoader />
+                       <View style={{flex: 0.5, alignItems: 'center'}}>
+                      <TinyLoader />
                       </View>
                     ) : (
                       <View
                         style={{
-                          width: 90,
-                          justifyContent: 'flex-end',
+                          flex: 0.5,
                           flexDirection: 'row',
+                          justifyContent: 'flex-end',
                           alignItems: 'center',
                         }}>
-                        <StyledText
-                          content={`${hour}:${min}:${sec}`}
-                          fontSize={16}
-                        />
+                      <StyledText
+                        content={`${hour}:${min}:${sec}`}
+                        fontSize={16}
+                      />
                       </View>
                     )}
                     <GapH width={5} />
