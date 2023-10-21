@@ -35,6 +35,22 @@ const UnSelectedBtn = () => (
   />
 );
 
+const GradeBtn = (props) => (
+  <View style={styles.gradeBtn}>
+  <TouchableOpacity
+    onPress={
+      grade == null
+        ? props.createGrade
+        : props.updateGrade
+    }>
+    <StatusCircle grade={props.grade} />
+    {grade == undefined ? null : <UnSelectedBtn />}
+  </TouchableOpacity>
+  <Gap height={5} />
+  <StyledSubText content={props.btnContent} />
+</View>
+)
+
 const Student = ({
   id,
   name,
@@ -105,71 +121,36 @@ const Student = ({
         <View style={styles.modalView}>
           <StyledText content={`${name}`} fontSize={20} />
           <RowView style={{gap: 20}}>
-            <View>
-              <TouchableOpacity
-                onPress={
-                  grade == null
-                    ? () => createGrade(4, assignScheduleId)
-                    : () => updateGrade(4, assignScheduleId)
-                }>
-                <StatusCircle grade={4} />
-                {grade == undefined ? null : <UnSelectedBtn />}
-              </TouchableOpacity>
-              <Gap height={5} />
-              <StyledSubText content={'낫옛'} />
-            </View>
-            <View>
-              <TouchableOpacity
-                onPress={
-                  grade == null
-                    ? () => createGrade(0, assignScheduleId)
-                    : () => updateGrade(0, assignScheduleId)
-                }>
-                <StatusCircle grade={0} />
-                {grade == 0 ? null : <UnSelectedBtn />}
-              </TouchableOpacity>
-              <Gap height={5} />
-              <StyledSubText content={'안함'} />
-            </View>
-            <View>
-              <TouchableOpacity
-                onPress={
-                  grade == null
-                    ? () => createGrade(1, assignScheduleId)
-                    : () => updateGrade(1, assignScheduleId)
-                }>
-                <StatusCircle grade={1} />
-                {grade == 1 ? null : <UnSelectedBtn />}
-              </TouchableOpacity>
-              <Gap height={5} />
-              <StyledSubText content={'미흡'} />
-            </View>
-            <View>
-              <TouchableOpacity
-                onPress={
-                  grade == null
-                    ? () => createGrade(2, assignScheduleId)
-                    : () => updateGrade(2, assignScheduleId)
-                }>
-                <StatusCircle grade={1} />
-                {grade == 2 ? null : <UnSelectedBtn />}
-              </TouchableOpacity>
-              <Gap height={5} />
-              <StyledSubText content={'지각'} />
-            </View>
-            <View>
-              <TouchableOpacity
-                onPress={
-                  grade == null
-                    ? () => createGrade(3, assignScheduleId)
-                    : () => updateGrade(3, assignScheduleId)
-                }>
-                <StatusCircle grade={3} />
-                {grade == 3 ? null : <UnSelectedBtn />}
-              </TouchableOpacity>
-              <Gap height={5} />
-              <StyledSubText content={'완료'} />
-            </View>
+            <GradeBtn
+              createGrade={() => createGrade(4, assignScheduleId)}
+              updateGrade={() => updateGrade(4, assignScheduleId)}
+              grade={4}
+              btnContent={'낫옛'}
+            />
+            <GradeBtn
+              createGrade={() => createGrade(0, assignScheduleId)}
+              updateGrade={() => updateGrade(0, assignScheduleId)}
+              grade={0}
+              btnContent={'안함'}
+            />
+            <GradeBtn
+              createGrade={() => createGrade(1, assignScheduleId)}
+              updateGrade={() => updateGrade(1, assignScheduleId)}
+              grade={1}
+              btnContent={'미흡'}
+            />
+            <GradeBtn
+              createGrade={() => createGrade(2, assignScheduleId)}
+              updateGrade={() => updateGrade(2, assignScheduleId)}
+              grade={2}
+              btnContent={'지각'}
+            />
+            <GradeBtn
+              createGrade={() => createGrade(3, assignScheduleId)}
+              updateGrade={() => updateGrade(3, assignScheduleId)}
+              grade={3}
+              btnContent={'완료'}
+            />
           </RowView>
         </View>
       </Modal>
@@ -250,8 +231,9 @@ const AdminGradingScreen = () => {
       {!!isLoading ? (
         <MediumLoader />
       ) : (
-        <View style={{padding: 20}}>
+        <View>
           <FlatList
+            style={{padding: 20}}
             data={stdInfo}
             renderItem={renderItem}
             keyExtractor={item => item.studentId}
@@ -284,6 +266,10 @@ const styles = StyleSheet.create({
     gap: 20,
     position: 'absolute',
   },
+  gradeBtn: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });
 
 export default AdminGradingScreen;
