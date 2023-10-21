@@ -68,49 +68,7 @@ const InProgressAttendBox = props => {
   const dayOfTheWeek = dayOfWeek(props.date.getDay());
   const hour = String(props.date.getHours()).padStart(2, '0');
   const minute = String(props.date.getMinutes()).padStart(2, '0');
-
-  const scale = useRef(new Animated.Value(1)).current; // 초기 크기 1
-  const unscale = useRef(new Animated.Value(1)).current; // 초기 크기 1
-
-  useEffect(() => {
-    // 크기 애니메이션 설정
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(scale, {
-          toValue: 1.2,
-          duration: 1000,
-          easing: Easing.easeInOut,
-          useNativeDriver: false,
-        }),
-        Animated.timing(scale, {
-          toValue: 1,
-          duration: 1000,
-          easing: Easing.easeInOut,
-          useNativeDriver: false,
-        }),
-      ]),
-    ).start();
-  }, []);
-  useEffect(() => {
-    // 크기 애니메이션 반대로 설정
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(unscale, {
-          toValue: 0.8,
-          duration: 1000,
-          easing: Easing.easeInOut,
-          useNativeDriver: false,
-        }),
-        Animated.timing(unscale, {
-          toValue: 1,
-          duration: 1000,
-          easing: Easing.easeInOut,
-          useNativeDriver: false,
-        }),
-      ]),
-    ).start();
-  }, []);
-
+  
   return (
     <AsgContainer
       style={{

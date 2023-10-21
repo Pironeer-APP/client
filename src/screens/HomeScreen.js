@@ -14,6 +14,8 @@ import {
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
+import * as Progress from 'react-native-progress';
+
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import {StyledSubText, StyledText} from '../components/Text';
@@ -260,10 +262,18 @@ const HomeScreen = ({navigation}) => {
                 <>
                   <StyledText content={curTitle} fontSize={18} />
                   <RowView style={{marginTop: 10}}>
-                    <ProgressBar
+                    {/* <ProgressBar
                       status={homeProgress ? homeProgress : 1}
-                    />
-
+                    /> */}
+                    <Progress.Bar
+                      progress={homeProgress ? homeProgress : 1}
+                      width={200}
+                      color={COLORS.green}
+                      borderWidth={0}
+                      unfilledColor={COLORS.icon_gray}
+                      height={5}
+                      animationConfig={{duration: 1000}}
+                      animationType="timing" />
                     {!!isTimerLoading ? (
                       <View
                         style={{
