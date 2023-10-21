@@ -78,8 +78,8 @@ android {
         applicationId "com.pirogramming"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "2.4"
+        versionCode 10
+        versionName "2.5"
     }
     signingConfigs {
         release {
