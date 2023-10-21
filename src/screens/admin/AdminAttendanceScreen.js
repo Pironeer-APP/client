@@ -486,20 +486,6 @@ const AdminAttendanceScreen = () => {
         />
       </Modal>
 
-
-        {/* 출결 삭제 코드 입력 모달 */}
-        <Modal
-          isVisible={isModalVisible}
-          onBackdropPress={toggleModal}
-          animationIn={'fadeIn'}
-          animationOut={'fadeOut'}>
-          <DeleteAttendModal
-            deleteCode={deleteCode}
-            setDeleteCode={setDeleteCode}
-            onPressDeleteAttend={onPressDeleteAttend}
-          />
-        </Modal>
-
         {/* 삭제 완료 모달 */}
         <Modal
           isVisible={deleteFinModalVisible}
@@ -572,11 +558,14 @@ const AdminAttendanceScreen = () => {
               </ButtonContainer>
               <GapH />
               <ButtonContainer
-                onPress={toggleBottomModal}>
+                onPress={() => {
+                  toggleBottomModal();
+                  toggleModal();
+                }}>
                 <StyledText
                   fontSize={22}
                   color={COLORS.bg_black}
-                  content={'출결 삭제'}
+                  content={'일부 삭제'}
                 />
               </ButtonContainer>
             </View>
@@ -596,7 +585,7 @@ const AdminAttendanceScreen = () => {
               <StyledText
                 fontSize={22}
                 color={COLORS.bg_black}
-                content={'출결 취소'}
+                content={'전체 취소'}
               />
             </ButtonContainer>
             </View>
