@@ -11,6 +11,8 @@ import {
   RefreshControl,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
+import * as Progress from 'react-native-progress';
+
 import {ProgressBar, RowView} from './HomeScreen';
 import {StyledSubText, StyledText} from '../components/Text';
 import StyledContainer from '../components/StyledContainer';
@@ -26,6 +28,7 @@ import {GapH} from '../components/Gap';
 import {MediumLoader, TinyLoader} from '../components/Loader';
 import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
 import useClientTime from '../use-clientTime';
+import OnAirCircle from '../components/OnAirCircle';
 
 export const StatusCircle = ({grade = 4}) => {
   let imageSource;
@@ -144,16 +147,7 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
             width: 50,
           }}>
           {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />}
-          <View>
-            <Animated.Image
-              source={require('../assets/icons/circle_onair.png')}
-              style={{
-                width: 50,
-                height: 50,
-                transform: [{scale}], // 크기 애니메이션 적용
-              }}
-            />
-          </View>
+          <OnAirCircle />
           {title === lastItem ? <View style={{flex: 1}} /> : <StatusLine />}
         </View>
       </View>
@@ -173,7 +167,16 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
             </RowView>
             <StyledText content={title} fontSize={20} />
             <RowView style={{marginTop: 10}}>
-              <ProgressBar status={progress ? progress : 1} />
+              {/* <ProgressBar status={progress ? progress : 1} /> */}
+              <Progress.Bar
+                progress={progress ? progress : 1}
+                width={150}
+                color={COLORS.green}
+                borderWidth={0}
+                unfilledColor={COLORS.icon_gray}
+                height={5}
+                animationConfig={{duration: 1000}}
+                animationType="timing" />
               {!!isTimerLoading ? (
                 <View style={{width: 75, alignItems: 'center'}}>
                   <TinyLoader />

@@ -23,6 +23,7 @@ import {useNavigation} from '@react-navigation/native';
 import {MainButton} from '../../components/Button';
 import {fetchPost, getData} from '../../utils';
 import {useIsFocused} from '@react-navigation/native';
+import { GapH } from '../../components/Gap';
 
 // const useAdminAttendance = () => {
 //   const
@@ -72,7 +73,7 @@ const AttendanceStatusButton = props => {
       style={{
         borderRadius: 10,
         backgroundColor: `${props.bgColor}`,
-        width: 100,
+        flex: 1,
         height: 50,
         alignItems: 'center',
         justifyContent: 'center',
@@ -242,16 +243,18 @@ const AdminAttendanceElement = ({
                   : btnColors[0]
               }
             />
+            <GapH />
             <AttendanceStatusButton
               content={'지각'}
               fontSize={25}
               onPress={() => handleSelectBtn(2)}
               bgColor={
                 selectedBtn === 0 || selectedBtn === 2
-                  ? btnColors[selectedBtn]
-                  : btnColors[0]
+                ? btnColors[selectedBtn]
+                : btnColors[0]
               }
             />
+            <GapH />
             <AttendanceStatusButton
               content={'결석'}
               fontSize={25}
