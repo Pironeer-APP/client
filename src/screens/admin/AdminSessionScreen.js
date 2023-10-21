@@ -117,11 +117,11 @@ const InProgressAsgBox = props => {
     </Pressable>
   );
 };
-const DoneAsgBox = ({item}) => {
+const DoneAsgBox = ({item, onLongPressDelete}) => {
   const {renderMonth, renderDate, renderDay} = useClientTime(item.date);
   return (
     <Pressable
-      onLongPress={() => props.onLongPressDelete(item.session_id)}
+      onLongPress={() => onLongPressDelete(item.session_id)}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -166,24 +166,6 @@ const DoneAsgBox = ({item}) => {
     </Pressable>
   );
 };
-const Item = props => {
-  const comming = props.item.cnt <= props.initialScrollIndex;
-  return (
-    <>
-      {comming ? (
-        <InProgressAsgBox
-          nextSessionId={props.nextSessionId}
-          item={props.item}
-          onLongPressDelete={props.onLongPressDelete}
-        />
-      ) : (
-        <DoneAsgBox
-          item={props.item}
-          onLongPressDelete={props.onLongPressDelete} />
-      )}
-    </>
-  );
-};
 
 const AssignmentScreen = ({navigation}) => {
   const [sessionData, setSessionData] = useState([]);
@@ -193,11 +175,24 @@ const AssignmentScreen = ({navigation}) => {
 
   const findNextSession = (sessions) => {
     const now = new Date();
+    const {
+      renderYear,
+      renderMonth,
+      renderDate,
+    } = useClientTime(now);
+
     for(let i = 0; i < sessions.length; i++) {
       const sessionDate = new Date(sessions[i].date);
-      if(sessionDate < now) {
-        setNextSessionId(sessions[i-1].session_id);
-        setInitialScrollIndex(sessions[i-1].cnt);
+      const {
+        renderYear: sessionYear,
+        renderMonth: sessionMonth,
+        renderDate: sessionDay,
+      } = useClientTime(sessionDate);
+      
+      // 오늘 년, 월, 일이 같은 세션에 불 들어오게 하기
+      if(renderYear === sessionYear && renderMonth === sessionMonth && renderDate === sessionDay) {
+        setNextSessionId(sessions[i].session_id);
+        setInitialScrollIndex(sessions[i].cnt);
         break;
       }
     }
@@ -258,6 +253,24 @@ const onLongPressDelete = session_id => {
   );
 };
 
+const renderItem = ({item}) => {
+  const comming = item.cnt <= initialScrollIndex;
+  return (
+    <>
+      {comming ? (
+        <InProgressAsgBox
+          nextSessionId={nextSessionId}
+          item={item}
+          onLongPressDelete={onLongPressDelete}
+        />
+      ) : (
+        <DoneAsgBox
+          item={item}
+          onLongPressDelete={onLongPressDelete} />
+      )}
+    </>
+  );
+};
   return (
     <StyledContainer>
       <HeaderDetail title={'세션'} />
@@ -265,14 +278,7 @@ const onLongPressDelete = session_id => {
         <FlatList
           style={{paddingRight: 20, paddingLeft: 10}}
           data={sessionData}
-          renderItem={({item}) => (
-            <Item
-              item={item}
-              initialScrollIndex={initialScrollIndex}
-              nextSessionId={nextSessionId}
-              onLongPressDelete={onLongPressDelete}
-            />
-          )}
+          renderItem={renderItem}
           keyExtractor={item => item.session_id}
           // getItemLayout={getItemLayout}
           // initialScrollIndex={initialScrollIndex}
