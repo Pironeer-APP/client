@@ -60,13 +60,13 @@ export const ProgressBar = ({status}) => {
 
   useEffect(() => {
     // finalValue가 100을 넘어가지 않도록
-    if(status > 1) {
+    if(status > 2) {
       status = 1;
     }
     const finalValue = Math.floor(width * status);
 
     Animated.timing(animatedValue, {
-      toValue: -(width - finalValue),
+      toValue: (width - finalValue),
       duration: 1000,
       useNativeDriver: true,
     }).start();
@@ -177,16 +177,17 @@ const HomeScreen = ({navigation}) => {
 
   // reset
   const resetState = () => {
-    setLimit(0)
-    setStatus(0)
+    setLimit(NaN)
+    setStatus(NaN)
     setHomeProgress(NaN)
     setNextAssgin(null)
-    setAssignCnt(0)
+    setAssignCnt(NaN)
   }
 
   // 2번
   const findNextAssign = (assigns) => {
     const now = new Date();
+    setNextAssgin(null);
     for(let assign of assigns) {
       const assign_due_date = new Date(assign.due_date);
       if(now <= assign_due_date) {
@@ -199,13 +200,14 @@ const HomeScreen = ({navigation}) => {
 
   // 1번
   const getAssigns = async () => {
-    resetState();
     const userToken = await getData('user_token');
     const url = '/assign/getAssigns';
     const body = {userToken};
     const res = await fetchPost(url, body);
     
     findNextAssign(res.data);
+    calcProgress(nextAssign);
+    setHomeProgress(status / limit);
   }
   useEffect(() => {
     getAssigns();
@@ -254,7 +256,7 @@ const HomeScreen = ({navigation}) => {
                 <UnTouchableRightArrow />
               </RowView>
 
-              {assignCnt > 0 ? (
+              {!!nextAssign ? (
                 <>
                   <StyledText content={curTitle} fontSize={18} />
                   <RowView style={{marginTop: 10}}>
