@@ -37,18 +37,18 @@ const UnSelectedBtn = () => (
 
 const GradeBtn = (props) => (
   <View style={styles.gradeBtn}>
-  <TouchableOpacity
-    onPress={
-      grade == null
-        ? props.createGrade
-        : props.updateGrade
-    }>
-    <StatusCircle grade={props.grade} />
-    {grade == undefined ? null : <UnSelectedBtn />}
-  </TouchableOpacity>
-  <Gap height={5} />
-  <StyledSubText content={props.btnContent} />
-</View>
+    <TouchableOpacity
+      onPress={
+        props.nowGrade == undefined
+          ? () => props.createGrade(props.grade, props.assignScheduleId)
+          : () => props.updateGrade(props.grade, props.assignScheduleId)
+      }>
+      <StatusCircle grade={props.grade} />
+      {props.grade == 4 && props.nowGrade == undefined ? null : props.nowGrade == props.grade ? null : <UnSelectedBtn />}
+    </TouchableOpacity>
+    <Gap height={5} />
+    <StyledSubText content={props.btnContent} />
+  </View>
 )
 
 const Student = ({
@@ -122,33 +122,43 @@ const Student = ({
           <StyledText content={`${name}`} fontSize={20} />
           <RowView style={{gap: 20}}>
             <GradeBtn
-              createGrade={() => createGrade(4, assignScheduleId)}
-              updateGrade={() => updateGrade(4, assignScheduleId)}
+              createGrade={createGrade}
+              updateGrade={updateGrade}
               grade={4}
+              nowGrade={grade}
+              assignScheduleId={assignScheduleId}
               btnContent={'낫옛'}
             />
             <GradeBtn
-              createGrade={() => createGrade(0, assignScheduleId)}
-              updateGrade={() => updateGrade(0, assignScheduleId)}
+              createGrade={createGrade}
+              updateGrade={updateGrade}
               grade={0}
+              nowGrade={grade}
+              assignScheduleId={assignScheduleId}
               btnContent={'안함'}
             />
             <GradeBtn
-              createGrade={() => createGrade(1, assignScheduleId)}
-              updateGrade={() => updateGrade(1, assignScheduleId)}
+              createGrade={createGrade}
+              updateGrade={updateGrade}
               grade={1}
+              nowGrade={grade}
+              assignScheduleId={assignScheduleId}
               btnContent={'미흡'}
             />
             <GradeBtn
-              createGrade={() => createGrade(2, assignScheduleId)}
-              updateGrade={() => updateGrade(2, assignScheduleId)}
+              createGrade={createGrade}
+              updateGrade={updateGrade}
               grade={2}
+              nowGrade={grade}
+              assignScheduleId={assignScheduleId}
               btnContent={'지각'}
             />
             <GradeBtn
-              createGrade={() => createGrade(3, assignScheduleId)}
-              updateGrade={() => updateGrade(3, assignScheduleId)}
+              createGrade={createGrade}
+              updateGrade={updateGrade}
               grade={3}
+              nowGrade={grade}
+              assignScheduleId={assignScheduleId}
               btnContent={'완료'}
             />
           </RowView>

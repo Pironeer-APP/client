@@ -169,8 +169,8 @@ const DoneAsgBox = ({item, onLongPressDelete}) => {
 
 const AssignmentScreen = ({navigation}) => {
   const [sessionData, setSessionData] = useState([]);
-  const [initialScrollIndex, setInitialScrollIndex] = useState(0);
-  const [nextSessionId, setNextSessionId] = useState(0);
+  const [initialScrollIndex, setInitialScrollIndex] = useState(null);
+  const [nextSessionId, setNextSessionId] = useState(null);
   const isFocused = useIsFocused();
 
   const findNextSession = (sessions) => {
