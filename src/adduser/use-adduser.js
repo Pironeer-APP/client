@@ -21,13 +21,6 @@ export default function useAdduser() {
     try {
       const fetchData = await fetchPost(url, body);
       console.log(fetchData);
-
-      //계속 추가하기인 경우 level은 유지
-      setName(null);
-      setPhone(null);
-      setEmail(null);
-
-      setTitleNum(0);
     } catch(error) {
       console.log(error);
     }
@@ -66,9 +59,13 @@ export default function useAdduser() {
     setTitleNum,
     onPressNext,
     level,
+    setLevel,
     name,
+    setName,
     phone,
+    setPhone,
     email,
+    setEmail,
     onInputLevel,
     onInputName,
     onInputPhone,
