@@ -37,8 +37,15 @@ const StatusLine = () => {
 };
 
 const InProgressAsgBox = props => {
-  const {renderMonth, renderDate, renderDay, renderHour, renderMinute} =
+  const {renderYear, renderMonth, renderDate, renderDay, renderHour, renderMinute} =
     useClientTime(props.item.date);
+
+  const now = new Date();
+  const {
+    renderYear: nowYear,
+    renderMonth: nowMonth,
+    renderDate: nowDate,
+  } = useClientTime(now);
 
   return (
     <Pressable
@@ -61,7 +68,7 @@ const InProgressAsgBox = props => {
             width: 50,
           }}>
           <StatusLine />
-            {props.nextSessionId === props.item.session_id ? (
+            {renderYear === nowYear && renderMonth === nowMonth && renderDate === nowDate ? (
               <OnAirCircle />
             ) : (
               <StatusCircle />
@@ -175,24 +182,14 @@ const AssignmentScreen = ({navigation}) => {
 
   const findNextSession = (sessions) => {
     const now = new Date();
-    const {
-      renderYear,
-      renderMonth,
-      renderDate,
-    } = useClientTime(now);
 
     for(let i = 0; i < sessions.length; i++) {
       const sessionDate = new Date(sessions[i].date);
-      const {
-        renderYear: sessionYear,
-        renderMonth: sessionMonth,
-        renderDate: sessionDay,
-      } = useClientTime(sessionDate);
       
-      // 오늘 년, 월, 일이 같은 세션에 불 들어오게 하기
-      if(renderYear === sessionYear && renderMonth === sessionMonth && renderDate === sessionDay) {
-        setNextSessionId(sessions[i].session_id);
-        setInitialScrollIndex(sessions[i].cnt);
+      // 오늘 이후의 날짜에 박스
+      if(now > sessionDate) {
+        setNextSessionId(sessions[i-1].session_id);
+        setInitialScrollIndex(sessions[i-1].cnt);
         break;
       }
     }
@@ -254,7 +251,7 @@ const onLongPressDelete = session_id => {
 };
 
 const renderItem = ({item}) => {
-  const comming = item.cnt <= initialScrollIndex;
+  const comming = initialScrollIndex !== null && item.cnt <= initialScrollIndex;
   return (
     <>
       {comming ? (
