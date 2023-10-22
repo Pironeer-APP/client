@@ -59,4 +59,6 @@ target 'pirogramming' do
     )
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
 end
