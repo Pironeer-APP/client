@@ -85,7 +85,6 @@ export default function AdminDepositDetail() {
   };
   return (
     <>
-      <StatusBar backgroundColor={COLORS.deposit_header_blue} />
       <SafeAreaView
         style={{
           flex: 1,
@@ -94,6 +93,7 @@ export default function AdminDepositDetail() {
           height: '100%',
           // backgroundColor: COLORS.gray,
         }}>
+        <StatusBar backgroundColor={COLORS.deposit_header_blue} />
         <HeaderDetail
           title={`${userInfo.name}님의 보증금 관리`}
           backgroundColor={COLORS.deposit_header_blue}
