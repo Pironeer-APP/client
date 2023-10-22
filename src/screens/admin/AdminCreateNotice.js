@@ -24,7 +24,7 @@ import {fetchPost, getAPIHost, getData, pushNoti} from '../../utils';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {PermissionsAndroid} from 'react-native';
+import permissionCheck from '../../use-permissionCheck';
 
 export const ChooseCategory = ({category, setCategory}) => {
   const PressedCat = ({index, content}) => {
@@ -126,18 +126,21 @@ const AdminCreateNotice = () => {
       });
   };
   const onImageSelect = () => {
-    const options = {
-      mediaType: 'photo',
-      quality: 1,
-      multiple: true,
-      selectionLimit: 10,
-    };
+    permissionCheck.cmmReqPermission(selectImages);
+    function selectImages() {
+      const options = {
+        mediaType: 'photo',
+        quality: 1,
+        multiple: true,
+        selectionLimit: 10,
+      };
 
-    launchImageLibrary(options, response => {
-      if (!response.didCancel) {
-        setSelectedImages(response.assets);
-      }
-    });
+      launchImageLibrary(options, response => {
+        if (!response.didCancel) {
+          setSelectedImages(response.assets);
+        }
+      });
+    }
   };
   return (
     <StyledContainer>
