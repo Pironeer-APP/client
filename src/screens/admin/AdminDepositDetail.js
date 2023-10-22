@@ -1,26 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Alert, StatusBar } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, Alert, StatusBar, SafeAreaView} from 'react-native';
 import Modal from 'react-native-modal';
-import { useRoute } from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import styled from 'styled-components';
 import HeaderDetail from '../../components/Header';
-import { CouponButton } from '../../components/Button';
+import {CouponButton} from '../../components/Button';
 import Gap from '../../components/Gap';
-import { fetchPost } from '../../utils';
+import {fetchPost} from '../../utils';
 import DepositHistory from '../../deposit/DepositHistory';
 import useDepositDetail from '../../deposit/use-depositDetail';
 import DepositHistoryHeader from '../../deposit/DepositHistoryHeader';
 import useUserInfo from '../../use-userInfo';
-import { COLORS } from '../../assets/Theme';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {COLORS} from '../../assets/Theme';
 
 export default function AdminDepositDetail() {
   const route = useRoute();
   const userInfo = route.params.userInfo;
   const adminInfo = route.params.adminInfo;
 
-  const { depositHistory, couponInfo, getDepositHistoryAdmin, getCouponInfoAdmin } =
-    useDepositDetail();
+  const {
+    depositHistory,
+    couponInfo,
+    getDepositHistoryAdmin,
+    getCouponInfoAdmin,
+  } = useDepositDetail();
 
   useEffect(() => {
     getDepositHistoryAdmin(userInfo);
@@ -30,7 +33,7 @@ export default function AdminDepositDetail() {
     getCouponInfoAdmin(userInfo);
   }, []);
 
-  const { userToken, getUserToken } = useUserInfo();
+  const {userToken, getUserToken} = useUserInfo();
 
   useEffect(() => {
     getUserToken();
@@ -57,7 +60,7 @@ export default function AdminDepositDetail() {
           text: '취소',
           style: 'cancel',
         },
-        { text: 'OK', onPress: () => deleteCoupon() },
+        {text: 'OK', onPress: () => deleteCoupon()},
       ],
     );
   };
@@ -76,7 +79,7 @@ export default function AdminDepositDetail() {
         text: '취소',
         style: 'cancel',
       },
-      { text: 'OK', onPress: () => AddCoupon() },
+      {text: 'OK', onPress: () => AddCoupon()},
     ]);
   };
   const [modalVisible, setModalVisible] = useState(false);
@@ -84,7 +87,7 @@ export default function AdminDepositDetail() {
     setModalVisible(!modalVisible);
   };
   return (
-    <>
+    <Container>
       <SafeAreaView
         style={{
           flex: 1,
@@ -110,12 +113,16 @@ export default function AdminDepositDetail() {
         <DepositHistory depositHistory={depositHistory} />
       </SafeAreaView>
       <SafeAreaView
-        style={{ backgroundColor: COLORS.gray, position: 'absolute', bottom: 0 }}
+        style={{
+          backgroundColor: COLORS.gray,
+          position: 'absolute',
+          bottom: 0,
+        }}
       />
       <Modal
         isVisible={modalVisible}
         onBackdropPress={toggleModal}
-        style={{ justifyContent: 'flex-end', margin: 0 }}>
+        style={{justifyContent: 'flex-end', margin: 0}}>
         <View style={styles.modalContainer}>
           <ModalBar />
           <Gap height={20} />
@@ -146,9 +153,13 @@ export default function AdminDepositDetail() {
           /> */}
         </View>
       </Modal>
-    </>
+    </Container>
   );
 }
+const Container = styled.View`
+  background-color: ${COLORS.deposit_header_blue};
+  flex: 1;
+`;
 const ModalBar = styled.View`
   height: 5px;
   width: 15%;

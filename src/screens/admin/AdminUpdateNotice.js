@@ -7,7 +7,7 @@ import {
   Image,
   Alert,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -15,7 +15,12 @@ import StyledContainer from '../../components/StyledContainer';
 import {StyledText} from '../../components/Text';
 import HeaderDetail from '../../components/Header';
 import {COLORS} from '../../assets/Theme';
-import {Camera, ChooseCategory, ImagesContainer} from './AdminCreateNotice';
+import {
+  Camera,
+  ChooseCategory,
+  ImagesContainer,
+  TitleContainer,
+} from './AdminCreateNotice';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {fetchPost, getAPIHost, getData, pushNoti} from '../../utils';
 
@@ -101,63 +106,63 @@ const AdminUpdateNotice = () => {
   };
 
   return (
-    <TouchableWithoutFeedback
-      onPress={Keyboard.dismiss}
-    >
-    <StyledContainer>
-      <HeaderDetail
-        title={'수정하기'}
-        button={'완료'}
-        buttonOnPress={updatePost}
-      />
-      <View style={{paddingHorizontal: 20, flex: 1}}>
-        <View>
-          <ChooseCategory category={category} setCategory={setCategory} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <StyledContainer>
+        <HeaderDetail
+          title={'수정하기'}
+          button={'완료'}
+          buttonOnPress={updatePost}
+        />
+        <View style={{paddingHorizontal: 20, flex: 1}}>
+          <View>
+            <ChooseCategory category={category} setCategory={setCategory} />
+          </View>
+
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : null}
+            style={{flex: 1}}>
+            <TitleContainer>
+              <TextInput
+                placeholder="제목"
+                value={title}
+                onChangeText={text => setTitle(text)}
+                placeholderTextColor={COLORS.light_gray}
+                style={styles.textInputTitle}
+              />
+              <Camera onImageSelect={onImageSelect} />
+            </TitleContainer>
+            <TextInput
+              placeholder="내용"
+              value={content}
+              onChangeText={text => setContent(text)}
+              placeholderTextColor={COLORS.light_gray}
+              style={styles.textInputContent}
+              multiline={true}
+            />
+
+            <ImagesContainer>
+              <ScrollView horizontal={true}>
+                {images.map((image, index) => {
+                  let URI = image?.uri || image;
+                  return (
+                    <Image
+                      key={index}
+                      source={{uri: URI}}
+                      style={{
+                        width: 100,
+                        height: 100,
+                        borderRadius: 10,
+                        marginRight: 10,
+                      }}
+                    />
+                  );
+                })}
+              </ScrollView>
+            </ImagesContainer>
+            {Platform.OS === 'ios' ? <Gap height={100} /> : null}
+          </KeyboardAvoidingView>
         </View>
-
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : null}
-          style={{flex: 1}}>
-          <TextInput
-            placeholder="제목"
-            value={title}
-            onChangeText={text => setTitle(text)}
-            placeholderTextColor={COLORS.light_gray}
-            style={styles.textInputTitle}
-          />
-          <TextInput
-            placeholder="내용"
-            value={content}
-            onChangeText={text => setContent(text)}
-            placeholderTextColor={COLORS.light_gray}
-            style={styles.textInputContent}
-            multiline={true}
-          />
-
-          <ImagesContainer>
-            <ScrollView horizontal={true}>
-              {images.map((image, index) => {
-                let URI = image?.uri || image;
-                return (
-                  <Image
-                    key={index}
-                    source={{uri: URI}}
-                    style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: 10,
-                      marginRight: 10,
-                    }}
-                  />
-                );
-              })}
-            </ScrollView>
-          </ImagesContainer>
-          <Gap height={100} />
-          <Camera onImageSelect={onImageSelect} />
-        </KeyboardAvoidingView>
-      </View>
-    </StyledContainer>
+      </StyledContainer>
     </TouchableWithoutFeedback>
   );
 };
@@ -168,10 +173,8 @@ const styles = StyleSheet.create({
   textInputTitle: {
     color: 'white',
     height: 60,
-    marginBottom: 15,
-    borderWidth: 1,
     fontSize: 25,
-    borderBottomColor: COLORS.light_gray,
+    flex: 1,
   },
   textInputContent: {
     color: 'white',

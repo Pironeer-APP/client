@@ -13,7 +13,7 @@ import {
   ScrollView,
   Alert,
   Keyboard,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -59,7 +59,9 @@ export const ChooseCategory = ({category, setCategory}) => {
 };
 
 export const Camera = ({onImageSelect}) => (
-  <TouchableOpacity onPress={onImageSelect}>
+  <TouchableOpacity
+    onPress={onImageSelect}
+    style={{justifyContent: 'flex-end'}}>
     <Image
       source={require('../../assets/icons/camera.png')}
       style={{width: 30, height: 30}}
@@ -145,60 +147,60 @@ const AdminCreateNotice = () => {
     }
   };
   return (
-    <TouchableWithoutFeedback
-      onPress={Keyboard.dismiss}
-    >
-    <StyledContainer>
-      <HeaderDetail
-        title={'글 작성하기'}
-        button={'완료'}
-        buttonOnPress={sendDataToServer}
-      />
-      <View style={{paddingHorizontal: 20, flex: 1}}>
-        <View>
-          <ChooseCategory category={category} setCategory={setCategory} />
-        </View>
-
-        <TextInput
-          placeholder="제목"
-          value={title}
-          onChangeText={text => setTitle(text)}
-          placeholderTextColor={COLORS.light_gray}
-          style={styles.textInputTitle}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <StyledContainer>
+        <HeaderDetail
+          title={'글 작성하기'}
+          button={'완료'}
+          buttonOnPress={sendDataToServer}
         />
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : null}
-          style={{flex: 1}}>
-          <TextInput
-            placeholder="내용"
-            value={content}
-            onChangeText={text => setContent(text)}
-            placeholderTextColor={COLORS.light_gray}
-            style={styles.textInputContent}
-            multiline={true}
-          />
+        <View style={{paddingHorizontal: 20, flex: 1}}>
+          <View>
+            <ChooseCategory category={category} setCategory={setCategory} />
+          </View>
+          <TitleContainer>
+            <TextInput
+              placeholder="제목"
+              value={title}
+              onChangeText={text => setTitle(text)}
+              placeholderTextColor={COLORS.light_gray}
+              style={styles.textInputTitle}
+            />
+            <Camera onImageSelect={onImageSelect} />
+          </TitleContainer>
 
-          <ImagesContainer>
-            <ScrollView horizontal={true}>
-              {selectedImages.map((image, index) => (
-                <Image
-                  key={index}
-                  source={{uri: image.uri}}
-                  style={{
-                    width: 100,
-                    height: 100,
-                    borderRadius: 10,
-                    marginRight: 10,
-                  }}
-                />
-              ))}
-            </ScrollView>
-          </ImagesContainer>
-          <Gap height={100} />
-          <Camera onImageSelect={onImageSelect} />
-        </KeyboardAvoidingView>
-      </View>
-    </StyledContainer>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : null}
+            style={{flex: 1}}>
+            <TextInput
+              placeholder="내용"
+              value={content}
+              onChangeText={text => setContent(text)}
+              placeholderTextColor={COLORS.light_gray}
+              style={styles.textInputContent}
+              multiline={true}
+            />
+
+            <ImagesContainer>
+              <ScrollView horizontal={true}>
+                {selectedImages.map((image, index) => (
+                  <Image
+                    key={index}
+                    source={{uri: image.uri}}
+                    style={{
+                      width: 100,
+                      height: 100,
+                      borderRadius: 10,
+                      marginRight: 10,
+                    }}
+                  />
+                ))}
+              </ScrollView>
+            </ImagesContainer>
+            {Platform.OS === 'ios' ? <Gap height={100} /> : null}
+          </KeyboardAvoidingView>
+        </View>
+      </StyledContainer>
     </TouchableWithoutFeedback>
   );
 };
@@ -208,6 +210,13 @@ export const ImagesContainer = styled.View`
   position: absolute;
   bottom: 40px;
 `;
+export const TitleContainer = styled.View`
+  border-width: 2px;
+  border-bottom-color: ${COLORS.light_gray};
+  flex-direction: row;
+  margin-bottom: 15px;
+  align-items: center;
+`;
 const styles = StyleSheet.create({
   inputWrapper: {
     paddingVertical: 15,
@@ -215,10 +224,12 @@ const styles = StyleSheet.create({
   textInputTitle: {
     color: 'white',
     height: 60,
-    marginBottom: 15,
-    borderWidth: 2,
+    // marginBottom: 15,
+    // borderWidth: 2,
     fontSize: 25,
-    borderBottomColor: COLORS.light_gray,
+    // borderBottomColor: COLORS.light_gray,
+    flex: 1,
+    marginRight: 10,
   },
   textInputContent: {
     color: 'white',
