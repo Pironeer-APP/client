@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
@@ -9,7 +8,6 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Image,
-  Dimensions,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import React, {useEffect, useState} from 'react';
@@ -21,14 +19,10 @@ import {COLORS} from '../../assets/Theme';
 import {StyledSubText, StyledText} from '../../components/Text';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
-import AdminAttendanceDetailScreen from './AdminAttendanceDetailScreen';
 import Gap, {GapH} from '../../components/Gap';
-import useUserInfo from '../../use-userInfo';
 import {fetchPost, getData} from '../../utils';
 import {ButtonContainer, MainButton, MiniButton} from '../../components/Button';
 import useClientTime from '../../use-clientTime';
-import BottomSheetModal from '../../components/BottomSheetModal';
-import BottomTouchModal from '../../components/BottomTouchModal';
 
 const DateContainer = styled.View`
   border-radius: 12px;
@@ -520,9 +514,7 @@ const AdminAttendanceScreen = () => {
 
         {!!isToday ? (
           <>
-            <BottomModalBtn onPress={toggleBottomModal}>
-              <DarkModalBar />
-            </BottomModalBtn>
+            <MainButton content={'출결 관리'} onPress={toggleBottomModal} />
             <Modal
               isVisible={bottomModalVisible}
               onBackdropPress={toggleBottomModal}
@@ -603,15 +595,6 @@ const DarkModalBar = styled.View`
   width: 15%;
   border-radius: 10px;
   background-color: ${COLORS.light_gray};
-`;
-const BottomModalBtn = styled.TouchableOpacity`
-  border-top-right-radius: 20px;
-  border-top-left-radius: 20px;
-  height: 50px;
-  background-color: ${COLORS.gray};
-  width: 100%;
-  align-items: center;
-  padding: 16px;
 `;
 const BottomModalContainer = styled.View`
   background-color: ${COLORS.gray};
