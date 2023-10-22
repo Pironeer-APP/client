@@ -6,6 +6,8 @@ import {
   KeyboardAvoidingView,
   Image,
   Alert,
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -99,6 +101,9 @@ const AdminUpdateNotice = () => {
   };
 
   return (
+    <TouchableWithoutFeedback
+      onPress={Keyboard.dismiss}
+    >
     <StyledContainer>
       <HeaderDetail
         title={'수정하기'}
@@ -153,6 +158,7 @@ const AdminUpdateNotice = () => {
         </KeyboardAvoidingView>
       </View>
     </StyledContainer>
+    </TouchableWithoutFeedback>
   );
 };
 const styles = StyleSheet.create({
