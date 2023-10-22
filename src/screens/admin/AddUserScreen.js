@@ -20,14 +20,18 @@ export default function AddUserScreen({navigation}) {
     setTitleNum,
     onPressNext,
     level,
+    setLevel,
     name,
+    setName,
     phone,
+    setPhone,
     email,
+    setEmail,
     onInputLevel,
     onInputName,
     onInputPhone,
     onInputEmail,
-    saveUserInfo,
+    saveUserInfo
   } = useAdduser();
 
   useEffect(() => {
@@ -35,13 +39,27 @@ export default function AddUserScreen({navigation}) {
       Keyboard.dismiss();
     } else if (titleNum > 4) {
       saveUserInfo(level, name, phone, email);
+      
+      //계속 추가하기인 경우 level은 유지
+      setName(null);
+      setPhone(null);
+      setEmail(null);
+
+      setTitleNum(0);
+      
       navigation.navigate('AddUserSuccess');
     }
   }, [titleNum]);
 
   const onPressBack = () => {
-    if (titleNum > 0) setTitleNum(titleNum - 1);
-    else navigation.goBack();
+    if (titleNum > 0) {
+      if(titleNum >= 3) setEmail(null);
+      else if(titleNum >= 2) setPhone(null);
+      else if(titleNum >= 1) setName(null);
+      setTitleNum(titleNum - 1);
+    } else {
+      navigation.goBack();
+    }
   };
 
   return (

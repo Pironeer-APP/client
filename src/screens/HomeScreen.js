@@ -147,7 +147,7 @@ const HomeScreen = ({navigation}) => {
   /*
     프로그레스 계산
     1. /assign/readAssign/all 경로로 요청, 모든 과제 가져옴(생성시각 오름차순)
-    2. 과제 중 현재 시간보다 늦은 과제 포착
+    2. 과제 중 마감 기한이 현재 시간보다 늦은 과제 포착
     2-1. 전체 과제 개수 - 해당 과제까지의 인덱스 = 다음 과제 개수
     3. 해당 과제의 created_at을 10:00:00으로 맞추고
     4. 변환된 created_at과 due_date의 차이가 limit

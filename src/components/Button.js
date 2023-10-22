@@ -181,7 +181,7 @@ const miniStyles = ({outline}) =>
       height: 50,
       backgroundColor: outline ? 'transparent' : COLORS.green,
       borderRadius: 13,
-      borderColor: outline ? COLORS.green : 'none',
+      borderColor: COLORS.green,
       borderWidth: 3,
     },
     miniText: {
