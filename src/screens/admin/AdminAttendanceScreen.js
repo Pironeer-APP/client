@@ -1,4 +1,16 @@
-import {View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Image, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Alert,
+  TextInput,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Image,
+  Dimensions,
+} from 'react-native';
 import Modal from 'react-native-modal';
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
@@ -17,7 +29,6 @@ import {ButtonContainer, MainButton, MiniButton} from '../../components/Button';
 import useClientTime from '../../use-clientTime';
 import BottomSheetModal from '../../components/BottomSheetModal';
 import BottomTouchModal from '../../components/BottomTouchModal';
-
 
 const DateContainer = styled.View`
   border-radius: 12px;
@@ -163,12 +174,9 @@ const EndFailedModal = ({content}) => (
       style={{width: 120, height: 120}}
     />
     <Gap />
-    <StyledText
-      content={content}
-      fontSize={20}
-    />
+    <StyledText content={content} fontSize={20} />
   </View>
-)
+);
 
 const EndFinModal = () => (
   <View style={styles.modalView}>
@@ -178,12 +186,9 @@ const EndFinModal = () => (
       style={{width: 120, height: 120}}
     />
     <Gap />
-    <StyledText
-      content={'오늘 출결 종료'}
-      fontSize={20}
-    />
+    <StyledText content={'오늘 출결 종료'} fontSize={20} />
   </View>
-)
+);
 
 const AdminAttendanceScreen = () => {
   const [sessions, setSessions] = useState();
@@ -313,7 +318,8 @@ const AdminAttendanceScreen = () => {
   const [nullCodeModalVisible, setNullCodeModalVisible] = useState(false);
 
   // 삭제 실패
-  const [deleteFailedModalVisible, setDeleteFailedModalVisible] = useState(false);
+  const [deleteFailedModalVisible, setDeleteFailedModalVisible] =
+    useState(false);
   // 종료 실패
   const [endFailedModalVisible, setEndFailedModalVisible] = useState(false);
   const [endFailedContent, setEndFailedContent] = useState('');
@@ -361,49 +367,45 @@ const AdminAttendanceScreen = () => {
 
   // 출결 종료 함수
   const onPressEndAttend = async () => {
-    Alert.alert(
-      '오늘 출결을 종료하시겠습니까?',
-      '',
-      [
-        {
-          text: '취소',
-          style: 'cancel',
+    Alert.alert('오늘 출결을 종료하시겠습니까?', '', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {
+        text: '확인',
+        onPress: async () => {
+          setLoading(true);
+          const userToken = await getData('user_token');
+          const url = '/attend/endAttend';
+          const body = {
+            userToken: userToken,
+            session_id: sessionId,
+          };
+          const res = await fetchPost(url, body);
+          setLoading(false);
+          if (res.result == false) {
+            setEndFailedContent('출결 저장 실패: 출결 3회 이상 진행 됨');
+            setEndFailedModalVisible(true);
+            setTimeout(() => {
+              setEndFailedModalVisible(false);
+            }, 2000);
+          } else if (res.result == true) {
+            setEndFinModalVisible(true);
+            setTimeout(() => {
+              setEndFinModalVisible(false);
+            }, 2000);
+          } else {
+            setEndFailedContent(res.result);
+            setEndFailedModalVisible(true);
+            setTimeout(() => {
+              setEndFailedModalVisible(false);
+            }, 2000);
+          }
         },
-        {
-          text: '확인',
-          onPress: async () => {
-            setLoading(true);
-            const userToken = await getData('user_token');
-            const url = '/attend/endAttend';
-            const body = {
-              userToken: userToken,
-              session_id: sessionId
-            };
-            const res = await fetchPost(url, body);
-            setLoading(false);
-            if(res.result == false) {
-              setEndFailedContent('출결 저장 실패: 출결 3회 이상 진행 됨');
-              setEndFailedModalVisible(true);
-              setTimeout(() => {
-                setEndFailedModalVisible(false);
-              }, 2000);
-            } else if(res.result == true) {
-              setEndFinModalVisible(true);
-              setTimeout(() => {
-                setEndFinModalVisible(false);
-              }, 2000);
-            } else {
-              setEndFailedContent(res.result);
-              setEndFailedModalVisible(true);
-              setTimeout(() => {
-                setEndFailedModalVisible(false);
-              }, 2000);
-            }
-          },
-        },
-      ],
-    );
-  }
+      },
+    ]);
+  };
 
   const onPressCancelAttend = () => {
     Alert.alert(
@@ -422,11 +424,11 @@ const AdminAttendanceScreen = () => {
             const url = '/attend/cancelAttend';
             const body = {
               userToken: userToken,
-              session_id: sessionId
+              session_id: sessionId,
             };
             const res = await fetchPost(url, body);
             setLoading(false);
-            if(res.result == true) {
+            if (res.result == true) {
               setEndFinModalVisible(true);
               setTimeout(() => {
                 setEndFinModalVisible(false);
@@ -442,49 +444,43 @@ const AdminAttendanceScreen = () => {
         },
       ],
     );
-  }
+  };
   const [bottomModalVisible, setBottomModalVisible] = useState(false);
   const toggleBottomModal = () => {
     setBottomModalVisible(!bottomModalVisible);
   };
   return (
+    <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+      <StyledContainer>
+        <HeaderDetail title={'출석'} />
+        <ScrollView style={styles.scrollContainer}>
+          {sessions?.map((item, index) => (
+            <WeekContainer key={index} week={index + 1} item={item} />
+          ))}
+        </ScrollView>
 
-    <TouchableWithoutFeedback
-      onPress={() => setModalVisible(false)}
-    >
-    <StyledContainer>
-      <HeaderDetail title={'출석'} />
-      <ScrollView
-        style={styles.scrollContainer}
-      >
-        {sessions?.map((item, index) => (
-          <WeekContainer key={index} week={index + 1} item={item} />
-        ))}
-      </ScrollView>
+        {/* 로딩 */}
+        <Modal animationType="slide" transparent={true} visible={loading}>
+          <View style={styles.circles}>
+            <Progress.CircleSnail
+              style={styles.progress}
+              color={COLORS.green}
+            />
+          </View>
+        </Modal>
 
-      {/* 로딩 */}
-      <Modal animationType="slide" transparent={true} visible={loading}>
-        <View style={styles.circles}>
-          <Progress.CircleSnail
-            style={styles.progress}
-            color={COLORS.green}
+        {/* 출결 삭제 코드 입력 모달 */}
+        <Modal
+          isVisible={isModalVisible}
+          onBackdropPress={toggleModal}
+          animationIn={'fadeIn'}
+          animationOut={'fadeOut'}>
+          <DeleteAttendModal
+            deleteCode={deleteCode}
+            setDeleteCode={setDeleteCode}
+            onPressDeleteAttend={onPressDeleteAttend}
           />
-        </View>
-      </Modal>
-      
-      {/* 출결 삭제 코드 입력 모달 */}
-      <Modal
-        isVisible={isModalVisible}
-        onBackdropPress={toggleModal}
-        animationIn={'fadeIn'}
-        animationOut={'fadeOut'}
-      >
-        <DeleteAttendModal
-          deleteCode={deleteCode}
-          setDeleteCode={setDeleteCode}
-          onPressDeleteAttend={onPressDeleteAttend}
-        />
-      </Modal>
+        </Modal>
 
         {/* 삭제 완료 모달 */}
         <Modal
@@ -504,96 +500,101 @@ const AdminAttendanceScreen = () => {
           <NullCodeModal del_code={deleteCode} />
         </Modal>
 
+        {/* 출결 종료 오류 모달 */}
+        <Modal
+          isVisible={endFailedModalVisible}
+          onBackdropPress={toggleModal}
+          animationIn={'fadeIn'}
+          animationOut={'fadeOut'}>
+          <EndFailedModal content={endFailedContent} />
+        </Modal>
 
-      {/* 출결 종료 오류 모달 */}
-      <Modal
-        isVisible={endFailedModalVisible}
-        onBackdropPress={toggleModal}
-        animationIn={'fadeIn'}
-        animationOut={'fadeOut'}
-      >
-        <EndFailedModal
-          content={endFailedContent} />
-      </Modal>
+        {/* 삭제 완료 모달 */}
+        <Modal
+          isVisible={endFinModalVisible}
+          onBackdropPress={toggleModal}
+          animationIn={'fadeIn'}
+          animationOut={'fadeOut'}>
+          <EndFinModal />
+        </Modal>
 
-      {/* 삭제 완료 모달 */}
-      <Modal
-        isVisible={endFinModalVisible}
-        onBackdropPress={toggleModal}
-        animationIn={'fadeIn'}
-        animationOut={'fadeOut'}
-      >
-        <EndFinModal />
-      </Modal>
-      <BottomModalBtn onPress={toggleBottomModal}>
-        <DarkModalBar />
-      </BottomModalBtn>
-      {!!isToday ? (
-        <Modal 
-         isVisible={bottomModalVisible}
-         onBackdropPress={toggleBottomModal}
-         style={{justifyContent: 'flex-end', margin: 0 }}>
-          <BottomModalContainer>
-            <DarkModalBar />
-            <Gap height={20} />
-            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-              <ButtonContainer
-                onPress={onPressGenerateCode}>
-                <View style={styles.codeTextView}>
-                  <StyledText
-                    fontSize={22}
-                    color={COLORS.bg_black}
-                    content={codeLoading ? '생성중...' : codeText}
-                    />
-                </View>
-                {codeTimeoutText ? (
-                  <View style={styles.codeTextView}>
+        {!!isToday ? (
+          <>
+            <BottomModalBtn onPress={toggleBottomModal}>
+              <DarkModalBar />
+            </BottomModalBtn>
+            <Modal
+              isVisible={bottomModalVisible}
+              onBackdropPress={toggleBottomModal}
+              style={{justifyContent: 'flex-end', margin: 0}}>
+              <BottomModalContainer>
+                <DarkModalBar />
+                <Gap height={20} />
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <ButtonContainer onPress={onPressGenerateCode}>
+                    <View style={styles.codeTextView}>
+                      <StyledText
+                        fontSize={22}
+                        color={COLORS.bg_black}
+                        content={codeLoading ? '생성중...' : codeText}
+                      />
+                    </View>
+                    {codeTimeoutText ? (
+                      <View style={styles.codeTextView}>
+                        <StyledText
+                          fontSize={22}
+                          color={COLORS.bg_black}
+                          content={codeTimeoutText}
+                        />
+                      </View>
+                    ) : null}
+                  </ButtonContainer>
+                  <GapH />
+                  <ButtonContainer
+                    onPress={() => {
+                      toggleBottomModal();
+                      toggleModal();
+                    }}>
                     <StyledText
                       fontSize={22}
                       color={COLORS.bg_black}
-                      content={codeTimeoutText}
+                      content={'일부 삭제'}
                     />
-                  </View>
-                ) : null}
-              </ButtonContainer>
-              <GapH />
-              <ButtonContainer
-                onPress={() => {
-                  toggleBottomModal();
-                  toggleModal();
-                }}>
-                <StyledText
-                  fontSize={22}
-                  color={COLORS.bg_black}
-                  content={'일부 삭제'}
-                />
-              </ButtonContainer>
-            </View>
-       
-            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-            <ButtonContainer
-              onPress={onPressEndAttend}>
-              <StyledText
-                fontSize={22}
-                color={COLORS.bg_black}
-                content={'출결 종료'}
-              />
-            </ButtonContainer>
-            <GapH />
-            <ButtonContainer
-              onPress={onPressCancelAttend}>
-              <StyledText
-                fontSize={22}
-                color={COLORS.bg_black}
-                content={'전체 취소'}
-              />
-            </ButtonContainer>
-            </View>
-          </BottomModalContainer>
-        </Modal>
-      ) : null}
-    </StyledContainer>
+                  </ButtonContainer>
+                </View>
 
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <ButtonContainer onPress={onPressEndAttend}>
+                    <StyledText
+                      fontSize={22}
+                      color={COLORS.bg_black}
+                      content={'출결 종료'}
+                    />
+                  </ButtonContainer>
+                  <GapH />
+                  <ButtonContainer onPress={onPressCancelAttend}>
+                    <StyledText
+                      fontSize={22}
+                      color={COLORS.bg_black}
+                      content={'전체 취소'}
+                    />
+                  </ButtonContainer>
+                </View>
+              </BottomModalContainer>
+            </Modal>
+          </>
+        ) : null}
+      </StyledContainer>
     </TouchableWithoutFeedback>
   );
 };
@@ -619,7 +620,7 @@ const BottomModalContainer = styled.View`
   border-top-right-radius: 20px;
   border-top-left-radius: 20px;
   align-items: center;
-`
+`;
 //스타일시트
 const styles = StyleSheet.create({
   progress: {
