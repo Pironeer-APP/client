@@ -12,6 +12,8 @@ import {
   NativeModules,
   ScrollView,
   Alert,
+  Keyboard,
+  TouchableWithoutFeedback
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -140,6 +142,9 @@ const AdminCreateNotice = () => {
     });
   };
   return (
+    <TouchableWithoutFeedback
+      onPress={Keyboard.dismiss}
+    >
     <StyledContainer>
       <HeaderDetail
         title={'글 작성하기'}
@@ -191,6 +196,7 @@ const AdminCreateNotice = () => {
         </KeyboardAvoidingView>
       </View>
     </StyledContainer>
+    </TouchableWithoutFeedback>
   );
 };
 export const ImagesContainer = styled.View`
