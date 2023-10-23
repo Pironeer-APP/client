@@ -1,4 +1,5 @@
 {
   "name": "pirogramming",
-  "displayName": "피로그래밍"
+  "displayName": "피로그래밍",
+  "supportsTablet": false
 }
