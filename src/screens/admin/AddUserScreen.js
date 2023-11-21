@@ -4,6 +4,7 @@ import {
   Keyboard,
   SafeAreaView,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
 import React, {useEffect} from 'react';
 
@@ -27,6 +28,8 @@ export default function AddUserScreen({navigation}) {
     setPhone,
     email,
     setEmail,
+    saveResult,
+    setSaveResult,
     onInputLevel,
     onInputName,
     onInputPhone,
@@ -39,15 +42,19 @@ export default function AddUserScreen({navigation}) {
       Keyboard.dismiss();
     } else if (titleNum > 4) {
       saveUserInfo(level, name, phone, email);
-      
-      //계속 추가하기인 경우 level은 유지
-      setName(null);
-      setPhone(null);
-      setEmail(null);
-
-      setTitleNum(0);
-      
-      navigation.navigate('AddUserSuccess');
+      if(saveResult) {
+        //계속 추가하기인 경우 level은 유지
+        setName(null);
+        setPhone(null);
+        setEmail(null);
+        
+        setTitleNum(0);
+        
+        navigation.navigate('AddUserSuccess');
+      } else {
+        Alert.alert('중복된 회원 정보가 있어 저장에 실패하였습니다.');
+        setTitleNum(4);
+      }
     }
   }, [titleNum]);
 
