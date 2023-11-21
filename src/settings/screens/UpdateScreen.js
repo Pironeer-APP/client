@@ -127,7 +127,7 @@ export default function UpdateScreen({route}) {
               }
             />
           </ScrollView>
-          <MainButton content="다음" onPress={onPressNewInfo} />
+          <MainButton height={60} marginBottom={20} content="다음" onPress={onPressNewInfo} />
         </KeyboardAvoidingView>
       </View>
     </StyledContainer>
