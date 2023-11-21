@@ -212,6 +212,7 @@ const AdminAttendanceScreen = () => {
   };
   useEffect(() => {
     getTodayCode();
+    setIsToday(true)
   }, []);
 
   // 현재 시간 대비 코드 남은 기간
@@ -514,7 +515,11 @@ const AdminAttendanceScreen = () => {
 
         {!!isToday ? (
           <>
-            <MainButton content={'출결 관리'} onPress={toggleBottomModal} />
+            <View style={{
+              paddingHorizontal: 20
+            }}>
+              <MainButton content={'출결 관리'} onPress={toggleBottomModal} />
+            </View>
             <Modal
               isVisible={bottomModalVisible}
               onBackdropPress={toggleBottomModal}

@@ -312,6 +312,26 @@ const HomeScreen = ({navigation}) => {
                 flexDirection: 'row',
                 gap: 20,
               }}>
+              <View style={{gap: 20, flex: 1}}>
+                <Box>
+                  <TouchableOpacity style={{padding: 20}} onPress={goToDeposit}>
+                    <StyledText content={'보증금'} />
+                    <Image
+                      source={require('../assets/icons/money.png')}
+                      style={{width: 30, height: 30, marginTop: 10}}
+                    />
+                  </TouchableOpacity>
+                </Box>
+                <Box style={{height: 350}}>
+                  <TouchableOpacity style={{padding: 20}} onPress={goToAnncmt}>
+                    <StyledText content={'공지'} fontSize={24} />
+                    <Image
+                      source={require('../assets/icons/announce.png')}
+                      style={{width: 30, height: 30, marginTop: 10}}
+                    />
+                  </TouchableOpacity>
+                </Box>
+              </View>
               <TouchableOpacity
                 style={{
                   flex: 1,
@@ -333,26 +353,6 @@ const HomeScreen = ({navigation}) => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <View style={{gap: 20, flex: 1}}>
-                <Box>
-                  <TouchableOpacity style={{padding: 20}} onPress={goToDeposit}>
-                    <StyledText content={'보증금'} />
-                    <Image
-                      source={require('../assets/icons/money.png')}
-                      style={{width: 30, height: 30, marginTop: 10}}
-                    />
-                  </TouchableOpacity>
-                </Box>
-                <Box style={{height: 350}}>
-                  <TouchableOpacity style={{padding: 20}} onPress={goToAnncmt}>
-                    <StyledText content={'공지'} fontSize={24} />
-                    <Image
-                      source={require('../assets/icons/announce.png')}
-                      style={{width: 30, height: 30, marginTop: 10}}
-                    />
-                  </TouchableOpacity>
-                </Box>
-              </View>
             </View>
           </View>
           <Gap />
