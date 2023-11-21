@@ -23,11 +23,12 @@ export default function UnregisterSection() {
 
   const unregister = async () => {
     const url = '/auth/unregister';
-    const body = await getData('user_info');
+    const jwtToken = await getData('user_token');
+    const body = {token: jwtToken};
     const res = await fetchPost(url, body);
     console.log(res);
     if(res.result) {
-      await removeData('user_info');
+      await removeData('user_token');
       navigation.navigate('SplashScreen');
     }
   }
