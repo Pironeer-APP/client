@@ -8,6 +8,7 @@ export default function useAdduser() {
   const [name, setName] = useState(null);
   const [phone, setPhone] = useState(null);
   const [email, setEmail] = useState(null);
+  const [saveResult, setSaveResult] = useState(false);
 
   //입력데이터 서버에 보내기
   const saveUserInfo = async (level, name, phone, email) => {
@@ -21,8 +22,11 @@ export default function useAdduser() {
     try {
       const fetchData = await fetchPost(url, body);
       console.log(fetchData);
+      if(fetchData === null) setSaveResult(false);
+      else setSaveResult(true);
     } catch(error) {
       console.log(error);
+      return setSaveResult(false);
     }
   }
 
@@ -66,6 +70,8 @@ export default function useAdduser() {
     setPhone,
     email,
     setEmail,
+    saveResult,
+    setSaveResult,
     onInputLevel,
     onInputName,
     onInputPhone,

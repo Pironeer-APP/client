@@ -16,6 +16,7 @@ export default function AddUserContent({
     "전화번호를 입력해 주세요",
     "이메일을 입력해 주세요",
     "정보가 올바른지 확인해 주세요",
+    "정보가 올바른지 확인해 주세요",
   ]
 
   return (
