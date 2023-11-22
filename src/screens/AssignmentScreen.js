@@ -89,7 +89,7 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
 
   /*
     프로그레스
-    1. 각 item의 created_at에서 시간을 10:00:00으로 맞춘다
+    1. 각 item의 created_at에서 시간을 0분 0초로 맞춘다
     2. 전체 제한 기간 limit = due_date - 변환된 created_at
     3. 남은 기간 status = due_date - now
     4. progress = status / limit
@@ -101,7 +101,6 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
   const calcProgress = (item) => {
     const created_at = new Date(item?.created_at);
     // 생성 시각을 정확하게 고정
-    created_at.setHours(10);
     created_at.setMinutes(0);
     created_at.setSeconds(0);
 
@@ -250,20 +249,21 @@ const AssignmentScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   
   /*
+    과제 데이터가 due_date 내림차순 정렬이므로 데이터 끝에서부터 확인
     다가오는 과제인지 지나간 과제인지 계산
     1. 현재 시간과 due_date를 비교
-    2. due_date가 먼저 날짜라면 직전에 종료된 괴제 (과제는 due_date 내림차순 정렬되어 있기 때문)
+    2. due_date가 이후 날짜라면 다음에 주어지는 과제
     3. 해당 데이터의 인덱스를 기억, flatlist 렌더링 시 참고
   */
 
-  const [lastAssign, setLastAssign] = useState(null); // 직전에 종료된 과제 기억
+  const [nextAssign, setNextAssign] = useState(null); // 직전에 종료된 과제 기억
 
   const findLastAssign = (assignments) => {
     const now = new Date();
-    for(let i = 0; i < assignments.length; i++) {
+    for(let i = assignments.length - 1; i >= 0; i--) {
       const assign_due_date = new Date(assignments[i].due_date);
-      if(now > assign_due_date) {
-        setLastAssign(assignments[i]);
+      if(now < assign_due_date) {
+        setNextAssign(assignments[i]);
         break;
       }
     }
@@ -297,9 +297,28 @@ const AssignmentScreen = () => {
   let LAST_ITEM = assignment[assignment.length - 1]?.title;
 
   const Item = props => {
+    /*
+      index title due_date
+      1.    과제a   11/30
+      2.    과제b   11/26
+      3.    과제c   11/24 => 오늘 날짜가 11/25이면 nextAssign은 2. 과제b 11/26
+
+      nextAssign이 null인 경우 -> 모두 지나간 과제임
+      nextAssign의 AssignId(index, 백엔드에서 넘겨준)가 item의 index보다 작거나 같다면 진행중인 과제
+      크다면 지나간 과제
+    */
     return (
       <>
-        {props.lastAssign === null || props.lastAssign.AssignId - 1 > props.index ? (
+        {props.nextAssign == null ? (
+          <DoneAsgBox
+            grade={props.item.grade}
+            title={props.item.title}
+            due={props.item.dueDate}
+            item={props.item}
+            firstItem={FIRST_ITEM}
+            lastItem={LAST_ITEM}
+          />
+        ) : props.nextAssign.AssignId >= props.index ? (
           <InProgressAsgBox
             grade={props.item.grade}
             title={props.item.title}
@@ -336,7 +355,7 @@ const AssignmentScreen = () => {
             renderItem={({item, index}) => (
               <Item
                 item={item}
-                lastAssign={lastAssign}
+                nextAssign={nextAssign}
                 index={index}
               />
             )}

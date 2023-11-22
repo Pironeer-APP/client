@@ -14,8 +14,10 @@ import AddUserContent from '../../adduser/AddUserContent';
 import useAdduser from '../../adduser/use-adduser';
 import HeaderDetail, {HeaderAdmin} from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
+import { fetchPost } from '../../utils';
+import { useNavigation } from '@react-navigation/native';
 
-export default function AddUserScreen({navigation}) {
+export default function AddUserScreen() {
   const {
     titleNum,
     setTitleNum,
@@ -34,15 +36,22 @@ export default function AddUserScreen({navigation}) {
     onInputName,
     onInputPhone,
     onInputEmail,
-    saveUserInfo
   } = useAdduser();
 
-  useEffect(() => {
-    if (titleNum === 4) {
-      Keyboard.dismiss();
-    } else if (titleNum > 4) {
-      saveUserInfo(level, name, phone, email);
-      if(saveResult) {
+  const navigation = useNavigation();
+  
+  //입력데이터 서버에 보내기
+  const saveUserInfo = async (level, name, phone, email) => {
+    const url = `/auth/addUser`;
+    const body = {
+      level: level,
+      name: name,
+      phone: phone,
+      email: email
+    }
+    try {
+      const fetchData = await fetchPost(url, body);
+      if(fetchData !== null && fetchData.result == true) {
         //계속 추가하기인 경우 level은 유지
         setName(null);
         setPhone(null);
@@ -55,14 +64,30 @@ export default function AddUserScreen({navigation}) {
         Alert.alert('중복된 회원 정보가 있어 저장에 실패하였습니다.');
         setTitleNum(4);
       }
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    if (titleNum == 4) {
+      Keyboard.dismiss();
+    }
+    if (titleNum > 4) {
+      saveUserInfo(level, name, phone, email);
     }
   }, [titleNum]);
 
   const onPressBack = () => {
     if (titleNum > 0) {
-      if(titleNum >= 3) setEmail(null);
-      else if(titleNum >= 2) setPhone(null);
-      else if(titleNum >= 1) setName(null);
+      if(titleNum > 4) {
+        setTitleNum(3);
+        setEmail(null);
+        return;
+      }
+      if(titleNum > 3) setEmail(null);
+      else if(titleNum > 2) setPhone(null);
+      else if(titleNum > 1) setName(null);
       setTitleNum(titleNum - 1);
     } else {
       navigation.goBack();

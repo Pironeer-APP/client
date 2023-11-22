@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { autoHyphen, fetchPost } from '../utils';
-import { Keyboard } from 'react-native';
+import { Keyboard, Alert } from 'react-native';
 
 export default function useAdduser() {
   const [titleNum, setTitleNum] = useState(0);
@@ -8,27 +8,6 @@ export default function useAdduser() {
   const [name, setName] = useState(null);
   const [phone, setPhone] = useState(null);
   const [email, setEmail] = useState(null);
-  const [saveResult, setSaveResult] = useState(false);
-
-  //입력데이터 서버에 보내기
-  const saveUserInfo = async (level, name, phone, email) => {
-    const url = `/auth/addUser`;
-    const body = {
-      level: level,
-      name: name,
-      phone: phone,
-      email: email
-    }
-    try {
-      const fetchData = await fetchPost(url, body);
-      console.log(fetchData);
-      if(fetchData === null) setSaveResult(false);
-      else setSaveResult(true);
-    } catch(error) {
-      console.log(error);
-      return setSaveResult(false);
-    }
-  }
 
   const onPressNext = () => {
     //level 입력 여부 확인
@@ -70,12 +49,9 @@ export default function useAdduser() {
     setPhone,
     email,
     setEmail,
-    saveResult,
-    setSaveResult,
     onInputLevel,
     onInputName,
     onInputPhone,
     onInputEmail,
-    saveUserInfo
   }
 }
