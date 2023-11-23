@@ -8,6 +8,8 @@ import FindAccountScreen from './src/screens/FindAccountScreen';
 import {PermissionsAndroid, Alert} from 'react-native';
 // import messaging from '@react-native-firebase/messaging';
 import { sendToken } from './src/utils';
+import store from './src/app/store';
+import { Provider } from 'react-redux'
 
 const Stack = createNativeStackNavigator();
 
@@ -34,17 +36,19 @@ export default function App() {
   // }, []);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
-        {/* 로그인 여부 확인 후 Login / Drawer / Admin으로 navigation */}
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="FindAccountScreen" component={FindAccountScreen} />
-        <Stack.Screen
-          name="DrawerNavigationRoutes"
-          component={DrawerNavigationRoutes}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          {/* 로그인 여부 확인 후 Login / Drawer / Admin으로 navigation */}
+          <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="FindAccountScreen" component={FindAccountScreen} />
+          <Stack.Screen
+            name="DrawerNavigationRoutes"
+            component={DrawerNavigationRoutes}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }

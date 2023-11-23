@@ -7,6 +7,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Progress from 'react-native-progress';
 
 import {RowView} from './HomeScreen';
@@ -24,6 +25,8 @@ import useClientTime from '../use-clientTime';
 import OnAirCircle from '../components/OnAirCircle';
 import { client } from '../api/client';
 import { getData } from '../api/asyncStorage';
+import { fetchAssigns, selectAllAssigns } from '../features/assigns/assignsSlice';
+import { calcProgress, convertTime, findNextAssign } from '../utils';
 
 export const StatusCircle = ({grade = 4}) => {
   let imageSource;
@@ -82,35 +85,15 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
     ).start();
   }, []);
 
-  /*
-    프로그레스
-    1. 각 item의 created_at에서 시간을 0분 0초로 맞춘다
-    2. 전체 제한 기간 limit = due_date - 변환된 created_at
-    3. 남은 기간 status = due_date - now
-    4. progress = status / limit
-  */
-  const [limit, setLimit] = useState();
   const [status, setStatus] = useState();
   const [progress, setProgress] = useState(NaN);
   const [progressColor, setProgressColor] = useState(COLORS.green);
 
-  const calcProgress = (item) => {
-    const created_at = new Date(item?.created_at);
-    // 생성 시각을 정확하게 고정
-    created_at.setMinutes(0);
-    created_at.setSeconds(0);
-
-    const due_date = new Date(item?.due_date);
-    const now = new Date();
-
-    setLimit(due_date - created_at);
-    setStatus(due_date - now);
-  }
-
   useEffect(() => {
     setTimeout(() => {
-      calcProgress(item);
-      setProgress(status / limit);
+      const { limit, status, progress } = calcProgress(item?.created_at, item?.due_date);
+      setProgress(progress);
+      setStatus(status);
     }, 1000);
   }, [status]);
 
@@ -128,8 +111,6 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
   useEffect(() => {
     isNaN(status) ? setIsTimerLoading(true) : setIsTimerLoading(false);
   }, [status]);
-
-  const {convertTime} = useProgress();
 
   const {hour, min, sec} = convertTime(Math.trunc(status / 1000));
 
@@ -249,57 +230,22 @@ const DoneAsgBox = ({grade, title, due, item, firstItem, lastItem}) => {
 };
 
 const AssignmentScreen = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [assignment, setAssignment] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+
+  const [nextAssign, setNextAssign] = useState(null); // 다음 과제 기억
   
-  /*
-    과제 데이터가 due_date 내림차순 정렬이므로 데이터 끝에서부터 확인
-    다가오는 과제인지 지나간 과제인지 계산
-    1. 현재 시간과 due_date를 비교
-    2. due_date가 이후 날짜라면 다음에 주어지는 과제
-    3. 해당 데이터의 인덱스를 기억, flatlist 렌더링 시 참고
-  */
-
-  const [nextAssign, setNextAssign] = useState(null); // 직전에 종료된 과제 기억
-
-  const findLastAssign = (assignments) => {
-    const now = new Date();
-    for(let i = assignments.length - 1; i >= 0; i--) {
-      const assign_due_date = new Date(assignments[i].due_date);
-      if(now < assign_due_date) {
-        setNextAssign(assignments[i]);
-        break;
-      }
-    }
-  }
-
-  const saveUserId = async () => {
-    setRefreshing(true);
-    const userToken = await getData('user_token');
-    const url = `/assign`;
-    const body = {
-      userToken: userToken,
-    };
-
-    try {
-      const fetchData = await client.post(url, body);
-      setAssignment(fetchData.data);
-      findLastAssign(fetchData.data);
-      setIsLoading(false);
-      setRefreshing(false);
-    } catch (error) {
-      console.log('에러 발생: ', error);
-    }
-  };
-
-  useEffect(() => {
-    setIsLoading(true);
-    saveUserId();
-  }, []);
-
+  const dispatch = useDispatch();
+  const assignment = useSelector(selectAllAssigns);
+  
+  const assignStatus = useSelector(state => state.assigns.status);
+  
   let FIRST_ITEM = assignment[0]?.title;
   let LAST_ITEM = assignment[assignment.length - 1]?.title;
+
+  useEffect(() => {
+    const { nextSchedule } = findNextAssign(assignment);
+    setNextAssign(nextSchedule);
+  }, [assignment])
 
   const Item = props => {
     /*
@@ -348,7 +294,7 @@ const AssignmentScreen = () => {
   return (
     <StyledContainer>
       <HeaderDetail title={'과제'} />
-      {!!isLoading ? (
+      {assignStatus === 'loading' ? (
         <MediumLoader />
       ) : assignment.length === 0 ? (
         <MsgForEmptyScreen content={'등록된 과제가 없습니다'} />
@@ -368,7 +314,7 @@ const AssignmentScreen = () => {
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
-                onRefresh={saveUserId}
+                onRefresh={() => dispatch(fetchAssigns())}
                 tintColor={COLORS.green}
               />
             }

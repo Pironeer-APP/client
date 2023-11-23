@@ -5,6 +5,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
@@ -21,6 +22,7 @@ import {MediumLoader} from '../../components/Loader';
 import useClientTime from '../../use-clientTime';
 import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
+import { fetchAssigns, selectAllAssigns } from '../../features/assigns/assignsSlice';
 
 const ModalBox = styled.View`
   background-color: ${COLORS.gray};
@@ -40,7 +42,6 @@ const AssignmentBox = ({
   due,
   level,
   assignId,
-  getAssigns,
 }) => {
   const navigation = useNavigation();
 
@@ -58,7 +59,6 @@ const AssignmentBox = ({
   const formattedDue = `${dueMonth}.${dueDate} ${dueDay}`;
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
-    getAssigns();
     setModalVisible(!modalVisible);
   };
 
@@ -169,55 +169,39 @@ const AssignmentBox = ({
 
 const AdminAssignmentScreen = ({route}) => {
   const navigation = useNavigation();
-  const [assigns, setAssigns] = useState([]);
   const isFocused = useIsFocused();
   const getLevel = route.params.userLevel;
-  const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const renderItem = ({item}) => {
     // console.log(item);
     return (
       <AssignmentBox
+        id={item.assign_id}
         createdAt={item.created_at}
         title={item.title}
         due={item.due_date}
         level={getLevel}
         assignId={item.assignschedule_id}
-        getAssigns={getAssigns}
       />
     );
   };
-  const getAssigns = async () => {
-    setRefreshing(true);
-    const userToken = await getData('user_token');
-    const url = `/assign/readAssign/all`;
-    const body = {
-      userToken: userToken,
-    };
-    // console.log('body: ', body);
-    try {
-      const responseData = await client.post(url, body);
-      console.log('받아온 데이터: ', responseData);
-      setAssigns(responseData.data);
-      setIsLoading(false);
-      setRefreshing(false);
-    } catch (error) {
-      // 네트워크 오류 또는 예외 처리
-      console.error(error);
-    }
-  };
+
+  const dispatch = useDispatch();
+  const assignment = useSelector(selectAllAssigns);
+  
+  const assignStatus = useSelector(state => state.assigns.status);
 
   useEffect(() => {
-    getAssigns();
+    dispatch(fetchAssigns());
   }, [isFocused]);
 
   return (
     <StyledContainer>
       <HeaderDetail title={'과제 채점'} />
-      {!!isLoading ? (
+      {assignStatus === 'loading' ? (
         <MediumLoader />
-      ) : assigns.length === 0 ? (
+      ) : assignment.length === 0 ? (
         <View style={{flex: 1, paddingHorizontal: 20}}>
           <MsgForEmptyScreen content={'등록된 과제가 없습니다.'} />
           <MainButton
@@ -233,13 +217,13 @@ const AdminAssignmentScreen = ({route}) => {
           <View style={{flex: 1}}>
             <FlatList
               style={{paddingHorizontal: 20}}
-              data={assigns}
+              data={assignment}
               renderItem={renderItem}
               keyExtractor={item => item.assignschedule_id}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
-                  onRefresh={getAssigns}
+                  onRefresh={() => dispatch(fetchAssigns())}
                   tintColor={COLORS.green}
                 />
               }
