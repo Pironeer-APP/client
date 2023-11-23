@@ -22,6 +22,7 @@ import useClientTime from '../use-clientTime';
 import { client } from '../api/client';
 import { getData } from '../api/asyncStorage';
 import { useDispatch } from 'react-redux';
+import { _IOS_HOST, _ANDROID_AVD_HOST } from '../variables';
 
 const StyledBottomLine = styled.View`
   height: 1px;
@@ -32,7 +33,7 @@ const TitleBottomLine = () => <StyledBottomLine />;
 
 export function convertToUrl(url) {
   const host =
-    Platform.OS === 'ios' ? 'http://127.0.0.1:3000/' : 'http://10.0.2.2:3000/';
+    Platform.OS === 'ios' ? _IOS_HOST : _ANDROID_AVD_HOST;
   const FULL_URL = host + url;
   return FULL_URL.replace(/\\/g, '/');
 }
