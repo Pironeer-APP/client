@@ -3,7 +3,7 @@ import React, {useRef, useEffect} from 'react'
 import { Shadow } from 'react-native-shadow-2';
 import { COLORS } from '../assets/Theme';
 
-export default OnAirCircle = () => {
+export default OnAirCircle = ({color = COLORS.green}) => {
   const scale = useRef(new Animated.Value(1)).current; // 초기 크기 1
   const unscale = useRef(new Animated.Value(1)).current; // 초기 크기 1
 
@@ -51,11 +51,11 @@ export default OnAirCircle = () => {
       style={{ padding: 10, transform: [{ scale }] }}
     >
       <Shadow
-        startColor={COLORS.green}
+        startColor={color}
       >
-        <View style={styles.onAirCircleBack}>
+        <View style={styles(color).onAirCircleBack}>
           <Animated.View
-            style={[styles.onAirCircle, { transform: [{ scale: unscale }] }]}
+            style={[styles(color).onAirCircle, { transform: [{ scale: unscale }] }]}
           />
         </View>
       </Shadow>
@@ -63,11 +63,11 @@ export default OnAirCircle = () => {
   )
 }
 
-const styles = StyleSheet.create({
+const styles = (color = COLORS.green) => StyleSheet.create({
   onAirCircleBack: {
     width: 20,
     height: 20,
-    backgroundColor: COLORS.green,
+    backgroundColor: color,
     borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center'
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   onAirCircle: {
     width: 30,
     height: 30,
-    backgroundColor: COLORS.green,
+    backgroundColor: color,
     borderRadius: 100,
     borderWidth: 1,
     borderColor: COLORS.textColor,

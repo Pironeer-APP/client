@@ -1,10 +1,6 @@
 import {
-  StyleSheet,
-  Text,
   View,
-  SafeAreaView,
   Image,
-  TouchableOpacity,
   FlatList,
   Animated,
   Easing,
@@ -13,22 +9,21 @@ import {
 import React, {useState, useEffect} from 'react';
 import * as Progress from 'react-native-progress';
 
-import {ProgressBar, RowView} from './HomeScreen';
+import {RowView} from './HomeScreen';
 import {StyledSubText, StyledText} from '../components/Text';
 import StyledContainer from '../components/StyledContainer';
 import {Box} from '../components/Box';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import HeaderDetail from '../components/Header';
-import {fetchPost, getData} from '../utils';
-import {useIsFocused} from '@react-navigation/native';
-import dayjs from 'dayjs';
 import useProgress from '../use-progress';
 import {GapH} from '../components/Gap';
 import {MediumLoader, TinyLoader} from '../components/Loader';
 import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
 import useClientTime from '../use-clientTime';
 import OnAirCircle from '../components/OnAirCircle';
+import { client } from '../api/client';
+import { getData } from '../api/asyncStorage';
 
 export const StatusCircle = ({grade = 4}) => {
   let imageSource;
@@ -97,6 +92,7 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
   const [limit, setLimit] = useState();
   const [status, setStatus] = useState();
   const [progress, setProgress] = useState(NaN);
+  const [progressColor, setProgressColor] = useState(COLORS.green);
 
   const calcProgress = (item) => {
     const created_at = new Date(item?.created_at);
@@ -117,6 +113,15 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
       setProgress(status / limit);
     }, 1000);
   }, [status]);
+
+  useEffect(() => {
+    // 마감 12시간 전 빨간 프로그레스
+    if(status <= 12 * 60 * 60 * 1000) {
+      setProgressColor(COLORS.blood_red);
+    } else {
+      setProgressColor(COLORS.green);
+    }
+  }, [status])
 
   const [isTimerLoading, setIsTimerLoading] = useState(true);
 
@@ -146,7 +151,7 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
             width: 50,
           }}>
           {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />}
-          <OnAirCircle />
+          <OnAirCircle color={progressColor} />
           {title === lastItem ? <View style={{flex: 1}} /> : <StatusLine />}
         </View>
       </View>
@@ -171,7 +176,7 @@ const InProgressAsgBox = ({grade, title, item, firstItem, lastItem}) => {
                 style={{flex: 1}}
                 width={null}
                 progress={progress ? progress : 1}
-                color={COLORS.green}
+                color={progressColor}
                 borderWidth={0}
                 unfilledColor={COLORS.icon_gray}
                 height={5}
@@ -278,7 +283,7 @@ const AssignmentScreen = () => {
     };
 
     try {
-      const fetchData = await fetchPost(url, body);
+      const fetchData = await client.post(url, body);
       setAssignment(fetchData.data);
       findLastAssign(fetchData.data);
       setIsLoading(false);
@@ -318,7 +323,7 @@ const AssignmentScreen = () => {
             firstItem={FIRST_ITEM}
             lastItem={LAST_ITEM}
           />
-        ) : props.nextAssign.AssignId >= props.index ? (
+        ) : props.nextAssign.AssignId >= props.item.AssignId ? (
           <InProgressAsgBox
             grade={props.item.grade}
             title={props.item.title}
