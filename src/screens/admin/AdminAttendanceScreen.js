@@ -20,9 +20,10 @@ import {StyledSubText, StyledText} from '../../components/Text';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
 import Gap, {GapH} from '../../components/Gap';
-import {fetchPost, getData} from '../../utils';
-import {ButtonContainer, MainButton, MiniButton} from '../../components/Button';
+import {ButtonContainer, MainButton} from '../../components/Button';
 import useClientTime from '../../use-clientTime';
+import { client } from '../../api/client';
+import { getData } from '../../api/asyncStorage';
 
 const DateContainer = styled.View`
   border-radius: 12px;
@@ -202,7 +203,7 @@ const AdminAttendanceScreen = () => {
     const url = '/attend/getCode';
     const body = {userToken};
 
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     if (res.code) {
       setCodeText(res.code.code);
       let timeout = new Date(res.code.created_at);
@@ -212,7 +213,6 @@ const AdminAttendanceScreen = () => {
   };
   useEffect(() => {
     getTodayCode();
-    setIsToday(true)
   }, []);
 
   // 현재 시간 대비 코드 남은 기간
@@ -242,7 +242,7 @@ const AdminAttendanceScreen = () => {
     const body = {
       userToken: userToken,
     };
-    const result = await fetchPost(url, body);
+    const result = await client.post(url, body);
     // console.log(result.sessions);
     setSessions(result.sessions);
   };
@@ -253,7 +253,7 @@ const AdminAttendanceScreen = () => {
     const body = {
       userToken: userToken,
     };
-    const result = await fetchPost(url, body);
+    const result = await client.post(url, body);
     console.log('result: ', result.sessions);
     setSessionForHighlight(result.sessions);
   };
@@ -292,7 +292,7 @@ const AdminAttendanceScreen = () => {
       token: userToken,
     };
     setCodeLoading(true);
-    await fetchPost(url, body);
+    await client.post(url, body);
 
     await getTodayCode();
     setCodeLoading(false);
@@ -333,7 +333,7 @@ const AdminAttendanceScreen = () => {
       userToken: userToken,
       deleteCode: deleteCode,
     };
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     setLoading(false);
     setModalVisible(!isModalVisible);
     if (res.result === '삭제 완료') {
@@ -377,7 +377,7 @@ const AdminAttendanceScreen = () => {
             userToken: userToken,
             session_id: sessionId,
           };
-          const res = await fetchPost(url, body);
+          const res = await client.post(url, body);
           setLoading(false);
           if (res.result == false) {
             setEndFailedContent('출결 저장 실패: 출결 3회 이상 진행 됨');
@@ -421,7 +421,7 @@ const AdminAttendanceScreen = () => {
               userToken: userToken,
               session_id: sessionId,
             };
-            const res = await fetchPost(url, body);
+            const res = await client.post(url, body);
             setLoading(false);
             if (res.result == true) {
               setEndFinModalVisible(true);

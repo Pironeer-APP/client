@@ -1,8 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React, {useEffect} from 'react'
 import { COLORS } from '../assets/Theme'
-import { fetchPost } from '../utils';
-import useUserInfo from '../use-userInfo';
 import useDepositDetail from './use-depositDetail';
 
 export default function CouponElement({coupon, onPressDeleteBadge}) {

@@ -1,31 +1,27 @@
 import {
   View,
-  Text,
   TouchableOpacity,
   Platform,
-  Image,
   Dimensions,
   ScrollView,
   Alert,
   RefreshControl,
 } from 'react-native';
 import React, {useState, useEffect, useMemo} from 'react';
-import dayjs from 'dayjs';
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
 import {useRoute, useIsFocused} from '@react-navigation/native';
 import {StyledSubText, StyledText} from '../components/Text';
-import useUserInfo from '../use-userInfo';
-import {MainButton} from '../components/Button';
-import {fetchGet, fetchPost, getAPIHost, getData, pushNoti} from '../utils';
 import {Badge} from './AnnouncementScreen';
 import {RowView} from './HomeScreen';
 import Gap from '../components/Gap';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components';
-import {Box} from '../components/Box';
 import AutoHeightImage from 'react-native-auto-height-image';
 import useClientTime from '../use-clientTime';
+import { client } from '../api/client';
+import { getData } from '../api/asyncStorage';
+import { useDispatch } from 'react-redux';
 import { _IOS_HOST, _ANDROID_AVD_HOST } from '../variables';
 
 const StyledBottomLine = styled.View`
@@ -48,10 +44,7 @@ const AnnouncementDetail = ({navigation}) => {
   const route = useRoute();
   const post_id = route.params.post_id;
 
-  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
-  useEffect(() => {
-    getUserInfoFromServer();
-  }, []);
+  const account = useSelector(selectAccount);
 
   const isFocused = useIsFocused();
   const getPost = async () => {
@@ -59,7 +52,7 @@ const AnnouncementDetail = ({navigation}) => {
     const url = `/post/detail`;
     const userToken = await getData('user_token');
     const body = {userToken, post_id};
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     setPost(res.post);
     setImages(res.result);
     setRefreshing(false);
@@ -87,7 +80,7 @@ const AnnouncementDetail = ({navigation}) => {
     const body = {post_id, userToken};
 
     try {
-      await fetchPost(url, body);
+      await client.post(url, body);
       // await pushNoti({title: '공지가 삭제되었습니다.', body: ''});
       navigation.navigate('AnnouncementScreen');
     } catch (error) {
@@ -117,7 +110,7 @@ const AnnouncementDetail = ({navigation}) => {
               <StyledSubText content={`${RenderDate}`} />
               <Badge sort={post.category} />
             </RowView>
-            {!!userInfoFromServer.is_admin && (
+            {!!account.is_admin && (
               <RowView style={{gap: 10}}>
                 <TouchableOpacity
                   onPress={() =>

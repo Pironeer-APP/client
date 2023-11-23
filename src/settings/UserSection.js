@@ -4,19 +4,10 @@ import { StyledText } from '../components/Text'
 import { RightArrowBtn } from '../components/Button'
 import Gap from '../components/Gap'
 import Section from './Section'
-import { getData } from '../utils'
-import useUserInfo from '../use-userInfo'
 import { useNavigation } from '@react-navigation/native';
 
 export default function UserSection() {
-  const {
-    userInfoFromServer,
-    getUserInfoFromServer
-  } = useUserInfo();
-  
-  useEffect(() => {
-    getUserInfoFromServer();
-  }, []);
+  const account = useSelector(selectAccount);
 
   const navigation = useNavigation();
 
@@ -33,8 +24,8 @@ export default function UserSection() {
       <View style={styles.profile}>
         <ImageBackground style={styles.profileImg} source={require("../assets/images/headerLogo.png")} />
         <View style={styles.profileContent}>
-          <StyledText fontSize={25} content={userInfoFromServer.name} />
-          <StyledText fontSize={13} content={userInfoFromServer.email} />
+          <StyledText fontSize={25} content={account.name} />
+          <StyledText fontSize={13} content={account.email} />
         </View>
       </View>
       <Gap />
@@ -43,7 +34,7 @@ export default function UserSection() {
       <SettingsItem text="비밀번호 변경" onPress={() => onPressCheck("password")} />
       <Gap />
       <SettingsItem text="이메일 변경" onPress={() => onPressCheck("email")} />
-      {userInfoFromServer.is_admin ? (
+      {account.is_admin ? (
         <>
         <Gap />
         <SettingsItem text="(관리자) 기수 변경" onPress={() => onPressUpdateLevel("level")} />

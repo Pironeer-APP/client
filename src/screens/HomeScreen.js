@@ -1,14 +1,11 @@
 import {
   StyleSheet,
-  Text,
   View,
-  SafeAreaView,
   Image,
   Platform,
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Alert,
   Animated,
   Linking,
 } from 'react-native';
@@ -20,13 +17,16 @@ import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import {StyledSubText, StyledText} from '../components/Text';
 import {Box} from '../components/Box';
-import {RightArrowBtn, UnTouchableRightArrow} from '../components/Button';
+import {UnTouchableRightArrow} from '../components/Button';
 import StyledContainer from '../components/StyledContainer';
 import Gap, {GapH} from '../components/Gap';
-import useUserInfo from '../use-userInfo';
-import {fetchPost, getData} from '../utils';
-import useProgress from '../use-progress';
 import {TinyLoader} from '../components/Loader';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAssigns, selectAllAssigns } from '../features/assigns/assignsSlice';
+import { calcProgress, convertTime, findNextAssign } from '../utils';
+import { client } from '../api/client';
+import { getData } from '../api/asyncStorage';
+import { fetchAccount, selectAccount, selectJwt } from '../features/account/accountSlice';
 
 // import messaging from '@react-native-firebase/messaging';
 
@@ -108,28 +108,29 @@ const HomeScreen = ({navigation}) => {
 
   const isFocused = useIsFocused();
 
-  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
-
+  const account = useSelector(selectAccount);
+  const jwt = useSelector(selectJwt);
+  const accountStatus = useSelector(state => state.account.status);
   useEffect(() => {
-    getUserInfoFromServer();
-  }, [isFocused]);
+    dispatch(fetchAccount());
+  }, [])
 
   const goToAsgnmt = () => {
-    userInfoFromServer.is_admin === 1
+    account.is_admin === 1
       ? navigation.navigate('AdminAssignmentScreen', {
-          userLevel: userInfoFromServer.level,
+          userLevel: account.level,
         })
       : navigation.navigate('AssignmentScreen');
   };
   const goToAnncmt = () => {
-    navigation.navigate('AnnouncementScreen', {userInfo: userInfoFromServer});
+    navigation.navigate('AnnouncementScreen', {userInfo: account});
   };
   const goToDeposit = () => {
     navigation.navigate('DepositScreen');
   };
   const goToAtndnc = () => {
     //관리자인 경우 출석페이지
-    if (!!userInfoFromServer.is_admin) {
+    if (!!account.is_admin) {
       navigation.navigate('AdminAttendanceScreen');
     }
     // 일반회원인 경우 출석페이지
@@ -144,82 +145,38 @@ const HomeScreen = ({navigation}) => {
     navigation.navigate('AdminSessionScreen');
   };
 
-  /*
-    프로그레스 계산
-    1. /assign/readAssign/all 경로로 요청, 모든 과제 가져옴(생성시각 오름차순)
-    2. 과제 중 마감 기한이 현재 시간보다 늦은 과제 포착
-    2-1. 전체 과제 개수 - 해당 과제까지의 인덱스 = 다음 과제 개수
-    3. 해당 과제의 created_at을 10:00:00으로 맞추고
-    4. 변환된 created_at과 due_date의 차이가 limit
-    5. now와 due_date의 차이가 status
-    6. progress = status / limit
-  */
-
-  const [limit, setLimit] = useState(0);
-  const [status, setStatus] = useState(0);
+  const [status, setStatus] = useState();
   const [homeProgress, setHomeProgress] = useState(NaN);
 
-  // 3-5번
-  const calcProgress = (next_assign) => {
-    const created_at = new Date(next_assign?.created_at);
-    // 생성 시각을 정확하게 고정
-    created_at.setHours(10);
-    created_at.setMinutes(0);
-    created_at.setSeconds(0);
-
-    const due_date = new Date(next_assign?.due_date);
-    const now = new Date();
-
-    setLimit(due_date - created_at);
-    setStatus(due_date - now);
-  }
-
-  const [nextAssign, setNextAssgin] = useState(null);
+  const [nextAssign, setNextAssign] = useState(null);
   const [assignCnt, setAssignCnt] = useState(0);
 
-  // reset
-  const resetState = () => {
-    setLimit(NaN)
-    setStatus(NaN)
-    setHomeProgress(NaN)
-    setNextAssgin(null)
-    setAssignCnt(NaN)
-  }
-
-  // 2번
-  const findNextAssign = (assigns) => {
-    const now = new Date();
-    setNextAssgin(null);
-    for(let assign of assigns) {
-      const assign_due_date = new Date(assign.due_date);
-      if(now <= assign_due_date) {
-        setNextAssgin(assign);
-        setAssignCnt(assigns.length - assign.NewAssignId + 1); // 10개 데이터 중 8번째가 다음 과제. 남은 건 다음 과제까지 포함해서 1 더함
-        break;
-      }
-    }
-  }
-
-  // 1번
-  const getAssigns = async () => {
-    const userToken = await getData('user_token');
-    const url = '/assign/getAssigns';
-    const body = {userToken};
-    const res = await fetchPost(url, body);
-    
-    findNextAssign(res.data);
-    calcProgress(nextAssign);
-    setHomeProgress(status / limit);
-  }
+  const dispatch = useDispatch();
+  const assignment = useSelector(selectAllAssigns);
+  
+  const assignStatus = useSelector(state => state.assigns.status);
+  
   useEffect(() => {
-    getAssigns();
-  }, [isFocused]);
+    if(assignStatus === 'idle') {
+      dispatch(fetchAssigns());
+    }
+  }, [assignment, dispatch])
+
+  const progressConfig = () => {
+    const { nextSchedule, scheduleCnt } = findNextAssign(assignment);
+    setNextAssign(nextSchedule);
+    setAssignCnt(scheduleCnt);
+    // 프로그레스
+    const { limit, status, progress } = calcProgress(nextAssign?.created_at, nextAssign?.due_date);
+    setHomeProgress(progress);
+    setStatus(status);
+  }
+
   useEffect(() => {
     setTimeout(() => {
-      calcProgress(nextAssign);
-      setHomeProgress(status / limit);
-    }, 1000);
-  }, [status]);
+      progressConfig();
+    }, 1000)
+  }, [nextAssign, status])
 
   // 프로그레스 로딩
   const [isTimerLoading, setIsTimerLoading] = useState(false);
@@ -228,14 +185,34 @@ const HomeScreen = ({navigation}) => {
     isNaN(homeProgress) ? setIsTimerLoading(true) : setIsTimerLoading(false);
   }, [homeProgress]);
 
-  const {convertTime} = useProgress();
-
   const {hour, min, sec} = convertTime(Math.trunc(status / 1000));
 
   const curTitle =
-    assignCnt > 1
-      ? `${nextAssign?.title} 외 ${assignCnt - 1}개`
+    assignCnt >= 1
+      ? `${nextAssign?.title} 외 ${assignCnt}개`
       : nextAssign?.title;
+
+
+  const [progressColor, setProgressColor] = useState(COLORS.green);
+  useEffect(() => {
+    // 마감 12시간 전 빨간 프로그레스
+    if(status <= 12 * 60 * 60 * 1000) {
+      setProgressColor(COLORS.blood_red);
+    } else {
+      setProgressColor(COLORS.green);
+    }
+  }, [status])
+
+  // 커리큘럼 url 받아오기
+  const [curiUrl, setCuriUrl] = useState();
+  const getUrl = async () => {
+    const userToken = await getData('user_token');
+    const res = await client.post('/curi', {userToken});
+    setCuriUrl(res.url);
+  }
+  useEffect(() => {
+    getUrl();
+  }, [])
 
   return (
     <StyledContainer>
@@ -243,22 +220,29 @@ const HomeScreen = ({navigation}) => {
         <View style={{padding: 20}}>
           <Header />
           <Gap />
-          <StyledText
-            content={`${userInfoFromServer.level}기 ${userInfoFromServer.name}님 \n환영합니다`}
-            fontSize={24}
-          />
+          {accountStatus === 'loading' ? 
+            <StyledText
+              content={'\n환영합니다'}
+              fontSize={24}
+            />
+            :
+            <StyledText
+              content={`${account.level}기 ${account.name}님 \n환영합니다`}
+              fontSize={24}
+            />
+          }
           <Gap />
           <Box>
             <TouchableOpacity style={{padding: 20}} onPress={goToAsgnmt}>
               <RowView style={{marginBottom: 10}}>
                 <StyledText
-                  content={userInfoFromServer.is_admin ? '과제 관리' : '과제'}
+                  content={account.is_admin ? '과제 관리' : '과제'}
                   fontSize={24}
                 />
                 <UnTouchableRightArrow />
               </RowView>
 
-              {!!nextAssign ? (
+              {assignStatus !== 'loading' ? (
                 <>
                   <StyledText content={curTitle} fontSize={18} />
                   <RowView style={{marginTop: 10}}>
@@ -269,7 +253,7 @@ const HomeScreen = ({navigation}) => {
                       style={{flex: 1}}
                       width={null}
                       progress={homeProgress ? homeProgress : 1}
-                      color={COLORS.green}
+                      color={progressColor}
                       borderWidth={0}
                       unfilledColor={COLORS.icon_gray}
                       height={5}
@@ -357,7 +341,7 @@ const HomeScreen = ({navigation}) => {
           </View>
           <Gap />
           {/* 관리자일 때만 보이는 */}
-          {!!userInfoFromServer.is_admin && (
+          {!!account.is_admin && (
             <>
               <View style={{gap: 20, flex: 1, flexDirection: 'row'}}>
                 <View style={styles.middleBox}>
@@ -407,7 +391,8 @@ const HomeScreen = ({navigation}) => {
           </Box>
           <Gap />
           <Box>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => Linking.openURL(curiUrl)}>
               <RowView style={{padding: 20}}>
                 <StyledText content={'노션 바로가기'} fontSize={20} />
                 <UnTouchableRightArrow />

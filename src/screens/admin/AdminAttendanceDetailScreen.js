@@ -21,9 +21,10 @@ import {FontStyledText} from '../../components/Text';
 // import { RightArrowBtn } from '../../components/Button'
 import {useNavigation} from '@react-navigation/native';
 import {MainButton} from '../../components/Button';
-import {fetchPost, getData} from '../../utils';
 import {useIsFocused} from '@react-navigation/native';
 import { GapH } from '../../components/Gap';
+import { client } from '../../api/client';
+import { getData } from '../../api/asyncStorage';
 
 // const useAdminAttendance = () => {
 //   const
@@ -149,7 +150,7 @@ const AdminAttendanceElement = ({
       attendType: attendType,
       session_id: session_id,
     };
-    const result = await fetchPost(url, body);
+    const result = await client.post(url, body);
     setBottomSheetVisible(!isBottomSheetVisible);
     setSelectedBtn(0);
     setRerender(!rerender);
@@ -173,7 +174,7 @@ const AdminAttendanceElement = ({
               user_id: userInfo.user_id,
               session_id: session_id
             };
-            await fetchPost(url, body);
+            await client.post(url, body);
             setRerender(!rerender);
           }
         }
@@ -313,7 +314,7 @@ const AdminAttendanceDetailScreen = ({route}) => {
       userToken: userToken,
       session_id: session_id,
     };
-    const result = await fetchPost(url, body);
+    const result = await client.post(url, body);
     setAttends(result.attends);
   };
 

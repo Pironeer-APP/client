@@ -9,10 +9,9 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import StyledContainer from '../../components/StyledContainer';
-import {StyledText} from '../../components/Text';
 import HeaderDetail from '../../components/Header';
 import {COLORS} from '../../assets/Theme';
 import {
@@ -21,8 +20,10 @@ import {
   ImagesContainer,
   TitleContainer,
 } from './AdminCreateNotice';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {fetchPost, getAPIHost, getData, pushNoti} from '../../utils';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {getAPIHost} from '../../utils';
+import { client } from '../../api/client';
+import { getData } from '../../api/asyncStorage';
 
 const AdminUpdateNotice = () => {
   const route = useRoute();
@@ -49,7 +50,7 @@ const AdminUpdateNotice = () => {
       Alert.alert('내용을 입력하세요');
     } else {
       try {
-        await fetchPost(url, body);
+        await client.post(url, body);
         if (imgsIsChanged) {
           updateImages(post.post_id);
         }

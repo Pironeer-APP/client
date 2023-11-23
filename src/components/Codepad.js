@@ -1,17 +1,13 @@
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   Image,
   Platform,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {COLORS} from '../assets/Theme';
-import {GapH} from './Gap';
 import {StyledText} from './Text';
-import {fetchPost, getData} from '../utils';
-import Modal from 'react-native-modal';
 
 const Codebox = ({code, highlight}) => {
   return (

@@ -1,5 +1,5 @@
-import {View, Text} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import {View} from 'react-native';
+import React, {useState} from 'react';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
 import {Box} from '../../components/Box';
@@ -8,9 +8,9 @@ import DatePicker from 'react-native-date-picker';
 import {CustomTextInput} from '../../components/Input';
 import {StyledText} from '../../components/Text';
 import {COLORS} from '../../assets/Theme';
-import {fetchPost, getData} from '../../utils';
 import {useNavigation} from '@react-navigation/native';
-import dayjs from 'dayjs';
+import { client } from '../../api/client';
+import { getData } from '../../api/asyncStorage';
 
 const AdminUpdateAssign = ({route}) => {
   const navigation = useNavigation();
@@ -33,7 +33,7 @@ const AdminUpdateAssign = ({route}) => {
     const body = {userToken, assignId, title, formattedDate};
 
     try {
-      await fetchPost(url, body);
+      await client.post(url, body);
       navigation.goBack();
     } catch (error) {
       console.error('Error sending data:', error);

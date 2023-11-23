@@ -1,32 +1,26 @@
 import {
   FlatList,
-  Platform,
   RefreshControl,
-  Text,
   TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
-import React, {useState, useEffect, useMemo} from 'react';
-import dayjs from 'dayjs';
+import React, {useState, useEffect} from 'react';
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import styled from 'styled-components/native';
 import {COLORS} from '../assets/Theme';
-import Gap from '../components/Gap';
-import {Box, PaddingBox} from '../components/Box';
+import {PaddingBox} from '../components/Box';
 import {StyledSubText, StyledText} from '../components/Text';
 import {RowView} from './HomeScreen';
 import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {MainButton} from '../components/Button';
-import {useRoute} from '@react-navigation/native';
-import {fetchGet, fetchPost, getData} from '../utils';
-import useUserInfo from '../use-userInfo';
 import {MediumLoader} from '../components/Loader';
 import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
-import {create} from 'react-test-renderer';
 import useClientTime from '../use-clientTime';
+import { client } from '../api/client';
+import { getData } from '../api/asyncStorage';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
@@ -182,7 +176,7 @@ const AnnouncementScreen = ({navigation}) => {
     const url = '/post/all';
     userToken = await getData('user_token');
     body = {userToken};
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     setPosts(res.posts);
     setIsLoading(false);
     setRefreshing(false);
@@ -230,10 +224,7 @@ const AnnouncementScreen = ({navigation}) => {
     }
   };
 
-  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
-  useEffect(() => {
-    getUserInfoFromServer();
-  }, []);
+  const account = useSelector(selectAccount);
 
   return (
     <StyledContainer>
@@ -273,7 +264,7 @@ const AnnouncementScreen = ({navigation}) => {
               </View>
             )}
           />
-          {!!userInfoFromServer.is_admin && (
+          {!!account.is_admin && (
             <View style={{paddingHorizontal: 20}}>
             <MainButton
               content={'글 작성하기'}

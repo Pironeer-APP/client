@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   KeyboardAvoidingView,
   StyleSheet,
   Alert,
@@ -15,8 +14,9 @@ import Gap from '../components/Gap';
 import {StyledText} from '../components/Text';
 import {MainButton} from '../components/Button';
 import {SettingInput} from '../components/Input';
-import {autoHyphen, fetchPost} from '../utils';
+import {autoHyphen} from '../utils';
 import {COLORS} from '../assets/Theme';
+import { client } from '../api/client';
 
 export default function FindAccountScreen({navigation}) {
   const [data, setData] = useState('');
@@ -32,7 +32,7 @@ export default function FindAccountScreen({navigation}) {
       phone: data,
     };
     setLoading(true);
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     setLoading(false);
     if (res.result === '비밀번호 변경 완료') {
       Alert.alert(

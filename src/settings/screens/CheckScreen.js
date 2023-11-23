@@ -1,12 +1,11 @@
 import {
   View,
-  Text,
   StyleSheet,
   KeyboardAvoidingView,
   Alert,
   ScrollView,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
 import {StyledText} from '../../components/Text';
@@ -14,8 +13,9 @@ import {MainButton} from '../../components/Button';
 import {useNavigation} from '@react-navigation/native';
 import {SettingInput} from '../../components/Input';
 import Gap from '../../components/Gap';
-import useUserInfo from '../../use-userInfo';
-import {autoHyphen, fetchPost, getData} from '../../utils';
+import {autoHyphen} from '../../utils';
+import { client } from '../../api/client';
+import { getData } from '../../api/asyncStorage';
 
 const infoType = {
   phone: {
@@ -51,7 +51,7 @@ export default function CheckScreen({route}) {
       data: data,
       user_token: userToken,
     };
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     return res;
   };
 

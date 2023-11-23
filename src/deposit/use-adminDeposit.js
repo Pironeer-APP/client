@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { fetchPost, getData } from '../utils';
+import { client } from '../api/client';
+import { getData } from '../api/asyncStorage';
 
 export default function useAdminDeposit() {
   const [userList, setUserList] = useState([]);
@@ -10,7 +11,7 @@ export default function useAdminDeposit() {
     const body = {
       token: adminToken
     }
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     setUserList(res.userInfoList);
   }
 

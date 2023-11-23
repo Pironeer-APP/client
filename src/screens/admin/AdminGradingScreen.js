@@ -19,8 +19,9 @@ import {StatusCircle} from '../AssignmentScreen'; // 0: x / 1, 2: semo / 3: O
 import Gap from '../../components/Gap';
 import {COLORS} from '../../assets/Theme';
 import {Image} from 'react-native-svg';
-import {fetchPost, getData} from '../../utils';
 import {MediumLoader} from '../../components/Loader';
+import { client } from '../../api/client';
+import { getData } from '../../api/asyncStorage';
 
 const UnSelectedBtn = () => (
   <View
@@ -83,7 +84,7 @@ const Student = ({
       inputGrade: grade,
     };
     try {
-      await fetchPost(url, body);
+      await client.post(url, body);
       setModalVisible(!modalVisible);
       setStdGrade(grade);
       getStdsData();
@@ -101,7 +102,7 @@ const Student = ({
       updateGrade: grade,
     };
     try {
-      await fetchPost(url, body);
+      await client.post(url, body);
       setModalVisible(!modalVisible);
       setStdGrade(grade);
       getStdsData();
@@ -201,7 +202,7 @@ const AdminGradingScreen = () => {
     const url = `/assign/readAssign/detail`;
     const body = {assignId, userToken};
     try {
-      const stdDatas = await fetchPost(url, body);
+      const stdDatas = await client.post(url, body);
       setStdInfo(stdDatas.data);
       setIsLoading(false);
       setRefreshing(false);

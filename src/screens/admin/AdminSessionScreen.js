@@ -1,34 +1,27 @@
 import {
-  StyleSheet,
-  Text,
   View,
-  SafeAreaView,
   Image,
-  TouchableOpacity,
   FlatList,
-  Animated,
-  Easing,
   Pressable,
   Alert,
 } from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 
-import {ProgressBar, RowView} from '../HomeScreen';
+import {RowView} from '../HomeScreen';
 import {StyledSubText, StyledText} from '../../components/Text';
 import StyledContainer from '../../components/StyledContainer';
 import {Box} from '../../components/Box';
 import {COLORS} from '../../assets/Theme';
 import HeaderDetail from '../../components/Header';
 import {MainButton} from '../../components/Button';
-import useUserInfo from '../../use-userInfo';
-import {dayOfWeek, fetchPost, getData, getLocal} from '../../utils';
-import useProgress from '../../use-progress';
 import IsFaceBox from '../../components/IsFaceBox';
 import Gap, {GapH} from '../../components/Gap';
 import useClientTime from '../../use-clientTime';
 import OnAirCircle from '../../components/OnAirCircle';
 import StatusCircle from '../../components/StatusCircle';
+import { client } from '../../api/client';
+import { getData } from '../../api/asyncStorage';
 
 const StatusLine = () => {
   return (
@@ -183,13 +176,13 @@ const AssignmentScreen = ({navigation}) => {
   const findNextSession = (sessions) => {
     const now = new Date();
 
-    for(let i = 0; i < sessions.length; i++) {
+    for(let i = sessions.length - 1; i >= 0; i--) {
       const sessionDate = new Date(sessions[i].date);
       
       // 오늘 이후의 날짜에 박스
-      if(now > sessionDate) {
-        setNextSessionId(sessions[i-1].session_id);
-        setInitialScrollIndex(sessions[i-1].cnt);
+      if(now <= sessionDate) {
+        setNextSessionId(sessions[i].session_id);
+        setInitialScrollIndex(sessions[i].cnt);
         break;
       }
     }
@@ -201,7 +194,7 @@ const AssignmentScreen = ({navigation}) => {
     const body = {
       userToken: userToken,
     };
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
 
     setSessionData(res.sessions);
     findNextSession(res.sessions);
@@ -242,7 +235,7 @@ const onLongPressDelete = session_id => {
             userToken: userToken,
             session_id: session_id,
           };
-          await fetchPost(url, body);
+          await client.post(url, body);
           await getSessions();
         },
       },

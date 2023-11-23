@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { autoHyphen, fetchPost } from '../utils';
+import { autoHyphen } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { client } from '../api/client';
 
 export default function useLogin() {
   const [phoneId, setPhoneId] = useState('');
@@ -19,7 +20,7 @@ export default function useLogin() {
       password: password
     }
     try {
-      const fetchData = await fetchPost(url, body);
+      const fetchData = await client.post(url, body);
       console.log('info...', fetchData.token); // 로그인 정보 token, 불일치면 {token: false}
       if (fetchData.token === false) {
         setLoginStatus(false);
