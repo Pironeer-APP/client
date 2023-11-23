@@ -17,14 +17,11 @@ import {Box} from '../components/Box';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import HeaderDetail from '../components/Header';
-import useProgress from '../use-progress';
 import {GapH} from '../components/Gap';
 import {MediumLoader, TinyLoader} from '../components/Loader';
 import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
 import useClientTime from '../use-clientTime';
 import OnAirCircle from '../components/OnAirCircle';
-import { client } from '../api/client';
-import { getData } from '../api/asyncStorage';
 import { fetchAssigns, selectAllAssigns } from '../features/assigns/assignsSlice';
 import { calcProgress, convertTime, findNextAssign } from '../utils';
 
