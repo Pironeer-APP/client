@@ -22,6 +22,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import useClientTime from '../use-clientTime';
 import { client } from '../api/client';
 import { getData } from '../api/asyncStorage';
+import { useDispatch } from 'react-redux';
 
 const StyledBottomLine = styled.View`
   height: 1px;
@@ -43,10 +44,7 @@ const AnnouncementDetail = ({navigation}) => {
   const route = useRoute();
   const post_id = route.params.post_id;
 
-  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
-  useEffect(() => {
-    getUserInfoFromServer();
-  }, []);
+  const account = useSelector(selectAccount);
 
   const isFocused = useIsFocused();
   const getPost = async () => {
@@ -112,7 +110,7 @@ const AnnouncementDetail = ({navigation}) => {
               <StyledSubText content={`${RenderDate}`} />
               <Badge sort={post.category} />
             </RowView>
-            {!!userInfoFromServer.is_admin && (
+            {!!account.is_admin && (
               <RowView style={{gap: 10}}>
                 <TouchableOpacity
                   onPress={() =>

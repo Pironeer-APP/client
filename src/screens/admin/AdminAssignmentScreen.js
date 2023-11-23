@@ -174,10 +174,9 @@ const AdminAssignmentScreen = ({route}) => {
   const [refreshing, setRefreshing] = useState(false);
 
   const renderItem = ({item}) => {
-    // console.log(item);
     return (
       <AssignmentBox
-        id={item.assign_id}
+        key={item.AssignId}
         createdAt={item.created_at}
         title={item.title}
         due={item.due_date}

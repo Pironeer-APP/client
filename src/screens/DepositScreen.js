@@ -13,17 +13,15 @@ import {COLORS} from '../assets/Theme';
 import {StatusBar} from 'react-native';
 import styled from 'styled-components';
 import { client } from '../api/client';
+import { useDispatch } from 'react-redux';
+import { fetchAccount } from '../features/account/accountSlice';
 
 const DepositScreen = () => {
-  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
+  const dispatch = useDispatch();
+  const account = useSelector(selectAccount);
 
   const {depositHistory, couponInfo, getDepositHistory, getCouponInfo} =
     useDepositDetail();
-
-  useEffect(() => {
-    console.log('1');
-    getUserInfoFromServer();
-  }, []);
 
   useEffect(() => {
     getDepositHistory();
@@ -35,17 +33,17 @@ const DepositScreen = () => {
 
   const UseCoupon = async () => {
     const url = '/deposit/useCoupon';
-    body = {userId: userInfoFromServer.user_id};
+    body = {userId: account.user_id};
     if (couponInfo.length === 0) {
       Alert.alert('사용 가능한 보증금 방어권이 없습니다.');
-    } else if (userInfoFromServer.deposit >= 120000) {
+    } else if (account.deposit >= 120000) {
       Alert.alert('보증금 12만원은 보증금 방어권을 사용하실 수 없습니다.');
     } else {
       const res = await client.post(url, body);
       Alert.alert('사용되었습니다.');
       console.log('3');
       getDepositHistory();
-      getUserInfoFromServer();
+      dispatch(fetchAccount());
       getCouponInfo();
     }
   };
@@ -61,24 +59,24 @@ const DepositScreen = () => {
   };
   return (
     <>
-      {!!userInfoFromServer.is_admin && (
+      {!!account.is_admin && (
         <StyledContainer>
           <HeaderDetail title={'보증금 관리'} />
-          <AdminDepositList adminInfo={userInfoFromServer} />
+          <AdminDepositList adminInfo={account} />
         </StyledContainer>
       )}
-      {!userInfoFromServer.is_admin && (
+      {!account.is_admin && (
         <Container>
           <StatusBar backgroundColor={COLORS.deposit_header_blue} />
           <HeaderDetail
-            title={`${userInfoFromServer.name}님의 보증금 관리`}
+            title={`${account.name}님의 보증금 관리`}
             backgroundColor={COLORS.deposit_header_blue}
             color={'white'}
           />
 
           <StyledContainer>
             <DepositHistoryHeader
-              userInfo={userInfoFromServer}
+              userInfo={account}
               couponInfo={couponInfo}
               onPressUseCoupon={onPressUseCoupon}
             />

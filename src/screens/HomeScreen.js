@@ -27,6 +27,7 @@ import { fetchAssigns, selectAllAssigns } from '../features/assigns/assignsSlice
 import { calcProgress, convertTime, findNextAssign } from '../utils';
 import { client } from '../api/client';
 import { getData } from '../api/asyncStorage';
+import { fetchAccount, selectAccount, selectJwt } from '../features/account/accountSlice';
 
 // import messaging from '@react-native-firebase/messaging';
 
@@ -108,28 +109,29 @@ const HomeScreen = ({navigation}) => {
 
   const isFocused = useIsFocused();
 
-  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
-
+  const account = useSelector(selectAccount);
+  const jwt = useSelector(selectJwt);
+  const accountStatus = useSelector(state => state.account.status);
   useEffect(() => {
-    getUserInfoFromServer();
-  }, [isFocused]);
+    dispatch(fetchAccount());
+  }, [])
 
   const goToAsgnmt = () => {
-    userInfoFromServer.is_admin === 1
+    account.is_admin === 1
       ? navigation.navigate('AdminAssignmentScreen', {
-          userLevel: userInfoFromServer.level,
+          userLevel: account.level,
         })
       : navigation.navigate('AssignmentScreen');
   };
   const goToAnncmt = () => {
-    navigation.navigate('AnnouncementScreen', {userInfo: userInfoFromServer});
+    navigation.navigate('AnnouncementScreen', {userInfo: account});
   };
   const goToDeposit = () => {
     navigation.navigate('DepositScreen');
   };
   const goToAtndnc = () => {
     //관리자인 경우 출석페이지
-    if (!!userInfoFromServer.is_admin) {
+    if (!!account.is_admin) {
       navigation.navigate('AdminAttendanceScreen');
     }
     // 일반회원인 경우 출석페이지
@@ -219,16 +221,23 @@ const HomeScreen = ({navigation}) => {
         <View style={{padding: 20}}>
           <Header />
           <Gap />
-          <StyledText
-            content={`${userInfoFromServer.level}기 ${userInfoFromServer.name}님 \n환영합니다`}
-            fontSize={24}
-          />
+          {accountStatus === 'loading' ? 
+            <StyledText
+              content={'\n환영합니다'}
+              fontSize={24}
+            />
+            :
+            <StyledText
+              content={`${account.level}기 ${account.name}님 \n환영합니다`}
+              fontSize={24}
+            />
+          }
           <Gap />
           <Box>
             <TouchableOpacity style={{padding: 20}} onPress={goToAsgnmt}>
               <RowView style={{marginBottom: 10}}>
                 <StyledText
-                  content={userInfoFromServer.is_admin ? '과제 관리' : '과제'}
+                  content={account.is_admin ? '과제 관리' : '과제'}
                   fontSize={24}
                 />
                 <UnTouchableRightArrow />
@@ -333,7 +342,7 @@ const HomeScreen = ({navigation}) => {
           </View>
           <Gap />
           {/* 관리자일 때만 보이는 */}
-          {!!userInfoFromServer.is_admin && (
+          {!!account.is_admin && (
             <>
               <View style={{gap: 20, flex: 1, flexDirection: 'row'}}>
                 <View style={styles.middleBox}>

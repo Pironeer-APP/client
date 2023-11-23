@@ -225,10 +225,7 @@ const AnnouncementScreen = ({navigation}) => {
     }
   };
 
-  const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
-  useEffect(() => {
-    getUserInfoFromServer();
-  }, []);
+  const account = useSelector(selectAccount);
 
   return (
     <StyledContainer>
@@ -268,7 +265,7 @@ const AnnouncementScreen = ({navigation}) => {
               </View>
             )}
           />
-          {!!userInfoFromServer.is_admin && (
+          {!!account.is_admin && (
             <View style={{paddingHorizontal: 20}}>
             <MainButton
               content={'글 작성하기'}
