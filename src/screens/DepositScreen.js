@@ -7,7 +7,6 @@ import StyledContainer from '../components/StyledContainer';
 import DepositHistory from '../deposit/DepositHistory';
 import useDepositDetail from '../deposit/use-depositDetail';
 import DepositHistoryHeader from '../deposit/DepositHistoryHeader';
-import useUserInfo from '../use-userInfo';
 import AdminDepositList from '../deposit/AdminDepositList';
 import {COLORS} from '../assets/Theme';
 import {StatusBar} from 'react-native';

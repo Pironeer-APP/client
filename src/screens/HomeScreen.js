@@ -20,7 +20,6 @@ import {Box} from '../components/Box';
 import {UnTouchableRightArrow} from '../components/Button';
 import StyledContainer from '../components/StyledContainer';
 import Gap, {GapH} from '../components/Gap';
-import useUserInfo from '../use-userInfo';
 import {TinyLoader} from '../components/Loader';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAssigns, selectAllAssigns } from '../features/assigns/assignsSlice';

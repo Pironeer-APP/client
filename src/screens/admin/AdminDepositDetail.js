@@ -9,7 +9,6 @@ import Gap from '../../components/Gap';
 import DepositHistory from '../../deposit/DepositHistory';
 import useDepositDetail from '../../deposit/use-depositDetail';
 import DepositHistoryHeader from '../../deposit/DepositHistoryHeader';
-import useUserInfo from '../../use-userInfo';
 import {COLORS} from '../../assets/Theme';
 import { client } from '../../api/client';
 

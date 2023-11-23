@@ -16,7 +16,6 @@ import {StyledSubText, StyledText} from '../components/Text';
 import {RowView} from './HomeScreen';
 import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {MainButton} from '../components/Button';
-import useUserInfo from '../use-userInfo';
 import {MediumLoader} from '../components/Loader';
 import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
 import useClientTime from '../use-clientTime';

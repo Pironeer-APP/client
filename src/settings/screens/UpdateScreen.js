@@ -14,7 +14,6 @@ import Gap from '../../components/Gap';
 import {useNavigation} from '@react-navigation/native';
 import {MainButton} from '../../components/Button';
 import {autoHyphen} from '../../utils';
-import useUserInfo from '../../use-userInfo';
 import { client } from '../../api/client';
 import { storeData } from '../../api/asyncStorage';
 

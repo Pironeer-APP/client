@@ -16,7 +16,6 @@ import {PaddingBox} from '../../components/Box';
 import DatePicker from 'react-native-date-picker';
 import {StyledText} from '../../components/Text';
 import HeaderDetail from '../../components/Header';
-import useUserInfo from '../../use-userInfo';
 import Gap from '../../components/Gap';
 import { client } from '../../api/client';
 

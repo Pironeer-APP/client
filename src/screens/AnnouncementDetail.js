@@ -12,7 +12,6 @@ import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
 import {useRoute, useIsFocused} from '@react-navigation/native';
 import {StyledSubText, StyledText} from '../components/Text';
-import useUserInfo from '../use-userInfo';
 import {Badge} from './AnnouncementScreen';
 import {RowView} from './HomeScreen';
 import Gap from '../components/Gap';

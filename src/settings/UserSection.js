@@ -4,7 +4,6 @@ import { StyledText } from '../components/Text'
 import { RightArrowBtn } from '../components/Button'
 import Gap from '../components/Gap'
 import Section from './Section'
-import useUserInfo from '../use-userInfo'
 import { useNavigation } from '@react-navigation/native';
 
 export default function UserSection() {
