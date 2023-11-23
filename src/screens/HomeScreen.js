@@ -25,6 +25,8 @@ import {TinyLoader} from '../components/Loader';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAssigns, selectAllAssigns } from '../features/assigns/assignsSlice';
 import { calcProgress, convertTime, findNextAssign } from '../utils';
+import { client } from '../api/client';
+import { getData } from '../api/asyncStorage';
 
 // import messaging from '@react-native-firebase/messaging';
 
@@ -200,6 +202,17 @@ const HomeScreen = ({navigation}) => {
     }
   }, [status])
 
+  // 커리큘럼 url 받아오기
+  const [curiUrl, setCuriUrl] = useState();
+  const getUrl = async () => {
+    const userToken = await getData('user_token');
+    const res = await client.post('/curi', {userToken});
+    setCuriUrl(res.url);
+  }
+  useEffect(() => {
+    getUrl();
+  }, [])
+
   return (
     <StyledContainer>
       <ScrollView>
@@ -370,7 +383,8 @@ const HomeScreen = ({navigation}) => {
           </Box>
           <Gap />
           <Box>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => Linking.openURL(curiUrl)}>
               <RowView style={{padding: 20}}>
                 <StyledText content={'노션 바로가기'} fontSize={20} />
                 <UnTouchableRightArrow />
