@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { autoHyphen, fetchPost } from '../utils';
+import { autoHyphen } from '../utils';
 import { Keyboard, Alert } from 'react-native';
 
 export default function useAdduser() {

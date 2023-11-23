@@ -1,32 +1,30 @@
 import {
   View,
-  Text,
-  useWindowDimensions,
-  FlatList,
   Platform,
   TextInput,
   StyleSheet,
   TouchableOpacity,
   Image,
   KeyboardAvoidingView,
-  NativeModules,
   ScrollView,
   Alert,
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import styled from 'styled-components/native';
 import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import {StyledText} from '../../components/Text';
 import {COLORS} from '../../assets/Theme';
-import {fetchPost, getAPIHost, getData, pushNoti} from '../../utils';
+import {getAPIHost} from '../../utils';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import permissionCheck from '../../use-permissionCheck';
+import { client } from '../../api/client';
+import { getData } from '../../api/asyncStorage';
 
 export const ChooseCategory = ({category, setCategory}) => {
   const PressedCat = ({index, content}) => {
@@ -86,7 +84,7 @@ const AdminCreateNotice = () => {
       Alert.alert('내용이 빠졌잖아!');
     } else {
       try {
-        const result = await fetchPost(url, body); //서버에서 result.insertId return
+        const result = await client.post(url, body); //서버에서 result.insertId return
         if (result.createdPostId && selectedImages.length > 0) {
           uploadImages(result.createdPostId);
         }

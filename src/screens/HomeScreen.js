@@ -1,14 +1,11 @@
 import {
   StyleSheet,
-  Text,
   View,
-  SafeAreaView,
   Image,
   Platform,
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Alert,
   Animated,
   Linking,
 } from 'react-native';
@@ -20,13 +17,14 @@ import {COLORS} from '../assets/Theme';
 import styled from 'styled-components/native';
 import {StyledSubText, StyledText} from '../components/Text';
 import {Box} from '../components/Box';
-import {RightArrowBtn, UnTouchableRightArrow} from '../components/Button';
+import {UnTouchableRightArrow} from '../components/Button';
 import StyledContainer from '../components/StyledContainer';
 import Gap, {GapH} from '../components/Gap';
 import useUserInfo from '../use-userInfo';
-import {fetchPost, getData} from '../utils';
 import useProgress from '../use-progress';
 import {TinyLoader} from '../components/Loader';
+import { client } from '../api/client';
+import { getData } from '../api/asyncStorage';
 
 // import messaging from '@react-native-firebase/messaging';
 
@@ -205,7 +203,7 @@ const HomeScreen = ({navigation}) => {
     const userToken = await getData('user_token');
     const url = '/assign/getAssigns';
     const body = {userToken};
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     
     findNextAssign(res.data);
     calcProgress(nextAssign);

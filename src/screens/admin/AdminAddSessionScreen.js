@@ -15,10 +15,10 @@ import ToggleItem from '../../components/ToggleItem';
 import {PaddingBox} from '../../components/Box';
 import DatePicker from 'react-native-date-picker';
 import {StyledText} from '../../components/Text';
-import {fetchPost, localeDate} from '../../utils';
 import HeaderDetail from '../../components/Header';
 import useUserInfo from '../../use-userInfo';
 import Gap from '../../components/Gap';
+import { client } from '../../api/client';
 
 export default function AdminAddSessionScreen() {
   const [face, setFace] = useState(false);
@@ -60,7 +60,7 @@ export default function AdminAddSessionScreen() {
       Alert.alert('장소 입력해야지?');
     } else {
       try {
-        const res = await fetchPost(url, body);
+        const res = await client.post(url, body);
         console.log(res);
         navigation.navigate('AdminSessionScreen');
       } catch (error) {

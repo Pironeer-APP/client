@@ -1,12 +1,7 @@
 import {
   Alert,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import HeaderDetail from '../components/Header';
 import StyledContainer from '../components/StyledContainer';
 import DepositHistory from '../deposit/DepositHistory';
@@ -16,8 +11,8 @@ import useUserInfo from '../use-userInfo';
 import AdminDepositList from '../deposit/AdminDepositList';
 import {COLORS} from '../assets/Theme';
 import {StatusBar} from 'react-native';
-import {fetchPost} from '../utils';
 import styled from 'styled-components';
+import { client } from '../api/client';
 
 const DepositScreen = () => {
   const {userInfoFromServer, getUserInfoFromServer} = useUserInfo();
@@ -46,7 +41,7 @@ const DepositScreen = () => {
     } else if (userInfoFromServer.deposit >= 120000) {
       Alert.alert('보증금 12만원은 보증금 방어권을 사용하실 수 없습니다.');
     } else {
-      const res = await fetchPost(url, body);
+      const res = await client.post(url, body);
       Alert.alert('사용되었습니다.');
       console.log('3');
       getDepositHistory();

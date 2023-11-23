@@ -1,5 +1,6 @@
 import {useState} from 'react';
-import { fetchPost, getData } from './utils';
+import { client } from './api/client';
+import { getData } from './api/asyncStorage';
 
 export default function useUserInfo() {
   const [userToken, setUserToken] = useState({});
@@ -14,7 +15,7 @@ export default function useUserInfo() {
     const storageUserToken = await getData('user_token');
     const url = '/user/getOneUserInfo';
     const body = {userToken: storageUserToken};
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     setUserInfoFromServer(res.oneUserInfo);
   }
 

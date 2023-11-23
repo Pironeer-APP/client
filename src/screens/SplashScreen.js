@@ -4,8 +4,8 @@ import { FontStyledText } from '../components/Text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Progress from 'react-native-progress';
 import { COLORS } from '../assets/Theme';
-import { getData } from '../utils';
 import HeaderLogo from '../login/HeaderLogo';
+import { getData } from '../api/asyncStorage';
 
 export default function SplashScreen({ navigation }) {
   const [dot, setDot] = useState(0);

@@ -2,7 +2,6 @@ import {
   View,
   StyleSheet,
   Keyboard,
-  SafeAreaView,
   KeyboardAvoidingView,
   Alert,
 } from 'react-native';
@@ -12,10 +11,10 @@ import {COLORS} from '../../assets/Theme';
 import {MainButton} from '../../components/Button';
 import AddUserContent from '../../adduser/AddUserContent';
 import useAdduser from '../../adduser/use-adduser';
-import HeaderDetail, {HeaderAdmin} from '../../components/Header';
+import {HeaderAdmin} from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
-import { fetchPost } from '../../utils';
 import { useNavigation } from '@react-navigation/native';
+import { client } from '../../api/client';
 
 export default function AddUserScreen() {
   const {
@@ -50,7 +49,7 @@ export default function AddUserScreen() {
       email: email
     }
     try {
-      const fetchData = await fetchPost(url, body);
+      const fetchData = await client.post(url, body);
       if(fetchData !== null && fetchData.result == true) {
         //계속 추가하기인 경우 level은 유지
         setName(null);

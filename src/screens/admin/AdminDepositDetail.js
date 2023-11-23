@@ -6,12 +6,12 @@ import styled from 'styled-components';
 import HeaderDetail from '../../components/Header';
 import {CouponButton} from '../../components/Button';
 import Gap from '../../components/Gap';
-import {fetchPost} from '../../utils';
 import DepositHistory from '../../deposit/DepositHistory';
 import useDepositDetail from '../../deposit/use-depositDetail';
 import DepositHistoryHeader from '../../deposit/DepositHistoryHeader';
 import useUserInfo from '../../use-userInfo';
 import {COLORS} from '../../assets/Theme';
+import { client } from '../../api/client';
 
 export default function AdminDepositDetail() {
   const route = useRoute();
@@ -46,7 +46,7 @@ export default function AdminDepositDetail() {
       adminToken: userToken,
       userInfo: userInfo,
     };
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     console.log(res);
     getCouponInfoAdmin(userInfo);
   };
@@ -69,7 +69,7 @@ export default function AdminDepositDetail() {
     const body = {
       user_id: userInfo.user_id,
     };
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     getCouponInfoAdmin(userInfo);
     console.log(res);
   };

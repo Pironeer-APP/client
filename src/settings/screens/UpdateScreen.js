@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   StyleSheet,
   KeyboardAvoidingView,
   Alert,
@@ -14,8 +13,10 @@ import {SettingInput} from '../../components/Input';
 import Gap from '../../components/Gap';
 import {useNavigation} from '@react-navigation/native';
 import {MainButton} from '../../components/Button';
-import {autoHyphen, fetchPost, storeData} from '../../utils';
+import {autoHyphen} from '../../utils';
 import useUserInfo from '../../use-userInfo';
+import { client } from '../../api/client';
+import { storeData } from '../../api/asyncStorage';
 
 const infoType = {
   phone: {
@@ -70,7 +71,7 @@ export default function UpdateScreen({route}) {
       data: data,
       user_token: userToken,
     };
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     await storeData('user_token', res.updatedUserInfo);
     console.log(res.updatedUserInfo);
     if (res.updatedUserInfo) {

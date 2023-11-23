@@ -1,9 +1,7 @@
 import {
   View,
-  Text,
   TouchableOpacity,
   FlatList,
-  Pressable,
   RefreshControl,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -18,11 +16,11 @@ import {Box} from '../../components/Box';
 import {MainButton, UnTouchableRightArrow} from '../../components/Button';
 import Gap from '../../components/Gap';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {fetchPost, getData} from '../../utils';
-import dayjs from 'dayjs';
 import MsgForEmptyScreen from '../../components/MsgForEmptyScreen';
 import {MediumLoader} from '../../components/Loader';
 import useClientTime from '../../use-clientTime';
+import { client } from '../../api/client';
+import { getData } from '../../api/asyncStorage';
 
 const ModalBox = styled.View`
   background-color: ${COLORS.gray};
@@ -74,7 +72,7 @@ const AssignmentBox = ({
     console.log('body: ', body);
 
     try {
-      await fetchPost(url, body);
+      await client.post(url, body);
       toggleModal(); // 재랜더링되어야 함
     } catch (error) {
       // 네트워크 오류 또는 예외 처리
@@ -199,7 +197,7 @@ const AdminAssignmentScreen = ({route}) => {
     };
     // console.log('body: ', body);
     try {
-      const responseData = await fetchPost(url, body);
+      const responseData = await client.post(url, body);
       console.log('받아온 데이터: ', responseData);
       setAssigns(responseData.data);
       setIsLoading(false);

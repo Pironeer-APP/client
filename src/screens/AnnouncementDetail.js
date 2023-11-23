@@ -1,31 +1,27 @@
 import {
   View,
-  Text,
   TouchableOpacity,
   Platform,
-  Image,
   Dimensions,
   ScrollView,
   Alert,
   RefreshControl,
 } from 'react-native';
 import React, {useState, useEffect, useMemo} from 'react';
-import dayjs from 'dayjs';
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
 import {useRoute, useIsFocused} from '@react-navigation/native';
 import {StyledSubText, StyledText} from '../components/Text';
 import useUserInfo from '../use-userInfo';
-import {MainButton} from '../components/Button';
-import {fetchGet, fetchPost, getAPIHost, getData, pushNoti} from '../utils';
 import {Badge} from './AnnouncementScreen';
 import {RowView} from './HomeScreen';
 import Gap from '../components/Gap';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components';
-import {Box} from '../components/Box';
 import AutoHeightImage from 'react-native-auto-height-image';
 import useClientTime from '../use-clientTime';
+import { client } from '../api/client';
+import { getData } from '../api/asyncStorage';
 
 const StyledBottomLine = styled.View`
   height: 1px;
@@ -58,7 +54,7 @@ const AnnouncementDetail = ({navigation}) => {
     const url = `/post/detail`;
     const userToken = await getData('user_token');
     const body = {userToken, post_id};
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     setPost(res.post);
     setImages(res.result);
     setRefreshing(false);
@@ -86,7 +82,7 @@ const AnnouncementDetail = ({navigation}) => {
     const body = {post_id, userToken};
 
     try {
-      await fetchPost(url, body);
+      await client.post(url, body);
       // await pushNoti({title: '공지가 삭제되었습니다.', body: ''});
       navigation.navigate('AnnouncementScreen');
     } catch (error) {

@@ -1,36 +1,29 @@
 import {
   StyleSheet,
-  Text,
   View,
   FlatList,
-  Animated,
-  Easing,
   Image,
-  ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import React, {useEffect, useState, useRef} from 'react';
-import { Shadow } from 'react-native-shadow-2';
+import React, {useEffect, useState} from 'react';
 
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
-import {dayOfWeek, fetchPost, getData} from '../utils';
-import useUserInfo from '../use-userInfo';
+import {dayOfWeek} from '../utils';
 import {Box} from '../components/Box';
-import {ProgressBar, RowView} from './HomeScreen';
-import {FontStyledText, StyledSubText, StyledText} from '../components/Text';
+import {RowView} from './HomeScreen';
+import {StyledSubText, StyledText} from '../components/Text';
 import {COLORS} from '../assets/Theme';
 import Gap, {GapH} from '../components/Gap';
 import {MainButton} from '../components/Button';
 import IsFaceBox from '../components/IsFaceBox';
 import Modal from 'react-native-modal';
-import useProgress from '../use-progress';
 import Codepad from '../components/Codepad';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import HeaderLogo from '../login/HeaderLogo';
-import Loader, {MediumLoader, TinyLoader} from '../components/Loader';
+import {MediumLoader} from '../components/Loader';
 import {AsgContainer} from './AssignmentScreen';
 import OnAirCircle from '../components/OnAirCircle';
+import { client } from '../api/client';
+import { getData } from '../api/asyncStorage';
 
 //데이터 날짜순으로 배열하기
 
@@ -265,7 +258,7 @@ const AttendanceScreen = () => {
       userToken: userToken,
     };
     try {
-      const fetchAttenData = await fetchPost(url, body);
+      const fetchAttenData = await client.post(url, body);
       setAttendance(fetchAttenData.sessions);
       setIsLoading(false);
       setRefreshing(false);
@@ -314,7 +307,7 @@ const AttendanceScreen = () => {
       input_code: codes,
       // input_code: 1234
     };
-    const attenResult = await fetchPost(url, body);
+    const attenResult = await client.post(url, body);
     setCodeConfirmed(attenResult.result);
     setBottomSheetVisible(!isBottomSheetVisible);
     setTimeout(() => {

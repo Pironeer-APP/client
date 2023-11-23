@@ -1,19 +1,17 @@
-import {View, Text, TextInput, KeyboardAvoidingView, Alert} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {View, Alert} from 'react-native';
+import React, {useState} from 'react';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
 import {COLORS} from '../../assets/Theme';
-import styled from 'styled-components';
 import {CustomTextInput} from '../../components/Input';
 import DatePicker from 'react-native-date-picker';
-import {Box, PaddingBox} from '../../components/Box';
-import {StyledSubText, StyledText} from '../../components/Text';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {RowView} from '../HomeScreen';
+import {Box} from '../../components/Box';
+import {StyledText} from '../../components/Text';
+import {useNavigation} from '@react-navigation/native';
 import Gap from '../../components/Gap';
-import {fetchPost, getData} from '../../utils';
-import useClientTime from '../../use-clientTime';
 import useFormattedTime from '../../use-formattedTime';
+import { client } from '../../api/client';
+import { getData } from '../../api/asyncStorage';
 
 const AdminCreateAssignment = () => {
   const navigation = useNavigation();
@@ -35,7 +33,7 @@ const AdminCreateAssignment = () => {
       Alert.alert('제목 입력해');
     } else {
       try {
-        await fetchPost(url, body);
+        await client.post(url, body);
         navigation.goBack();
       } catch (error) {
         console.error('Error sending data:', error);

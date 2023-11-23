@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 
 import { StyledText } from '../components/Text'
-import { fetchPost, getData, removeData } from '../utils';
+import { removeData } from '../utils';
+import { client } from '../api/client';
+import { getData } from '../api/asyncStorage';
 
 export default function UnregisterSection() {
   const navigation = useNavigation();
@@ -25,7 +27,7 @@ export default function UnregisterSection() {
     const url = '/auth/unregister';
     const jwtToken = await getData('user_token');
     const body = {token: jwtToken};
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     console.log(res);
     if(res.result) {
       await removeData('user_token');

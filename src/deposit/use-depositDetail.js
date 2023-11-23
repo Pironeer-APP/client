@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { fetchPost, getData } from '../utils';
+import { client } from '../api/client';
+import { getData } from '../api/asyncStorage';
 
 export default function useDepositDetail() {
   const [couponInfo, setCouponInfo] = useState([]);
@@ -9,14 +10,14 @@ export default function useDepositDetail() {
     const userToken = await getData('user_token');
     const url = '/deposit/getDepositHistory';
     const body = {userToken};
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     setDepositHistory(res.histories);
   }
 
   const getDepositHistoryAdmin = async (userInfo) => {
     const url = '/deposit/getDepositHistoryAdmin';
     const body = {userInfo};
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     setDepositHistory(res.histories);
   }
 
@@ -24,14 +25,14 @@ export default function useDepositDetail() {
     const userToken = await getData('user_token');
     const url = '/deposit/getCoupons';
     const body = {userToken};
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     setCouponInfo(res.couponInfo);
   }
 
   const getCouponInfoAdmin = async (userInfo) => {
     const url = '/deposit/getCouponsAdmin';
     const body = {userInfo};
-    const res = await fetchPost(url, body);
+    const res = await client.post(url, body);
     setCouponInfo(res.couponInfo);
   }
   return {
