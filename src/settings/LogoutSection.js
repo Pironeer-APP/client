@@ -4,6 +4,7 @@ import { PaddingBox } from '../components/Box'
 import { StyledText } from '../components/Text';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 export default function LogoutSection() {
   const navigation = useNavigation();
@@ -11,6 +12,7 @@ export default function LogoutSection() {
   const removeInfo = async () => {
     try {
       await AsyncStorage.removeItem('user_token');
+      navigation.reset({routes: [{name: "SplashScreen"}]}); // stack 초기화!!
       navigation.navigate('SplashScreen');
     } catch(e) {
       console.log(e);
