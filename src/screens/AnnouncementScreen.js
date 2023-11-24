@@ -21,6 +21,8 @@ import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
 import useClientTime from '../use-clientTime';
 import { client } from '../api/client';
 import { getData } from '../api/asyncStorage';
+import { useSelector } from 'react-redux';
+import { selectAccount } from '../features/account/accountSlice';
 
 const BadgeCSS = styled.View`
   background-color: ${props => props.color};
