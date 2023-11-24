@@ -6,7 +6,6 @@ import {
   Alert,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {useIsFocused} from '@react-navigation/native';
 
 import {RowView} from '../HomeScreen';
 import {StyledSubText, StyledText} from '../../components/Text';
@@ -22,6 +21,9 @@ import OnAirCircle from '../../components/OnAirCircle';
 import StatusCircle from '../../components/StatusCircle';
 import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSessions, selectSessions } from '../../features/sessions/sessionsSlice';
+import { findNextSession } from '../../utils';
 
 const StatusLine = () => {
   return (
@@ -32,17 +34,9 @@ const StatusLine = () => {
 const InProgressAsgBox = props => {
   const {renderYear, renderMonth, renderDate, renderDay, renderHour, renderMinute} =
     useClientTime(props.item.date);
-
-  const now = new Date();
-  const {
-    renderYear: nowYear,
-    renderMonth: nowMonth,
-    renderDate: nowDate,
-  } = useClientTime(now);
-
   return (
     <Pressable
-      onLongPress={() => props.onLongPressDelete(props.item.session_id)}
+      onLongPress={() => props.onLongPressDelete(props.item)}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -61,11 +55,7 @@ const InProgressAsgBox = props => {
             width: 50,
           }}>
           <StatusLine />
-            {renderYear === nowYear && renderMonth === nowMonth && renderDate === nowDate ? (
-              <OnAirCircle />
-            ) : (
-              <StatusCircle />
-            )}
+          <OnAirCircle />
           <StatusLine />
         </View>
       </View>
@@ -121,7 +111,7 @@ const DoneAsgBox = ({item, onLongPressDelete}) => {
   const {renderMonth, renderDate, renderDay} = useClientTime(item.date);
   return (
     <Pressable
-      onLongPress={() => onLongPressDelete(item.session_id)}
+      onLongPress={() => onLongPressDelete(item)}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -168,58 +158,29 @@ const DoneAsgBox = ({item, onLongPressDelete}) => {
 };
 
 const AssignmentScreen = ({navigation}) => {
-  const [sessionData, setSessionData] = useState([]);
-  const [initialScrollIndex, setInitialScrollIndex] = useState(null);
-  const [nextSessionId, setNextSessionId] = useState(null);
-  const isFocused = useIsFocused();
+  const [nextSession, setNextSession] = useState(null);
 
-  const findNextSession = (sessions) => {
-    const now = new Date();
+  const dispatch = useDispatch();
+  const sessions = useSelector(selectSessions);
 
-    for(let i = sessions.length - 1; i >= 0; i--) {
-      const sessionDate = new Date(sessions[i].date);
-      
-      // 오늘 이후의 날짜에 박스
-      if(now <= sessionDate) {
-        setNextSessionId(sessions[i].session_id);
-        setInitialScrollIndex(sessions[i].cnt);
-        break;
-      }
-    }
+  const sessionConfig = () => {
+    const nextSession = findNextSession(sessions);
+    setNextSession(nextSession);
   }
-
-  const getSessions = async () => {
-    const userToken = await getData('user_token'); // token 받아올 땐 fetch랑 같이...
-    const url = '/session/getSessions';
-    const body = {
-      userToken: userToken,
-    };
-    const res = await client.post(url, body);
-
-    setSessionData(res.sessions);
-    findNextSession(res.sessions);
-  };
-
   useEffect(() => {
-    getSessions();
-  }, [isFocused]);
+    dispatch(fetchSessions());
+  }, [])
+  useEffect(() => {
+    sessionConfig();
+  }, [sessions])
 
   const onPressAddSchedule = () => {
     navigation.navigate('AdminAddSessionScreen');
   };
 
-  // need to be changed [wonchae]
-  // const getItemLayout = (data, index) => {
-  //   return {
-  //     length: 100,
-  //     offset: 100 * data.length,
-  //     index,
-  //   };
-  // };
-
-const onLongPressDelete = session_id => {
+const onLongPressDelete = session => {
   Alert.alert(
-    '일정을 삭제하시겠습니까?',
+    `${session.title} 일정을 삭제하시겠습니까?`,
     '일정과 관련된 출석 정보가 모두 삭제 됩니다',
     [
       {
@@ -233,10 +194,10 @@ const onLongPressDelete = session_id => {
           const url = '/session/deleteSchedule';
           const body = {
             userToken: userToken,
-            session_id: session_id,
+            session_id: session.session_id,
           };
           await client.post(url, body);
-          await getSessions();
+          dispatch(fetchSessions());
         },
       },
     ],
@@ -244,12 +205,11 @@ const onLongPressDelete = session_id => {
 };
 
 const renderItem = ({item}) => {
-  const comming = initialScrollIndex !== null && item.cnt <= initialScrollIndex;
   return (
     <>
-      {comming ? (
+      {nextSession?.cnt >= item?.cnt ? (
         <InProgressAsgBox
-          nextSessionId={nextSessionId}
+          nextSession={nextSession}
           item={item}
           onLongPressDelete={onLongPressDelete}
         />
@@ -267,11 +227,9 @@ const renderItem = ({item}) => {
       <View style={{flex: 1}}>
         <FlatList
           style={{paddingRight: 20, paddingLeft: 10}}
-          data={sessionData}
+          data={sessions}
           renderItem={renderItem}
           keyExtractor={item => item.session_id}
-          // getItemLayout={getItemLayout}
-          // initialScrollIndex={initialScrollIndex}
         />
         <View style={{paddingHorizontal: 20}}>
           <MainButton

@@ -16,7 +16,7 @@ import {COLORS} from '../../assets/Theme';
 import {Box} from '../../components/Box';
 import {MainButton, UnTouchableRightArrow} from '../../components/Button';
 import Gap from '../../components/Gap';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import MsgForEmptyScreen from '../../components/MsgForEmptyScreen';
 import {MediumLoader} from '../../components/Loader';
 import useClientTime from '../../use-clientTime';
@@ -169,7 +169,6 @@ const AssignmentBox = ({
 
 const AdminAssignmentScreen = ({route}) => {
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
   const getLevel = route.params.userLevel;
   const [refreshing, setRefreshing] = useState(false);
 
@@ -193,7 +192,7 @@ const AdminAssignmentScreen = ({route}) => {
 
   useEffect(() => {
     dispatch(fetchAssigns());
-  }, [isFocused]);
+  }, []);
 
   return (
     <StyledContainer>

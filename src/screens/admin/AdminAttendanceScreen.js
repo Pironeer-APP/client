@@ -24,6 +24,9 @@ import {ButtonContainer, MainButton} from '../../components/Button';
 import useClientTime from '../../use-clientTime';
 import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
+import { useSelector } from 'react-redux';
+import { selectSessions } from '../../features/sessions/sessionsSlice';
+import { findNextSession } from '../../utils';
 
 const DateContainer = styled.View`
   border-radius: 12px;
@@ -186,13 +189,11 @@ const EndFinModal = () => (
 );
 
 const AdminAttendanceScreen = () => {
-  const [sessions, setSessions] = useState();
-  const [sessionForHighlight, setSessionForHighlight] = useState();
+  const [weekSessions, setWeekSessions] = useState();
   const [isToday, setIsToday] = useState(false);
   const [codeText, setCodeText] = useState('코드 생성');
   const [isModalVisible, setModalVisible] = useState(false);
   const [sessionId, setSessionId] = useState();
-  const [attendStatusContent, setAttendStatusContent] = useState('출결 저장');
   const [codeTimeOut, setCodeTimeOut] = useState();
   const [codeTimeoutText, setCodeTimeoutText] = useState('');
   const [codeLoading, setCodeLoading] = useState(false);
@@ -243,33 +244,23 @@ const AdminAttendanceScreen = () => {
       userToken: userToken,
     };
     const result = await client.post(url, body);
-    // console.log(result.sessions);
-    setSessions(result.sessions);
-  };
-
-  const getSessions = async () => {
-    const userToken = await getData('user_token');
-    const url = '/session/getSessions';
-    const body = {
-      userToken: userToken,
-    };
-    const result = await client.post(url, body);
-    console.log('result: ', result.sessions);
-    setSessionForHighlight(result.sessions);
+    setWeekSessions(result.sessions);
   };
 
   useEffect(() => {
     getSessionsByWeek();
-    getSessions();
   }, []);
+
+  const sessions = useSelector(selectSessions);
 
   // 오늘세션 있는지 확인
   const checkToday = () => {
     const today = new Date();
-    if (sessionForHighlight) {
-      sessionForHighlight.map(session => {
+    if (sessions) {
+      sessions.map(session => {
         const sessionDate = new Date(session.date);
         if (
+          today.getYear() === sessionDate.getYear() &&
           today.getMonth() === sessionDate.getMonth() &&
           today.getDate() === sessionDate.getDate()
         ) {
@@ -282,7 +273,7 @@ const AdminAttendanceScreen = () => {
 
   useEffect(() => {
     checkToday();
-  }, [sessionForHighlight]);
+  }, [sessions]);
 
   //출석코드 생성 함수
   const onPressGenerateCode = async () => {
@@ -449,7 +440,7 @@ const AdminAttendanceScreen = () => {
       <StyledContainer>
         <HeaderDetail title={'출석'} />
         <ScrollView style={styles.scrollContainer}>
-          {sessions?.map((item, index) => (
+          {weekSessions?.map((item, index) => (
             <WeekContainer key={index} week={index + 1} item={item} />
           ))}
         </ScrollView>

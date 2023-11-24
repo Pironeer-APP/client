@@ -220,7 +220,7 @@ const HomeScreen = ({navigation}) => {
         <View style={{padding: 20}}>
           <Header />
           <Gap />
-          {accountStatus === 'loading' ? 
+          {accountStatus === 'loading' || account.level === undefined || account.name === undefined ? 
             <StyledText
               content={'\n환영합니다'}
               fontSize={24}

@@ -5,6 +5,8 @@ import { RightArrowBtn } from '../components/Button'
 import Gap from '../components/Gap'
 import Section from './Section'
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux'
+import { selectAccount } from '../features/account/accountSlice'
 
 export default function UserSection() {
   const account = useSelector(selectAccount);
