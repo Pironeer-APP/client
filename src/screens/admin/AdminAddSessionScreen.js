@@ -18,6 +18,9 @@ import {StyledText} from '../../components/Text';
 import HeaderDetail from '../../components/Header';
 import Gap from '../../components/Gap';
 import { client } from '../../api/client';
+import { selectJwt } from '../../features/account/accountSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSessions } from '../../features/sessions/sessionsSlice';
 
 export default function AdminAddSessionScreen() {
   const [face, setFace] = useState(false);
@@ -30,10 +33,10 @@ export default function AdminAddSessionScreen() {
 
   const navigation = useNavigation();
 
-  const {userToken, getUserToken} = useUserInfo();
+  const dispatch = useDispatch();
+  const jwt = useSelector(selectJwt);
 
   useEffect(() => {
-    getUserToken();
     const newDate = new Date();
     newDate.setHours(10, 0, 0, 0);
     setDate(newDate);
@@ -51,7 +54,7 @@ export default function AdminAddSessionScreen() {
       date: date,
       face: face,
       place: sessionPlace,
-      userToken: userToken,
+      userToken: jwt,
     };
     if (sessionTitle.length === 0) {
       Alert.alert('제목 입력해야지?');
@@ -59,8 +62,8 @@ export default function AdminAddSessionScreen() {
       Alert.alert('장소 입력해야지?');
     } else {
       try {
-        const res = await client.post(url, body);
-        console.log(res);
+        await client.post(url, body);
+        dispatch(fetchSessions());
         navigation.navigate('AdminSessionScreen');
       } catch (error) {
         console.log(error);

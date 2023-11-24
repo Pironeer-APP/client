@@ -68,15 +68,15 @@ export const getLocal = (datetime) => {
 // 다음 세션 찾기
 export const findNextSession = (sessions) => {
   const now = new Date();
-  for (let i = schedules.length - 1; i >= 0; i--) {
+  for (let i = sessions.length - 1; i >= 0; i--) {
     // 세션은 날짜로 비교할 것
-    const standard = new Date(schedules[i].date);
+    const standard = new Date(sessions[i].date);
     if (
-      now.getFullYear() === standard.getFullYear()
-      && now.getMonth() === standard.getMonth()
-      && now.getDate() === standard.getDate()
+      now.getFullYear() <= standard.getFullYear()
+      && now.getMonth() <= standard.getMonth()
+      && now.getDate() <= standard.getDate()
     ) {
-      return schedules[i];
+      return sessions[i];
     }
   }
   // 못 찾았다면

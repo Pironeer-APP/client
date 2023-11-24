@@ -9,7 +9,7 @@ import React, {useEffect, useState} from 'react';
 
 import StyledContainer from '../components/StyledContainer';
 import HeaderDetail from '../components/Header';
-import {dayOfWeek} from '../utils';
+import {dayOfWeek, findNextSession} from '../utils';
 import {Box} from '../components/Box';
 import {RowView} from './HomeScreen';
 import {StyledSubText, StyledText} from '../components/Text';
@@ -24,10 +24,11 @@ import {AsgContainer} from './AssignmentScreen';
 import OnAirCircle from '../components/OnAirCircle';
 import { client } from '../api/client';
 import { getData } from '../api/asyncStorage';
+import useClientTime from '../use-clientTime';
 
 //데이터 날짜순으로 배열하기
 
-const AttenStatusCircle = ({type = null}) => {
+const AttendStatusCircle = ({type = null}) => {
   let imageSource;
   if (type === '결석') {
     imageSource = require(`../assets/icons/circle_ex.png`);
@@ -52,16 +53,15 @@ const StatusLine = () => {
 };
 
 const InProgressAttendBox = props => {
-  const today = new Date();
-  const todayMonth = String(today.getMonth() + 1).padStart(2, '0');
-  const todayDate = String(today.getDate()).padStart(2, '0');
-
-  const month = String(Number(props.date.getMonth()) + 1).padStart(2, '0');
-  const day = String(props.date.getDate()).padStart(2, '0');
-  const dayOfTheWeek = dayOfWeek(props.date.getDay());
-  const hour = String(props.date.getHours()).padStart(2, '0');
-  const minute = String(props.date.getMinutes()).padStart(2, '0');
-  
+  const {
+    renderYear,
+    renderMonth,
+    renderDate,
+    renderDay,
+    renderHour,
+    renderMinute,
+    renderMillisec,
+  } = useClientTime(props.date);
   return (
     <AsgContainer
       style={{
@@ -81,13 +81,7 @@ const InProgressAttendBox = props => {
           }}>
           {/*  {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />} */}
           <StatusLine />
-          <View>
-            {todayMonth === month && todayDate === day ? (
-              <OnAirCircle />
-            ) : (
-              <AttenStatusCircle type={props.attenType} />
-            )}
-          </View>
+          <OnAirCircle />
           {/*  {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />} */}
           <StatusLine />
         </View>
@@ -103,10 +97,7 @@ const InProgressAttendBox = props => {
           <View style={{paddingHorizontal: 17, paddingVertical: 10}}>
             <RowView style={{marginBottom: 10}}>
               <StyledSubText
-                content={`${month.padStart(2, '0')}.${day.padStart(
-                  2,
-                  '0',
-                )} ${dayOfTheWeek}`}
+                content={`${renderMonth}.${renderDate} ${renderDay}`}
               />
               <IsFaceBox isFace={props.isFace} />
             </RowView>
@@ -139,7 +130,7 @@ const InProgressAttendBox = props => {
               />
               <GapH width={9} />
               <StyledSubText
-                content={`${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`}
+                content={`${renderHour}:${renderMinute}`}
               />
             </View>
           </View>
@@ -149,14 +140,15 @@ const InProgressAttendBox = props => {
   );
 };
 const DoneAttendBox = props => {
-  const month = String(Number(props.date.getMonth()) + 1);
-  let day = String(props.date.getDate());
-  const dayOfTheWeek = dayOfWeek(props.date.getDay());
-
-  if (day < 9) {
-    day = '0' + day;
-  }
-
+  const {
+    renderYear,
+    renderMonth,
+    renderDate,
+    renderDay,
+    renderHour,
+    renderMinute,
+    renderMillisec,
+  } = useClientTime(props.date);
   return (
     <AsgContainer>
       <View
@@ -171,7 +163,7 @@ const DoneAttendBox = props => {
             width: 50,
           }}>
           <StatusLine />
-          <AttenStatusCircle type={props.attenType} />
+          <AttendStatusCircle type={props.attenType} />
           <StatusLine />
         </View>
       </View>
@@ -185,10 +177,10 @@ const DoneAttendBox = props => {
           <RowView style={{marginVertical: 10}}>
             <View style={{alignItems: 'center'}}>
               <StyledSubText
-                content={`${month.padStart(2, '0')}.${day.padStart(2, '0')}`}
+                content={`${renderMonth}.${renderDate}`}
                 fontSize={20}
               />
-              <StyledSubText content={dayOfTheWeek} fontSize={20} />
+              <StyledSubText content={renderDay} fontSize={20} />
             </View>
             <View style={{flex: 1, marginLeft: 20}}>
               <StyledText content={props.title} fontSize={18} />
@@ -200,55 +192,21 @@ const DoneAttendBox = props => {
   );
 };
 
-const renderAttenItem = ({item}) => {
-  const today = new Date();
-  const todayNoTime = today.setHours(0, 0, 0, 0);
-  const sessionDate = new Date(item.date);
-  let sessionDateNoTime = new Date(sessionDate);
-  sessionDateNoTime.setHours(0, 0, 0, 0);
-
-  if (todayNoTime <= sessionDateNoTime) {
-    //현재+미래의 세션
-    return (
-      <InProgressAttendBox
-        status={item.attend_id}
-        title={item.title}
-        date={sessionDate}
-        location={item.location}
-        isFace={item.is_face}
-        attenType={item.type}
-      />
-    );
-  } else if (todayNoTime > sessionDateNoTime) {
-    //과거의 세션
-    return (
-      <DoneAttendBox
-        status={item.attend_id}
-        title={item.title}
-        date={sessionDate}
-        attenType={item.type}
-      />
-    );
-  }
-};
-
 const AttendanceScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [attendance, setAttendance] = useState([]);
-  const [initialScrollIndex, setInitialScrollIndex] = useState(0);
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [isTodaySession, setIsTodaySession] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [codeConfirmed, setCodeConfirmed] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [nextSession, setNextSession] = useState(null);
   const toggleBottomSheet = () => {
     setBottomSheetVisible(!isBottomSheetVisible);
   };
   // 로딩화면
 
   //현재 진행중인 세션 인덱스 찾기
-
-  // const isFocused = useIsFocused();
 
   const userSessionInfo = async () => {
     setRefreshing(true);
@@ -258,43 +216,56 @@ const AttendanceScreen = () => {
       userToken: userToken,
     };
     try {
-      const fetchAttenData = await client.post(url, body);
-      setAttendance(fetchAttenData.sessions);
+      const fetchAttendData = await client.post(url, body);
+      setAttendance(fetchAttendData.sessions);
       setIsLoading(false);
       setRefreshing(false);
-      // setInitialScrollIndex(6);
-      // console.log('받은 데이터: ', fetchAttenData.sessions);
 
       // 오늘 세션있는지 확인
       const today = new Date();
       const month = String(Number(today.getMonth()) + 1).padStart(2, '0');
       const day = String(Number(today.getDate())).padStart(2, '0');
-      fetchAttenData.sessions.map(session => {
+      fetchAttendData.sessions.map(session => {
         if (month == session.month && day == session.day) {
           setIsTodaySession(true);
         }
       });
 
-      //데이터 안 세션들 중에서 오늘 날짜와 동일한 날짜인 세션 인덱스 찾기
-      setInitialScrollIndex(fetchAttenData.nextSessionIdx);
     } catch (error) {
       console.log('에러 발생: ', error);
     }
   };
-
+  
   useEffect(() => {
     userSessionInfo();
   }, []);
+  useEffect(() => {
+    setNextSession(findNextSession(attendance));
+  }, [attendance])
 
-  // 자동스크롤
-  // need to be changed [wonchae]
-  // const getItemLayout = (data, index) => {
-  //   return {
-  //     length: 100,
-  //     offset: 100 * data.length,
-  //     index,
-  //   };
-  // };
+  const renderAttendItem = ({item}) => {
+    return (
+      <>
+      {nextSession?.cnt >= item.cnt ? (
+        <InProgressAttendBox
+          status={item.attend_id}
+          title={item.title}
+          date={item.date}
+          location={item.location}
+          isFace={item.is_face}
+          attenType={item.type}
+        />
+      ) : (
+        <DoneAttendBox
+          status={item.attend_id}
+          title={item.title}
+          date={item.date}
+          attenType={item.type}
+        />
+      )}
+      </>
+    )
+  }
 
   const [codes, setCodes] = useState('');
 
@@ -332,7 +303,7 @@ const AttendanceScreen = () => {
             <FlatList
               style={{paddingRight: 20, paddingLeft: 10}}
               data={attendance}
-              renderItem={renderAttenItem}
+              renderItem={renderAttendItem}
               keyExtractor={item => item.session_id}
               refreshControl={
                 <RefreshControl
@@ -341,9 +312,6 @@ const AttendanceScreen = () => {
                   tintColor={COLORS.green}
                 />
               }
-
-              // getItemLayout={getItemLayout} // 자동스크롤
-              // initialScrollIndex={initialScrollIndex}
             />
             {/* 오늘 세션이 있는 경우에만 출석하기 버튼 나타남  */}
             {!!isTodaySession ? (

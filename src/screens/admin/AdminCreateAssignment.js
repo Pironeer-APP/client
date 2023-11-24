@@ -12,6 +12,8 @@ import Gap from '../../components/Gap';
 import useFormattedTime from '../../use-formattedTime';
 import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
+import { useDispatch } from 'react-redux';
+import { fetchAssigns } from '../../features/assigns/assignsSlice';
 
 const AdminCreateAssignment = () => {
   const navigation = useNavigation();
@@ -21,6 +23,8 @@ const AdminCreateAssignment = () => {
     newDate.setHours(10, 0, 0, 0);
     return newDate;
   });
+
+  const dispatch = useDispatch();
 
   const createAssign = async () => {
     console.log(date); // UTC
@@ -34,6 +38,7 @@ const AdminCreateAssignment = () => {
     } else {
       try {
         await client.post(url, body);
+        dispatch(fetchAssigns());
         navigation.goBack();
       } catch (error) {
         console.error('Error sending data:', error);
