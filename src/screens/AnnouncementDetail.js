@@ -21,8 +21,9 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import useClientTime from '../use-clientTime';
 import { client } from '../api/client';
 import { getData } from '../api/asyncStorage';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { _IOS_HOST, _ANDROID_AVD_HOST } from '../variables';
+import { selectAccount } from '../features/account/accountSlice';
 
 const StyledBottomLine = styled.View`
   height: 1px;

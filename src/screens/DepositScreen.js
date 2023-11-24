@@ -12,8 +12,8 @@ import {COLORS} from '../assets/Theme';
 import {StatusBar} from 'react-native';
 import styled from 'styled-components';
 import { client } from '../api/client';
-import { useDispatch } from 'react-redux';
-import { fetchAccount } from '../features/account/accountSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAccount, selectAccount } from '../features/account/accountSlice';
 
 const DepositScreen = () => {
   const dispatch = useDispatch();
