@@ -11,11 +11,15 @@ import useDepositDetail from '../../deposit/use-depositDetail';
 import DepositHistoryHeader from '../../deposit/DepositHistoryHeader';
 import {COLORS} from '../../assets/Theme';
 import { client } from '../../api/client';
+import { useSelector } from 'react-redux';
+import { selectAccount, selectJwt } from '../../features/account/accountSlice';
 
 export default function AdminDepositDetail() {
   const route = useRoute();
-  const userInfo = route.params.userInfo;
   const adminInfo = route.params.adminInfo;
+  
+  const userInfo = useSelector(selectAccount);
+  const userToken = useSelector(selectJwt);
 
   const {
     depositHistory,
@@ -30,12 +34,6 @@ export default function AdminDepositDetail() {
 
   useEffect(() => {
     getCouponInfoAdmin(userInfo);
-  }, []);
-
-  const {userToken, getUserToken} = useUserInfo();
-
-  useEffect(() => {
-    getUserToken();
   }, []);
 
   const deleteCoupon = async () => {

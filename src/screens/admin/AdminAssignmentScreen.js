@@ -55,11 +55,14 @@ const AssignmentBox = ({
     renderMinute: dueMinute,
   } = useClientTime(due);
 
+  const dispatch = useDispatch();
+
   const formattedDate = `${renderMonth}.${renderDate} ${renderDay}`;
   const formattedDue = `${dueMonth}.${dueDate} ${dueDay}`;
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!modalVisible);
+    dispatch(fetchAssigns());
   };
 
   const deleteAssign = async deleteId => {
@@ -79,7 +82,7 @@ const AssignmentBox = ({
       console.error(error);
     }
   };
-
+  
   return (
     <>
       <Modal
@@ -185,14 +188,9 @@ const AdminAssignmentScreen = ({route}) => {
     );
   };
 
-  const dispatch = useDispatch();
   const assignment = useSelector(selectAllAssigns);
-  
-  const assignStatus = useSelector(state => state.assigns.status);
 
-  useEffect(() => {
-    dispatch(fetchAssigns());
-  }, []);
+  const assignStatus = useSelector(state => state.assigns.status);
 
   return (
     <StyledContainer>
