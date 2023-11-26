@@ -106,8 +106,6 @@ const HomeScreen = ({navigation}) => {
     StatusBar.setBarStyle('light-content');
   }, []);
 
-  const isFocused = useIsFocused();
-
   const account = useSelector(selectAccount);
   const jwt = useSelector(selectJwt);
   const accountStatus = useSelector(state => state.account.status);
@@ -148,7 +146,7 @@ const HomeScreen = ({navigation}) => {
   const [status, setStatus] = useState();
   const [homeProgress, setHomeProgress] = useState(NaN);
 
-  const [nextAssign, setNextAssign] = useState(null);
+  const [nextAssign, setNextAssign] = useState({});
   const [assignCnt, setAssignCnt] = useState(0);
 
   const dispatch = useDispatch();
@@ -160,30 +158,26 @@ const HomeScreen = ({navigation}) => {
     if(assignStatus === 'idle') {
       dispatch(fetchAssigns());
     }
-  }, [assignment, dispatch])
-
+  }, [assignStatus, dispatch])
+  
   const progressConfig = () => {
     const { nextSchedule, scheduleCnt } = findNextAssign(assignment);
     setNextAssign(nextSchedule);
+    console.log(nextAssign);
     setAssignCnt(scheduleCnt);
     // 프로그레스
-    const { limit, status, progress } = calcProgress(nextAssign?.created_at, nextAssign?.due_date);
+    const { limit, status, progress } = calcProgress(nextSchedule?.created_at, nextSchedule?.due_date);
     setHomeProgress(progress);
     setStatus(status);
   }
-
+  
   useEffect(() => {
-    setTimeout(() => {
-      progressConfig();
-    }, 1000)
-  }, [nextAssign, status])
-
-  // 프로그레스 로딩
-  const [isTimerLoading, setIsTimerLoading] = useState(false);
-
-  useEffect(() => {
-    isNaN(homeProgress) ? setIsTimerLoading(true) : setIsTimerLoading(false);
-  }, [homeProgress]);
+    if(assignment.length > 0) {
+      setTimeout(() => {
+        progressConfig();
+      }, 1000);
+    }
+  }, [assignment, homeProgress])
 
   const {hour, min, sec} = convertTime(Math.trunc(status / 1000));
 
@@ -242,7 +236,7 @@ const HomeScreen = ({navigation}) => {
                 <UnTouchableRightArrow />
               </RowView>
 
-              {assignStatus !== 'loading' ? (
+              {nextAssign !== null ? (
                 <>
                   <StyledText content={curTitle} fontSize={18} />
                   <RowView style={{marginTop: 10}}>
@@ -259,7 +253,7 @@ const HomeScreen = ({navigation}) => {
                       height={5}
                       animationConfig={{duration: 1000}}
                       animationType="timing" />
-                    {!!isTimerLoading ? (
+                    {assignStatus === 'loading' || isNaN(homeProgress) ? (
                        <View style={{flex: 0.5, alignItems: 'center'}}>
                       <TinyLoader />
                       </View>

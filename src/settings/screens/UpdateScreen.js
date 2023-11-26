@@ -16,6 +16,8 @@ import {MainButton} from '../../components/Button';
 import {autoHyphen} from '../../utils';
 import { client } from '../../api/client';
 import { storeData } from '../../api/asyncStorage';
+import { useSelector } from 'react-redux';
+import { selectJwt } from '../../features/account/accountSlice';
 
 const infoType = {
   phone: {
@@ -50,7 +52,7 @@ export default function UpdateScreen({route}) {
   const [data, setData] = useState('');
   const navigation = useNavigation();
 
-  const {userToken, getUserToken} = useUserInfo();
+  const userToken = useSelector(selectJwt);
 
   useEffect(() => {
     getUserToken();
