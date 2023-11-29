@@ -22,31 +22,13 @@ import {FontStyledText} from '../../components/Text';
 import {useNavigation} from '@react-navigation/native';
 import {MainButton} from '../../components/Button';
 import {useIsFocused} from '@react-navigation/native';
-import { GapH } from '../../components/Gap';
+import Gap, { GapH } from '../../components/Gap';
 import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
-
-// const useAdminAttendance = () => {
-//   const
-// }
-// 그냥 useAdminDeposit을 사용해서 해당 기수 전체 유저를 가져와보겠음
-
-const DepositContainer = styled.TouchableOpacity`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: row;
-  background: ${COLORS.gray};
-  border-radius: 15px;
-  padding: 25px 30px;
-  margin: 10px;
-`;
-const AmountContainer = styled.View`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-`;
+import { useSelector } from 'react-redux';
+import { selectJwt } from '../../features/account/accountSlice';
+import { Box } from '../../components/Box';
+import { RowView } from '../HomeScreen';
 
 const AttenCircle = ({type}) => {
   let imageSource;
@@ -135,6 +117,8 @@ const AdminAttendanceElement = ({
     setSelectedBtn(type);
   };
 
+  const jwt = useSelector(selectJwt);
+
   const onPressUpdateAttend = async () => {
     const attendType =
       selectedBtn === 0
@@ -146,6 +130,7 @@ const AdminAttendanceElement = ({
         : '결석';
     const url = '/attend/updateAttend';
     const body = {
+      userToken: jwt,
       user_id: userInfo.user_id,
       attendType: attendType,
       session_id: session_id,
@@ -171,6 +156,7 @@ const AdminAttendanceElement = ({
           onPress: async () => {
             const url = '/attend/removeAttend';
             const body = {
+              userToken: jwt,
               user_id: userInfo.user_id,
               session_id: session_id
             };
@@ -184,12 +170,17 @@ const AdminAttendanceElement = ({
 
   return (
     <View>
-      <DepositContainer onPress={toggleBottomSheet}>
-        <FontStyledText style={{fontSize: 20}}>{userInfo.name}</FontStyledText>
-        <AmountContainer>
-          <AttenCircle type={type} />
-        </AmountContainer>
-      </DepositContainer>
+      <Box>
+        <TouchableOpacity
+          style={{padding: 20}}
+          onPress={toggleBottomSheet}>
+          <RowView>
+            <StyledText content={userInfo.name} fontSize={18} />
+            <AttenCircle type={type} />
+          </RowView>
+        </TouchableOpacity>
+      </Box>
+      <Gap height={5} />
       {/* 바텀 모달 */}
       <Modal
         isVisible={isBottomSheetVisible}
@@ -283,6 +274,7 @@ const AdminAttendanceElement = ({
 const AdminAttendanceList = props => {
   return (
     <ScrollView>
+      <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
       {props.attends?.map(user => (
         <AdminAttendanceElement
           key={user.user_id}
@@ -295,6 +287,7 @@ const AdminAttendanceList = props => {
           type={user.type}
         />
       ))}
+      </View>
     </ScrollView>
   );
 };

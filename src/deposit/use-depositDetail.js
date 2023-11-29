@@ -14,9 +14,12 @@ export default function useDepositDetail() {
     setDepositHistory(res.histories);
   }
 
-  const getDepositHistoryAdmin = async (userInfo) => {
+  const getDepositHistoryAdmin = async (adminToken, userInfo) => {
     const url = '/deposit/getDepositHistoryAdmin';
-    const body = {userInfo};
+    const body = {
+      userToken: adminToken,
+      userInfo: userInfo
+    };
     const res = await client.post(url, body);
     setDepositHistory(res.histories);
   }
@@ -29,9 +32,12 @@ export default function useDepositDetail() {
     setCouponInfo(res.couponInfo);
   }
 
-  const getCouponInfoAdmin = async (userInfo) => {
+  const getCouponInfoAdmin = async (adminToken, userInfo) => {
     const url = '/deposit/getCouponsAdmin';
-    const body = {userInfo};
+    const body = {
+      userToken: adminToken,
+      userInfo: userInfo
+    };
     const res = await client.post(url, body);
     setCouponInfo(res.couponInfo);
   }

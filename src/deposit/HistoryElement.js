@@ -2,7 +2,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import {StyledSubText, StyledText} from '../components/Text';
 import {RowView} from '../screens/HomeScreen';
-import {GapH} from '../components/Gap';
+import Gap, {GapH} from '../components/Gap';
 import {COLORS} from '../assets/Theme';
 import styled from 'styled-components';
 

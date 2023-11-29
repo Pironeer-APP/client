@@ -171,7 +171,10 @@ const AssignmentScreen = ({navigation}) => {
     dispatch(fetchSessions());
   }, [])
   useEffect(() => {
-    sessionConfig();
+    const intervalId = setInterval(() => {
+      sessionConfig();
+    }, 1000);
+    return () => clearInterval(intervalId);
   }, [sessions])
 
   const onPressAddSchedule = () => {

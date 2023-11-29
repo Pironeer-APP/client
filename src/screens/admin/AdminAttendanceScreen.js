@@ -10,23 +10,23 @@ import {
   Image,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import * as Progress from 'react-native-progress';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-import {COLORS} from '../../assets/Theme';
-import {StyledSubText, StyledText} from '../../components/Text';
+import { COLORS } from '../../assets/Theme';
+import { StyledSubText, StyledText } from '../../components/Text';
 import StyledContainer from '../../components/StyledContainer';
 import HeaderDetail from '../../components/Header';
-import Gap, {GapH} from '../../components/Gap';
-import {ButtonContainer, MainButton} from '../../components/Button';
+import Gap, { GapH } from '../../components/Gap';
+import { ButtonContainer, MainButton } from '../../components/Button';
 import useClientTime from '../../use-clientTime';
 import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
-import { useSelector } from 'react-redux';
-import { selectSessions } from '../../features/sessions/sessionsSlice';
-import { findNextSession } from '../../utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSessions, selectSessions } from '../../features/sessions/sessionsSlice';
+import { selectJwt } from '../../features/account/accountSlice';
 
 const DateContainer = styled.View`
   border-radius: 12px;
@@ -36,25 +36,17 @@ const DateContainer = styled.View`
 const DateBox = props => {
   const navigation = useNavigation();
   const sessionDate = new Date(props.date.date);
-  const {renderMonth: month, renderDate: day} = useClientTime(sessionDate);
+  const { renderMonth: month, renderDate: day } = useClientTime(sessionDate);
 
-  // 오늘 일정인지
-  let isToday = false;
-  const today = new Date();
-  if (
-    String(today.getMonth() + 1).padStart(2, '0') === month &&
-    String(today.getDate()).padStart(2, '0') === day
-  ) {
-    isToday = true;
-  }
+  const isToday = props.todaySession === undefined ? false : props.date.session_id === props.todaySession.session_id;
 
   return (
     <TouchableOpacity
-      style={{flex: 1, marginRight: 20}}
+      style={{ flex: 1, marginRight: 20 }}
       onPress={() =>
         navigation.navigate({
           name: 'AdminAttendanceDetailScreen',
-          params: {month: month, day: day, session_id: props.date.session_id},
+          params: { month: month, day: day, session_id: props.date.session_id },
         })
       }>
       <DateContainer
@@ -79,8 +71,8 @@ const DateBox = props => {
 
 const WeekContainer = props => {
   return (
-    <View style={{paddingHorizontal: 15, marginBottom: 25}}>
-      <View style={{marginBottom: 5}}>
+    <View style={{ paddingHorizontal: 15, marginBottom: 25 }}>
+      <View style={{ marginBottom: 5 }}>
         <StyledSubText content={`Week ${props.week}`} />
       </View>
       <View
@@ -90,7 +82,7 @@ const WeekContainer = props => {
           marginRight: -20,
         }}>
         {props.item?.map((date, index) => {
-          return <DateBox key={index} date={date} />;
+          return <DateBox key={index} date={date} todaySession={props.todaySession} />;
         })}
       </View>
     </View>
@@ -125,12 +117,12 @@ const DeleteAttendModal = props => {
   );
 };
 
-const DeleteFinModal = ({del_code}) => (
+const DeleteFinModal = ({ del_code }) => (
   <View style={styles.modalView}>
     <Image
       source={require('../../assets/images/attend_success.png')}
       resizeMode="contain"
-      style={{width: 120, height: 120}}
+      style={{ width: 120, height: 120 }}
     />
     <Gap />
     <StyledText content={del_code} fontSize={20} />
@@ -138,12 +130,12 @@ const DeleteFinModal = ({del_code}) => (
   </View>
 );
 
-const NullCodeModal = ({del_code}) => (
+const NullCodeModal = ({ del_code }) => (
   <View style={styles.modalView}>
     <Image
       source={require('../../assets/images/attend_failed.png')}
       resizeMode="contain"
-      style={{width: 120, height: 120}}
+      style={{ width: 120, height: 120 }}
     />
     <Gap />
     <StyledText content={del_code} fontSize={20} />
@@ -151,12 +143,12 @@ const NullCodeModal = ({del_code}) => (
   </View>
 );
 
-const DeleteFailedModal = ({del_code}) => (
+const DeleteFailedModal = ({ del_code }) => (
   <View style={styles.modalView}>
     <Image
       source={require('../../assets/images/attend_failed.png')}
       resizeMode="contain"
-      style={{width: 120, height: 120}}
+      style={{ width: 120, height: 120 }}
     />
     <Gap />
     <StyledText content={del_code} fontSize={20} />
@@ -164,12 +156,12 @@ const DeleteFailedModal = ({del_code}) => (
   </View>
 );
 
-const EndFailedModal = ({content}) => (
+const EndFailedModal = ({ content }) => (
   <View style={styles.modalView}>
     <Image
       source={require('../../assets/images/attend_failed.png')}
       resizeMode="contain"
-      style={{width: 120, height: 120}}
+      style={{ width: 120, height: 120 }}
     />
     <Gap />
     <StyledText content={content} fontSize={20} />
@@ -181,7 +173,7 @@ const EndFinModal = () => (
     <Image
       source={require('../../assets/images/attend_success.png')}
       resizeMode="contain"
-      style={{width: 120, height: 120}}
+      style={{ width: 120, height: 120 }}
     />
     <Gap />
     <StyledText content={'오늘 출결 종료'} fontSize={20} />
@@ -191,6 +183,7 @@ const EndFinModal = () => (
 const AdminAttendanceScreen = () => {
   const [weekSessions, setWeekSessions] = useState();
   const [isToday, setIsToday] = useState(false);
+  const [todaySession, setTodaySession] = useState();
   const [codeText, setCodeText] = useState('코드 생성');
   const [isModalVisible, setModalVisible] = useState(false);
   const [sessionId, setSessionId] = useState();
@@ -202,7 +195,7 @@ const AdminAttendanceScreen = () => {
   const getTodayCode = async () => {
     const userToken = await getData('user_token');
     const url = '/attend/getCode';
-    const body = {userToken};
+    const body = { userToken };
 
     const res = await client.post(url, body);
     if (res.code) {
@@ -221,17 +214,15 @@ const AdminAttendanceScreen = () => {
     if (codeTimeOut) {
       setTimeout(() => {
         const now = new Date();
-        if (codeTimeOut) {
-          const limit = new Date(codeTimeOut.getTime() - now.getTime());
-          if (limit <= 0) {
-            setCodeText('코드 생성');
-            setCodeTimeoutText(null);
-            setCodeTimeOut(null);
-          } else {
-            const min = String(limit.getMinutes()).padStart(2, '0');
-            const sec = String(limit.getSeconds()).padStart(2, '0');
-            setCodeTimeoutText(`${min}:${sec}`);
-          }
+        const limit = new Date(codeTimeOut.getTime() - now.getTime());
+        if (limit <= 0) {
+          setCodeText('코드 생성');
+          setCodeTimeoutText(null);
+          setCodeTimeOut(null);
+        } else {
+          const min = String(limit.getMinutes()).padStart(2, '0');
+          const sec = String(limit.getSeconds()).padStart(2, '0');
+          setCodeTimeoutText(`${min}:${sec}`);
         }
       }, 1000);
     }
@@ -250,37 +241,45 @@ const AdminAttendanceScreen = () => {
   useEffect(() => {
     getSessionsByWeek();
   }, []);
-
+  
+  const dispatch = useDispatch();
   const sessions = useSelector(selectSessions);
 
+  useEffect(() => {
+    dispatch(fetchSessions());
+  }, []);
+
   // 오늘세션 있는지 확인
-  const checkToday = () => {
+  const checkToday = (sessions) => {
     const today = new Date();
-    if (sessions) {
-      sessions.map(session => {
-        const sessionDate = new Date(session.date);
-        if (
-          today.getYear() === sessionDate.getYear() &&
-          today.getMonth() === sessionDate.getMonth() &&
-          today.getDate() === sessionDate.getDate()
-        ) {
-          setIsToday(true);
-          setSessionId(session.session_id);
-        }
-      });
-    }
+    sessions.map(session => {
+      const sessionDate = new Date(session.date);
+      if (
+        today.getYear() === sessionDate.getYear() &&
+        today.getMonth() === sessionDate.getMonth() &&
+        today.getDate() === sessionDate.getDate()
+      ) {
+        setIsToday(true);
+        setTodaySession(session);
+        setSessionId(session.session_id);
+      }
+    });
   };
 
   useEffect(() => {
-    checkToday();
+    const intervalId = setInterval(() => {
+      checkToday(sessions);
+    }, 1000);
+    return () => clearInterval(intervalId);
   }, [sessions]);
+
+  const jwt = useSelector(selectJwt);
 
   //출석코드 생성 함수
   const onPressGenerateCode = async () => {
-    const userToken = await getData('user_token');
     const url = '/attend/generateCode';
     const body = {
-      token: userToken,
+      userToken: jwt
     };
     setCodeLoading(true);
     await client.post(url, body);
@@ -441,7 +440,7 @@ const AdminAttendanceScreen = () => {
         <HeaderDetail title={'출석'} />
         <ScrollView style={styles.scrollContainer}>
           {weekSessions?.map((item, index) => (
-            <WeekContainer key={index} week={index + 1} item={item} />
+            <WeekContainer key={index} week={index + 1} item={item} todaySession={todaySession} />
           ))}
         </ScrollView>
 
@@ -514,7 +513,7 @@ const AdminAttendanceScreen = () => {
             <Modal
               isVisible={bottomModalVisible}
               onBackdropPress={toggleBottomModal}
-              style={{justifyContent: 'flex-end', margin: 0}}>
+              style={{ justifyContent: 'flex-end', margin: 0 }}>
               <BottomModalContainer>
                 <DarkModalBar />
                 <Gap height={20} />

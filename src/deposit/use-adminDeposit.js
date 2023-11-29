@@ -5,12 +5,9 @@ import { getData } from '../api/asyncStorage';
 export default function useAdminDeposit() {
   const [userList, setUserList] = useState([]);
 
-  const fetchData = async () => {
-    const adminToken = await getData('user_token');
+  const fetchData = async (userToken) => {
     const url = '/admin/getUserInfo';
-    const body = {
-      token: adminToken
-    }
+    const body = { userToken };
     const res = await client.post(url, body);
     setUserList(res.userInfoList);
   }

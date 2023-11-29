@@ -17,9 +17,9 @@ import { selectAccount, selectJwt } from '../../features/account/accountSlice';
 export default function AdminDepositDetail() {
   const route = useRoute();
   const adminInfo = route.params.adminInfo;
+  const userInfo = route.params.userInfo;
   
-  const userInfo = useSelector(selectAccount);
-  const userToken = useSelector(selectJwt);
+  const adminToken = useSelector(selectJwt);
 
   const {
     depositHistory,
@@ -29,23 +29,23 @@ export default function AdminDepositDetail() {
   } = useDepositDetail();
 
   useEffect(() => {
-    getDepositHistoryAdmin(userInfo);
+    getDepositHistoryAdmin(adminToken, userInfo);
   }, []);
 
   useEffect(() => {
-    getCouponInfoAdmin(userInfo);
+    getCouponInfoAdmin(adminToken, userInfo);
   }, []);
 
   const deleteCoupon = async () => {
     const url = '/deposit/deleteCoupon';
 
     const body = {
-      adminToken: userToken,
+      userToken: adminToken,
       userInfo: userInfo,
     };
     const res = await client.post(url, body);
     console.log(res);
-    getCouponInfoAdmin(userInfo);
+    getCouponInfoAdmin(adminToken, userInfo);
   };
 
   const onPressDeleteBadge = () => {
@@ -64,10 +64,11 @@ export default function AdminDepositDetail() {
   const AddCoupon = async () => {
     const url = '/deposit/addCoupon';
     const body = {
+      userToken: adminToken,
       user_id: userInfo.user_id,
     };
     const res = await client.post(url, body);
-    getCouponInfoAdmin(userInfo);
+    getCouponInfoAdmin(adminToken, userInfo);
     console.log(res);
   };
   const onPressAddCoupon = async () => {

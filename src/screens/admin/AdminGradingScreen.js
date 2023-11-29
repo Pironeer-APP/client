@@ -63,7 +63,6 @@ const Student = ({
   setStdGrade,
   assignScheduleId,
   getStdsData,
-  isLastItem,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -179,15 +178,13 @@ const Student = ({
           </RowView>
         </TouchableOpacity>
       </Box>
-
-      <Gap height={isLastItem ? 200 : 10} />
+      <Gap height={5} />
     </>
   );
 };
 const AdminGradingScreen = () => {
   const route = useRoute();
   const title = route.params?.title;
-  const level = route.params.level;
   const assignId = route.params.assignId;
   const [stdId, setStdId] = useState(0);
   const [stdGrade, setStdGrade] = useState(null);
@@ -214,8 +211,6 @@ const AdminGradingScreen = () => {
     getStdsData();
   }, []);
   const renderItem = ({item, index}) => {
-    // 마지막 항목이라면 marginBottom을 적용하기 위해
-    const isLastItem = index === stdInfo.length - 1;
 
     return (
       <Student
@@ -229,7 +224,6 @@ const AdminGradingScreen = () => {
         setStdGrade={setStdGrade}
         assignScheduleId={assignId}
         getStdsData={getStdsData}
-        isLastItem={isLastItem}
       />
     );
   };
@@ -242,9 +236,9 @@ const AdminGradingScreen = () => {
       {!!isLoading ? (
         <MediumLoader />
       ) : (
-        <View>
+        <View style={{ flex: 1 }}>
           <FlatList
-            style={{padding: 20}}
+            style={{ paddingHorizontal: 20, marginBottom: 20 }}
             data={stdInfo}
             renderItem={renderItem}
             keyExtractor={item => item.studentId}

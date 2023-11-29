@@ -54,10 +54,6 @@ export default function UpdateScreen({route}) {
 
   const userToken = useSelector(selectJwt);
 
-  useEffect(() => {
-    getUserToken();
-  }, []);
-
   const onPressNewInfo = async () => {
     const type = route.params.type;
     if (type === 'password' && data.length < 8) {
@@ -68,10 +64,7 @@ export default function UpdateScreen({route}) {
       return;
     }
     const url = `/auth/updateInfo/${type}`;
-    const body = {
-      data: data,
-      user_token: userToken,
-    };
+    const body = {data, userToken};
     const res = await client.post(url, body);
     await storeData('user_token', res.updatedUserInfo);
     console.log(res.updatedUserInfo);

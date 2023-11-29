@@ -15,6 +15,8 @@ import {HeaderAdmin} from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import { useNavigation } from '@react-navigation/native';
 import { client } from '../../api/client';
+import { selectJwt } from '../../features/account/accountSlice';
+import { useSelector } from 'react-redux';
 
 export default function AddUserScreen() {
   const {
@@ -38,11 +40,13 @@ export default function AddUserScreen() {
   } = useAdduser();
 
   const navigation = useNavigation();
-  
+  const jwt = useSelector(selectJwt);
+
   //입력데이터 서버에 보내기
   const saveUserInfo = async (level, name, phone, email) => {
     const url = `/auth/addUser`;
     const body = {
+      userToken: jwt,
       level: level,
       name: name,
       phone: phone,
