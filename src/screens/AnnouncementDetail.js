@@ -23,7 +23,8 @@ import { client } from '../api/client';
 import { getData } from '../api/asyncStorage';
 import { useDispatch, useSelector } from 'react-redux';
 import { _IOS_HOST, _ANDROID_AVD_HOST } from '../variables';
-import { selectAccount } from '../features/account/accountSlice';
+import { selectAccount, selectJwt } from '../features/account/accountSlice';
+import { fetchPosts } from '../features/posts/postsSlice';
 
 const StyledBottomLine = styled.View`
   height: 1px;
@@ -45,24 +46,33 @@ const AnnouncementDetail = ({navigation}) => {
   const route = useRoute();
   const post_id = route.params.post_id;
 
+  const dispatch = useDispatch();
   const account = useSelector(selectAccount);
+  const jwt = useSelector(selectJwt);
 
   const isFocused = useIsFocused();
   const getPost = async () => {
     setRefreshing(true);
     const url = `/post/detail`;
-    const userToken = await getData('user_token');
-    const body = {userToken, post_id};
+    const body = {
+      userToken: jwt,
+      post_id: post_id
+    };
+    console.log(body);
     const res = await client.post(url, body);
     setPost(res.post);
     setImages(res.result);
     setRefreshing(false);
+    dispatch(fetchPosts());
   };
   useEffect(() => {
     getPost();
   }, [isFocused]);
 
-  const imagesUrl = images.map(img => convertToUrl(img));
+  let imagesUrl = [];
+  useEffect(() => {
+    imagesUrl = images.map(img => convertToUrl(img));
+  }, [images])
 
   // delete fetch
   const OnPressDeletePost = () => {
@@ -77,12 +87,15 @@ const AnnouncementDetail = ({navigation}) => {
 
   const deletePost = async () => {
     const url = `/post/delete/`;
-    const userToken = await getData('user_token');
-    const body = {post_id, userToken};
+    const body = {
+      userToken: jwt,
+      post_id: post_id
+    };
 
     try {
       await client.post(url, body);
       // await pushNoti({title: '공지가 삭제되었습니다.', body: ''});
+      dispatch(fetchPosts());
       navigation.navigate('AnnouncementScreen');
     } catch (error) {
       console.error('Error sending data:', error);
