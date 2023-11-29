@@ -10,7 +10,9 @@ import {StyledText} from '../../components/Text';
 import {COLORS} from '../../assets/Theme';
 import {useNavigation} from '@react-navigation/native';
 import { client } from '../../api/client';
-import { getData } from '../../api/asyncStorage';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAssigns } from '../../features/assigns/assignsSlice';
+import { selectJwt } from '../../features/account/accountSlice';
 
 const AdminUpdateAssign = ({route}) => {
   const navigation = useNavigation();
@@ -19,21 +21,28 @@ const AdminUpdateAssign = ({route}) => {
     title: getTitle,
     due: getDue,
     assignId: assignId,
-    level,
   } = route.params;
 
   const [title, setTitle] = useState(getTitle);
   const [date, setDate] = useState(new Date(getDue));
 
+  const dispatch = useDispatch();
+  const jwt = useSelector(selectJwt);
+
   const updateAssign = async () => {
     const formattedDate =  `${date.getFullYear()}-${Number(date.getMonth())+1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
-    const userToken = await getData('user_token');
     const url = `/assign/updateAssign`;
-    const body = {userToken, assignId, title, formattedDate};
+    const body = {
+      userToken: jwt,
+      assignId: assignId,
+      title: title,
+      formattedDate: formattedDate
+    }
 
     try {
       await client.post(url, body);
+      dispatch(fetchAssigns());
       navigation.goBack();
     } catch (error) {
       console.error('Error sending data:', error);

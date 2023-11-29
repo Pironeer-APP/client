@@ -3,12 +3,15 @@ import React, { useEffect } from 'react';
 import useAdminDeposit from './use-adminDeposit';
 import AdminDepositElement from './AdminDepositElement';
 import MsgForEmptyScreen from '../components/MsgForEmptyScreen';
+import { useSelector } from 'react-redux';
+import { selectJwt } from '../features/account/accountSlice';
 
 export default function AdminDepositList({ adminInfo }) {
   const { userList, fetchData } = useAdminDeposit();
+  const userToken = useSelector(selectJwt);
 
   useEffect(() => {
-    fetchData();
+    fetchData(userToken);
   }, []);
 
   if (!userList) {
@@ -16,7 +19,7 @@ export default function AdminDepositList({ adminInfo }) {
   }
   return (
     <ScrollView>
-      <View style={{ paddingHorizontal: 20 }}>
+      <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
         {userList?.map(user => (
           <AdminDepositElement
             key={user.user_id}
@@ -24,7 +27,6 @@ export default function AdminDepositList({ adminInfo }) {
             adminInfo={adminInfo}
           />
         ))}
-        <Gap height={200} />
       </View>
     </ScrollView>
   );

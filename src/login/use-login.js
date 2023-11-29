@@ -28,7 +28,7 @@ export default function useLogin() {
         setLoginStatus(true);
         const jsonUserInfo = JSON.stringify(fetchData.token);
         await AsyncStorage.setItem('user_token', jsonUserInfo);
-        navigation.replace('SplashScreen');
+        navigation.reset({routes: [{name: "SplashScreen"}]}); // stack 초기화!!
       }
     } catch (err) {
       console.log(err);

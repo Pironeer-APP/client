@@ -40,7 +40,6 @@ const AssignmentBox = ({
   createdAt,
   title,
   due,
-  level,
   assignId,
 }) => {
   const navigation = useNavigation();
@@ -62,7 +61,6 @@ const AssignmentBox = ({
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!modalVisible);
-    dispatch(fetchAssigns());
   };
 
   const deleteAssign = async deleteId => {
@@ -76,7 +74,8 @@ const AssignmentBox = ({
 
     try {
       await client.post(url, body);
-      toggleModal(); // 재랜더링되어야 함
+      dispatch(fetchAssigns()); // 재랜더링되어야 함
+      toggleModal();
     } catch (error) {
       // 네트워크 오류 또는 예외 처리
       console.error(error);
@@ -116,7 +115,6 @@ const AssignmentBox = ({
                   title,
                   due,
                   assignId,
-                  level,
                 });
               }}>
               <StyledText
@@ -147,7 +145,6 @@ const AssignmentBox = ({
           onPress={() =>
             navigation.navigate('AdminGradingScreen', {
               title,
-              level,
               assignId,
             })
           }
@@ -172,7 +169,6 @@ const AssignmentBox = ({
 
 const AdminAssignmentScreen = ({route}) => {
   const navigation = useNavigation();
-  const getLevel = route.params.userLevel;
   const [refreshing, setRefreshing] = useState(false);
 
   const renderItem = ({item}) => {
@@ -182,7 +178,6 @@ const AdminAssignmentScreen = ({route}) => {
         createdAt={item.created_at}
         title={item.title}
         due={item.due_date}
-        level={getLevel}
         assignId={item.assignschedule_id}
       />
     );
@@ -203,7 +198,7 @@ const AdminAssignmentScreen = ({route}) => {
           <MainButton
             content={'과제 등록하기'}
             onPress={() => {
-              navigation.navigate('AdminCreateAssignment', {level: getLevel});
+              navigation.navigate('AdminCreateAssignment');
             }}
             height={60}
           />
@@ -231,7 +226,7 @@ const AdminAssignmentScreen = ({route}) => {
           <MainButton
             content={'과제 등록하기'}
             onPress={() => {
-              navigation.navigate('AdminCreateAssignment', {level: getLevel});
+              navigation.navigate('AdminCreateAssignment');
             }}
             height={60}
           />

@@ -16,6 +16,8 @@ import Gap from '../../components/Gap';
 import {autoHyphen} from '../../utils';
 import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
+import { useSelector } from 'react-redux';
+import { selectJwt } from '../../features/account/accountSlice';
 
 const infoType = {
   phone: {
@@ -43,14 +45,12 @@ export default function CheckScreen({route}) {
 
   const [data, setData] = useState('');
   const navigation = useNavigation();
+  
+  const userToken = useSelector(selectJwt);
 
   const compareInfo = async () => {
-    const userToken = await getData('user_token');
     const url = `/auth/compareInfo/${route.params.type}`;
-    const body = {
-      data: data,
-      user_token: userToken,
-    };
+    const body = {data, userToken};
     const res = await client.post(url, body);
     return res;
   };

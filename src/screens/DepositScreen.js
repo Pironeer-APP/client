@@ -13,11 +13,14 @@ import {StatusBar} from 'react-native';
 import styled from 'styled-components';
 import { client } from '../api/client';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAccount, selectAccount } from '../features/account/accountSlice';
+import { fetchAccount, selectAccount, selectJwt } from '../features/account/accountSlice';
+import { MediumLoader } from '../components/Loader';
 
 const DepositScreen = () => {
   const dispatch = useDispatch();
+  const accountStatus = useSelector(state => state.account.status);
   const account = useSelector(selectAccount);
+  const jwt = useSelector(selectJwt);
 
   const {depositHistory, couponInfo, getDepositHistory, getCouponInfo} =
     useDepositDetail();
@@ -26,13 +29,15 @@ const DepositScreen = () => {
     getDepositHistory();
   }, []);
   useEffect(() => {
-    console.log('2');
     getCouponInfo();
   }, []);
 
   const UseCoupon = async () => {
     const url = '/deposit/useCoupon';
-    body = {userId: account.user_id};
+    body = {
+      userToken: jwt,
+      userId: account.user_id
+    };
     if (couponInfo.length === 0) {
       Alert.alert('사용 가능한 보증금 방어권이 없습니다.');
     } else if (account.deposit >= 120000) {
@@ -40,7 +45,6 @@ const DepositScreen = () => {
     } else {
       const res = await client.post(url, body);
       Alert.alert('사용되었습니다.');
-      console.log('3');
       getDepositHistory();
       dispatch(fetchAccount());
       getCouponInfo();
@@ -58,13 +62,16 @@ const DepositScreen = () => {
   };
   return (
     <>
-      {!!account.is_admin && (
+      {accountStatus === 'loading' ? (
+        <StyledContainer>
+          <MediumLoader />
+        </StyledContainer>
+      ) : !!account.is_admin ? (
         <StyledContainer>
           <HeaderDetail title={'보증금 관리'} />
           <AdminDepositList adminInfo={account} />
         </StyledContainer>
-      )}
-      {!account.is_admin && (
+      ) : (
         <Container>
           <StatusBar backgroundColor={COLORS.deposit_header_blue} />
           <HeaderDetail

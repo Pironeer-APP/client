@@ -10,7 +10,6 @@ import {
   Linking,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {useIsFocused} from '@react-navigation/native';
 import * as Progress from 'react-native-progress';
 
 import {COLORS} from '../assets/Theme';
@@ -163,7 +162,6 @@ const HomeScreen = ({navigation}) => {
   const progressConfig = () => {
     const { nextSchedule, scheduleCnt } = findNextAssign(assignment);
     setNextAssign(nextSchedule);
-    console.log(nextAssign);
     setAssignCnt(scheduleCnt);
     // 프로그레스
     const { limit, status, progress } = calcProgress(nextSchedule?.created_at, nextSchedule?.due_date);
@@ -172,15 +170,14 @@ const HomeScreen = ({navigation}) => {
   }
   
   useEffect(() => {
-    if(assignment.length > 0) {
-      setTimeout(() => {
-        progressConfig();
-      }, 1000);
-    }
-  }, [assignment, homeProgress])
+    const intervalId = setInterval(() => {
+      progressConfig();
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [assignment])
 
   const {hour, min, sec} = convertTime(Math.trunc(status / 1000));
-
+  
   const curTitle =
     assignCnt >= 1
       ? `${nextAssign?.title} 외 ${assignCnt}개`

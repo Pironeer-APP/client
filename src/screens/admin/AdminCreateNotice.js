@@ -25,6 +25,8 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import permissionCheck from '../../use-permissionCheck';
 import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
+import { useDispatch } from 'react-redux';
+import { fetchPosts } from '../../features/posts/postsSlice';
 
 export const ChooseCategory = ({category, setCategory}) => {
   const PressedCat = ({index, content}) => {
@@ -73,6 +75,8 @@ const AdminCreateNotice = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const navigation = useNavigation();
 
+  const dispatch = useDispatch();
+
   const sendDataToServer = async () => {
     const url = '/post/create';
     const userToken = await getData('user_token');
@@ -90,6 +94,7 @@ const AdminCreateNotice = () => {
         }
 
         // await pushNoti({title: title, body: content});
+        dispatch(fetchPosts());
         navigation.goBack();
       } catch (error) {
         console.error('Error sending data:', error);

@@ -24,6 +24,8 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {getAPIHost} from '../../utils';
 import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
+import { useDispatch } from 'react-redux';
+import { fetchPosts } from '../../features/posts/postsSlice';
 
 const AdminUpdateNotice = () => {
   const route = useRoute();
@@ -37,6 +39,8 @@ const AdminUpdateNotice = () => {
   const [category, setCategory] = useState(post.category);
 
   const navigation = useNavigation();
+
+  const dispatch = useDispatch();
 
   const updatePost = async () => {
     const url = `/post/update`;
@@ -56,7 +60,9 @@ const AdminUpdateNotice = () => {
         }
 
         // await pushNoti({title: `수정된 공지가 있습니다-${title}`, body: content});
-        navigation.navigate('AnnouncementScreen');
+        dispatch(fetchPosts());
+        navigation.goBack();
+        navigation.goBack(); // AnnouncementScreen으로 돌아감
       } catch (error) {
         console.error('Error sending data:', error);
       }
