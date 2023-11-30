@@ -13,14 +13,13 @@ import {StatusBar} from 'react-native';
 import styled from 'styled-components';
 import { client } from '../api/client';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAccount, selectAccount, selectJwt } from '../features/account/accountSlice';
+import { fetchAccount, selectAccount } from '../features/account/accountSlice';
 import { MediumLoader } from '../components/Loader';
 
 const DepositScreen = () => {
   const dispatch = useDispatch();
   const accountStatus = useSelector(state => state.account.status);
   const account = useSelector(selectAccount);
-  const jwt = useSelector(selectJwt);
 
   const {depositHistory, couponInfo, getDepositHistory, getCouponInfo} =
     useDepositDetail();
@@ -35,7 +34,6 @@ const DepositScreen = () => {
   const UseCoupon = async () => {
     const url = '/deposit/useCoupon';
     body = {
-      userToken: jwt,
       userId: account.user_id
     };
     if (couponInfo.length === 0) {

@@ -18,8 +18,7 @@ import {StyledText} from '../../components/Text';
 import HeaderDetail from '../../components/Header';
 import Gap from '../../components/Gap';
 import { client } from '../../api/client';
-import { selectJwt } from '../../features/account/accountSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { fetchSessions } from '../../features/sessions/sessionsSlice';
 
 export default function AdminAddSessionScreen() {
@@ -34,7 +33,6 @@ export default function AdminAddSessionScreen() {
   const navigation = useNavigation();
 
   const dispatch = useDispatch();
-  const jwt = useSelector(selectJwt);
 
   useEffect(() => {
     const newDate = new Date();
@@ -54,7 +52,6 @@ export default function AdminAddSessionScreen() {
       date: date,
       face: face,
       place: sessionPlace,
-      userToken: jwt,
     };
     if (sessionTitle.length === 0) {
       Alert.alert('제목 입력해야지?');

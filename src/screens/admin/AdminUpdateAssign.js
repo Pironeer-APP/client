@@ -12,7 +12,6 @@ import {useNavigation} from '@react-navigation/native';
 import { client } from '../../api/client';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAssigns } from '../../features/assigns/assignsSlice';
-import { selectJwt } from '../../features/account/accountSlice';
 
 const AdminUpdateAssign = ({route}) => {
   const navigation = useNavigation();
@@ -27,14 +26,12 @@ const AdminUpdateAssign = ({route}) => {
   const [date, setDate] = useState(new Date(getDue));
 
   const dispatch = useDispatch();
-  const jwt = useSelector(selectJwt);
 
   const updateAssign = async () => {
     const formattedDate =  `${date.getFullYear()}-${Number(date.getMonth())+1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
     const url = `/assign/updateAssign`;
     const body = {
-      userToken: jwt,
       assignId: assignId,
       title: title,
       formattedDate: formattedDate

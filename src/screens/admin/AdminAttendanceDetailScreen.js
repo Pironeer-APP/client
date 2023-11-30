@@ -21,12 +21,9 @@ import {FontStyledText} from '../../components/Text';
 // import { RightArrowBtn } from '../../components/Button'
 import {useNavigation} from '@react-navigation/native';
 import {MainButton} from '../../components/Button';
-import {useIsFocused} from '@react-navigation/native';
 import Gap, { GapH } from '../../components/Gap';
 import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
-import { useSelector } from 'react-redux';
-import { selectJwt } from '../../features/account/accountSlice';
 import { Box } from '../../components/Box';
 import { RowView } from '../HomeScreen';
 
@@ -117,8 +114,6 @@ const AdminAttendanceElement = ({
     setSelectedBtn(type);
   };
 
-  const jwt = useSelector(selectJwt);
-
   const onPressUpdateAttend = async () => {
     const attendType =
       selectedBtn === 0
@@ -130,7 +125,6 @@ const AdminAttendanceElement = ({
         : '결석';
     const url = '/attend/updateAttend';
     const body = {
-      userToken: jwt,
       user_id: userInfo.user_id,
       attendType: attendType,
       session_id: session_id,
@@ -156,7 +150,6 @@ const AdminAttendanceElement = ({
           onPress: async () => {
             const url = '/attend/removeAttend';
             const body = {
-              userToken: jwt,
               user_id: userInfo.user_id,
               session_id: session_id
             };

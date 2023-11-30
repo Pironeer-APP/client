@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 import { _ANDROID_AVD_API_HOST, _IOS_API_HOST } from "../variables";
+import { getData } from "./asyncStorage";
 
 export const getAPIHost = () => {
   if(Platform.OS === 'ios') {
@@ -27,6 +28,10 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
   }
 
   if (body) {
+    if(!Object.keys(body).includes("userToken")) {
+      body.userToken = await 
+      getData('user_token');
+    }
     config.body = JSON.stringify(body);
   }
 

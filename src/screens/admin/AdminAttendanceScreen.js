@@ -26,7 +26,6 @@ import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSessions, selectSessions } from '../../features/sessions/sessionsSlice';
-import { selectJwt } from '../../features/account/accountSlice';
 
 const DateContainer = styled.View`
   border-radius: 12px;
@@ -273,14 +272,10 @@ const AdminAttendanceScreen = () => {
     return () => clearInterval(intervalId);
   }, [sessions]);
 
-  const jwt = useSelector(selectJwt);
-
   //출석코드 생성 함수
   const onPressGenerateCode = async () => {
     const url = '/attend/generateCode';
-    const body = {
-      userToken: jwt
-    };
+    const body = {};
     setCodeLoading(true);
     await client.post(url, body);
 
