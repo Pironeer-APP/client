@@ -183,6 +183,8 @@ const AdminAssignmentScreen = ({route}) => {
     );
   };
 
+  const dispatch = useDispatch();
+
   const assignment = useSelector(selectAllAssigns);
 
   const assignStatus = useSelector(state => state.assigns.status);
