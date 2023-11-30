@@ -22,7 +22,7 @@ export default function PostBox({ title, sort, date, id, read }) {
 
   return (
     <TouchableOpacity onPress={goToAncDet}>
-      <PaddingBox style={{ marginTop: 0 }}>
+      <PaddingBox>
         <RowView>
           <StyledSubText content={formattedDate} />
           <Badge sort={sort} />
