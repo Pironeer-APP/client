@@ -30,7 +30,7 @@ export const ButtonContainer = ({
   )
 }
 
-export const MainButton = ({content, onPress, fontSize = 22, marginBottom = 40}) => {
+export const MainButton = ({content, onPress, fontSize = 22, marginBottom = 20}) => {
   return (
     <TouchableOpacity
       style={[styles.container, {marginBottom: marginBottom}]}

@@ -87,8 +87,8 @@ export default function UpdateScreen({route}) {
 
   return (
     <StyledContainer>
-      <HeaderDetail title={`${element.title} 변경`} />
       <View style={{flex: 1, paddingHorizontal: 20}}>
+      <HeaderDetail title={`${element.title} 변경`} paddingHorizontal={0} />
         <KeyboardAvoidingView
           style={styles.formContainer}
           keyboardVerticalOffset={45}
@@ -122,7 +122,7 @@ export default function UpdateScreen({route}) {
               }
             />
           </ScrollView>
-          <MainButton height={60} marginBottom={20} content="다음" onPress={onPressNewInfo} />
+          <MainButton content="다음" onPress={onPressNewInfo} />
         </KeyboardAvoidingView>
       </View>
     </StyledContainer>
