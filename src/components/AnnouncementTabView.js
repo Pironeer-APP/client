@@ -33,7 +33,8 @@ export default function AssignmentTabView() {
   const posts = useSelector(selectAllPosts);
 
   const FilteredItems = ({ category }) => {
-    const filteredPosts = posts?.filter(item => item.category === category);
+    const filteredPosts = posts.filter(post => post.category === category);
+    // const filteredPosts = posts?.filter(item => item.category === category);
 
     return (
       <View style={{ flex: 1 }}>
@@ -41,9 +42,10 @@ export default function AssignmentTabView() {
           <MsgForEmptyScreen content={'등록된 공지글이 없습니다.'} />
         ) : (
           <FlatList
-            style={{ paddingHorizontal: 20, marginBottom: 20 }}
+            style={{ paddingHorizontal: 20 }}
             data={filteredPosts}
             renderItem={RenderItem}
+            ListFooterComponent={() => <Gap height={10} />}
             keyExtractor={item => item.post_id}
             refreshControl={
               <RefreshControl
@@ -67,10 +69,11 @@ export default function AssignmentTabView() {
               <MsgForEmptyScreen content={'등록된 공지글이 없습니다.'} />
             ) : (
               <FlatList
-                style={{ paddingHorizontal: 20, marginBottom: 20 }}
+                style={{ paddingHorizontal: 20 }}
                 data={posts}
                 renderItem={RenderItem}
                 keyExtractor={item => item.post_id}
+                ListFooterComponent={() => <Gap height={10} />}
                 refreshControl={
                   <RefreshControl
                     refreshing={refreshing}
