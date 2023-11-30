@@ -25,8 +25,7 @@ export default function UnregisterSection() {
 
   const unregister = async () => {
     const url = '/auth/unregister';
-    const jwtToken = await getData('user_token');
-    const body = {token: jwtToken};
+    const body = {};
     const res = await client.post(url, body);
     console.log(res);
     if(res.result) {

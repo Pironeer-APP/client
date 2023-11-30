@@ -40,13 +40,11 @@ export default function AddUserScreen() {
   } = useAdduser();
 
   const navigation = useNavigation();
-  const jwt = useSelector(selectJwt);
 
   //입력데이터 서버에 보내기
   const saveUserInfo = async (level, name, phone, email) => {
     const url = `/auth/addUser`;
     const body = {
-      userToken: jwt,
       level: level,
       name: name,
       phone: phone,
@@ -119,7 +117,7 @@ export default function AddUserScreen() {
             />
 
           </View>
-          <MainButton height={60} marginBottom={20} content="다음" onPress={onPressNext} />
+          <MainButton content="다음" onPress={onPressNext} />
         </KeyboardAvoidingView>
       </View>
     </StyledContainer>

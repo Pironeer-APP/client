@@ -67,7 +67,6 @@ const AnnouncementScreen = ({navigation}) => {
             <MainButton
               content={'글 작성하기'}
               onPress={() => navigation.navigate('AdminCreateNotice')}
-              height={60}
             />
             </View>
           )}

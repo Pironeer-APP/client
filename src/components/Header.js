@@ -12,6 +12,7 @@ export default function HeaderDetail({
   buttonOnPress = false,
   backgroundColor = 'transparent',
   color,
+  paddingHorizontal = 20,
 }) {
   const navigation = useNavigation();
 
@@ -21,7 +22,8 @@ export default function HeaderDetail({
   return (
     <View
       style={{
-        padding: 20,
+        paddingHorizontal: paddingHorizontal,
+        paddingVertical: 20,
         backgroundColor: `${backgroundColor}`,
         zIndex: 50,
       }}>

@@ -71,8 +71,8 @@ export default function FindAccountScreen({navigation}) {
   };
   return (
     <StyledContainer>
-      <HeaderDetail title={`비밀번호 찾기`} />
       <View style={{paddingHorizontal: 20, flex: 1}}>
+      <HeaderDetail title={`비밀번호 찾기`} />
         <KeyboardAvoidingView
           style={styles.formContainer}
           keyboardVerticalOffset={45}

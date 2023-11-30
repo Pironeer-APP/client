@@ -23,7 +23,7 @@ import { client } from '../api/client';
 import { getData } from '../api/asyncStorage';
 import { useDispatch, useSelector } from 'react-redux';
 import { _IOS_HOST, _ANDROID_AVD_HOST } from '../variables';
-import { selectAccount, selectJwt } from '../features/account/accountSlice';
+import { selectAccount } from '../features/account/accountSlice';
 import { fetchPosts } from '../features/posts/postsSlice';
 
 const StyledBottomLine = styled.View`
@@ -48,16 +48,12 @@ const AnnouncementDetail = ({navigation}) => {
 
   const dispatch = useDispatch();
   const account = useSelector(selectAccount);
-  const jwt = useSelector(selectJwt);
 
   const isFocused = useIsFocused();
   const getPost = async () => {
     setRefreshing(true);
     const url = `/post/detail`;
-    const body = {
-      userToken: jwt,
-      post_id: post_id
-    };
+    const body = { post_id };
     console.log(body);
     const res = await client.post(url, body);
     setPost(res.post);
@@ -87,10 +83,7 @@ const AnnouncementDetail = ({navigation}) => {
 
   const deletePost = async () => {
     const url = `/post/delete/`;
-    const body = {
-      userToken: jwt,
-      post_id: post_id
-    };
+    const body = { post_id };
 
     try {
       await client.post(url, body);

@@ -78,13 +78,13 @@ export default function CheckScreen({route}) {
 
   return (
     <StyledContainer>
-      <HeaderDetail title={`${element.title} 변경`} />
       <View style={{paddingHorizontal: 20, flex: 1}}>
+      <HeaderDetail title={`${element.title} 변경`} paddingHorizontal={0} />
         <KeyboardAvoidingView
           style={styles.formContainer}
           keyboardVerticalOffset={45}
           behavior={Platform.select({ios: 'padding', android: undefined})}>
-          <ScrollView style={{flexGrow: 1}}>
+          <ScrollView>
             <Gap />
             <StyledText
               fontSize={25}
@@ -105,7 +105,7 @@ export default function CheckScreen({route}) {
               keyboardType={route.params.type === 'phone' ? 'numeric' : null}
             />
           </ScrollView>
-          <MainButton content="다음" onPress={onPressOriginInfo} marginBottom={10} />
+          <MainButton content="다음" onPress={onPressOriginInfo} />
         </KeyboardAvoidingView>
       </View>
     </StyledContainer>

@@ -25,7 +25,7 @@ import { fetchAssigns, selectAllAssigns } from '../features/assigns/assignsSlice
 import { calcProgress, convertTime, findNextAssign } from '../utils';
 import { client } from '../api/client';
 import { getData } from '../api/asyncStorage';
-import { fetchAccount, selectAccount, selectJwt } from '../features/account/accountSlice';
+import { fetchAccount, selectAccount } from '../features/account/accountSlice';
 
 // import messaging from '@react-native-firebase/messaging';
 
@@ -96,7 +96,7 @@ export const ProgressBar = ({status}) => {
   );
 };
 
-const HomeScreen = ({navigation}) => {  
+const HomeScreen = ({navigation}) =>  {
   // status bar 색상설정
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -106,7 +106,6 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   const account = useSelector(selectAccount);
-  const jwt = useSelector(selectJwt);
   const accountStatus = useSelector(state => state.account.status);
   useEffect(() => {
     dispatch(fetchAccount());
