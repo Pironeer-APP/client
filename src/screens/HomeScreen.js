@@ -206,7 +206,10 @@ const HomeScreen = ({navigation}) =>  {
 
   return (
     <StyledContainer>
-      <ScrollView>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
         <View style={{padding: 20}}>
           <Header />
           <Gap />

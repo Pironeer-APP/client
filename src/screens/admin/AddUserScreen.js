@@ -17,6 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 import { client } from '../../api/client';
 import { selectJwt } from '../../features/account/accountSlice';
 import { useSelector } from 'react-redux';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function AddUserScreen() {
   const {
@@ -95,12 +96,13 @@ export default function AddUserScreen() {
     }
   };
 
+  const insets = useSafeAreaInsets();
   return (
     <StyledContainer>
       <View style={{paddingHorizontal: 20, flex: 1}}>
       <HeaderAdmin onPress={onPressBack} />
         <KeyboardAvoidingView
-          keyboardVerticalOffset={45}
+          keyboardVerticalOffset={insets.bottom ? insets.bottom : 30} 
           behavior={Platform.select({ios: 'padding', android: undefined})}
           style={{flex: 1}}>
           <View style={{flex: 1}}>
