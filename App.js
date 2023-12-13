@@ -6,7 +6,7 @@ import DrawerNavigationRoutes from './src/screens/DrawerNavigationRoutes';
 import SplashScreen from './src/screens/SplashScreen';
 import FindAccountScreen from './src/screens/FindAccountScreen';
 import {PermissionsAndroid, Alert} from 'react-native';
-// import messaging from '@react-native-firebase/messaging';
+import messaging from '@react-native-firebase/messaging';
 import { sendToken } from './src/utils';
 import store from './src/app/store';
 import { Provider } from 'react-redux'
@@ -14,7 +14,17 @@ import { Provider } from 'react-redux'
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  // PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+  async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }
+  PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
   // const getFcmToken = async () => {
   //   const fcmToken = await messaging().getToken();

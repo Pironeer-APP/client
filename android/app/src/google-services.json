@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "218036379565",
+    "project_id": "pirogramming-app-6251e",
+    "storage_bucket": "pirogramming-app-6251e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:218036379565:android:db75f2333e6447a7758b24",
+        "android_client_info": {
+          "package_name": "com.pirogramming"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1dfc5IGKH3dLXaWFXTuEGgWoOLxQXxRM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
