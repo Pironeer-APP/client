@@ -9,6 +9,7 @@ import {
 import React from 'react';
 import {FontStyledText, StyledText} from './Text';
 import {COLORS} from '../assets/Theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const ButtonContainer = ({
   outline=false,
@@ -30,10 +31,11 @@ export const ButtonContainer = ({
   )
 }
 
-export const MainButton = ({content, onPress, fontSize = 22, marginBottom = 20}) => {
+export const MainButton = ({content, onPress, fontSize = 22, marginBottom = 0}) => {
+  const insets = useSafeAreaInsets();
   return (
     <TouchableOpacity
-      style={[styles.container, {marginBottom: marginBottom}]}
+      style={[styles.container, {marginBottom: marginBottom + insets.bottom}]}
       onPress={onPress}>
       <StyledText
         content={content}
