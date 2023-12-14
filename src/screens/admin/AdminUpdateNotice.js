@@ -73,7 +73,7 @@ const AdminUpdateNotice = () => {
       const file = {
         name: image.fileName,
         type: image.type,
-        uri: image.uri.replace("file://", ""),
+        uri: image.uri,
       };
       formData.append('images', file);
     });
