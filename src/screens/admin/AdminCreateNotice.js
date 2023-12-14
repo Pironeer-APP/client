@@ -107,7 +107,7 @@ const AdminCreateNotice = () => {
       const file = {
         name: image.fileName,
         type: image.type,
-        uri: image.uri.replace("file://", ""),
+        uri: image.uri,
       };
       formData.append('images', file);
     });
@@ -115,16 +115,21 @@ const AdminCreateNotice = () => {
     formData.append('post_id', postId);
   
     const url = '/post/uploadimages';
-    console.log(formData)
     try {
       const SERVER_URL = getAPIHost();
-      await fetch(SERVER_URL+url, {
+      const res = await fetch(SERVER_URL+url, {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data'
         },
         body: formData,
       });
+      if(res.ok) {
+        const result = await res.json();
+        console.log(result);
+      } else {
+        console.log('no...', res);
+      }
     } catch (err) {
       return Promise.reject(err.message ? err.message : data);
     }
