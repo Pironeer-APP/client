@@ -18,12 +18,11 @@ import HeaderDetail from '../../components/Header';
 import StyledContainer from '../../components/StyledContainer';
 import {StyledText} from '../../components/Text';
 import {COLORS} from '../../assets/Theme';
-import {getAPIHost} from '../../utils';
 import {Box} from '../../components/Box';
 import {RowView} from '../HomeScreen';
 import {launchImageLibrary} from 'react-native-image-picker';
 import permissionCheck from '../../use-permissionCheck';
-import { client } from '../../api/client';
+import { client, getAPIHost } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
 import { useDispatch } from 'react-redux';
 import { fetchPosts } from '../../features/posts/postsSlice';
@@ -90,7 +89,7 @@ const AdminCreateNotice = () => {
       try {
         const result = await client.post(url, body); //서버에서 result.insertId return
         if (result.createdPostId && selectedImages.length > 0) {
-          uploadImages(result.createdPostId);
+          await uploadImages(result.createdPostId);
         }
 
         // await pushNoti({title: title, body: content});
@@ -104,33 +103,31 @@ const AdminCreateNotice = () => {
 
   const uploadImages = async postId => {
     const formData = new FormData();
-    const SERVER_URL = getAPIHost();
-    const URL = SERVER_URL + '/post/uploadimages';
     selectedImages.forEach(image => {
       const file = {
         name: image.fileName,
         type: image.type,
-        uri: image.uri,
+        uri: image.uri.replace("file://", ""),
       };
       formData.append('images', file);
     });
 
     formData.append('post_id', postId);
-
-    fetch(URL, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data.message);
-      })
-      .catch(error => {
-        console.error('이미지 업로드 실패:', error);
+  
+    const url = '/post/uploadimages';
+    console.log(formData)
+    try {
+      const SERVER_URL = getAPIHost();
+      await fetch(SERVER_URL+url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        body: formData,
       });
+    } catch (err) {
+      return Promise.reject(err.message ? err.message : data);
+    }
   };
   const onImageSelect = () => {
     permissionCheck.cmmReqPermission(selectImages);

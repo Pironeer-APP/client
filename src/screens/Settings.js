@@ -14,7 +14,10 @@ export default function Settings() {
   return (
     <StyledContainer>
       <HeaderDetail title="설정" />
-      <ScrollView>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
         <View style={{ paddingHorizontal: 20 }}>
           <UserSection />
           <Gap />
