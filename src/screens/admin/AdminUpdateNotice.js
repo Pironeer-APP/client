@@ -21,8 +21,7 @@ import {
   TitleContainer,
 } from './AdminCreateNotice';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {getAPIHost} from '../../utils';
-import { client } from '../../api/client';
+import { client, getAPIHost } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
 import { useDispatch } from 'react-redux';
 import { fetchPosts } from '../../features/posts/postsSlice';
@@ -56,7 +55,7 @@ const AdminUpdateNotice = () => {
       try {
         await client.post(url, body);
         if (imgsIsChanged) {
-          updateImages(post.post_id);
+          await updateImages(post.post_id);
         }
 
         // await pushNoti({title: `수정된 공지가 있습니다-${title}`, body: content});
@@ -70,31 +69,28 @@ const AdminUpdateNotice = () => {
   };
   const updateImages = async postId => {
     const formData = new FormData();
-    const SERVER_URL = getAPIHost();
-    const URL = SERVER_URL + '/post/uploadimages';
     images.forEach(image => {
       const file = {
         name: image.fileName,
         type: image.type,
-        uri: image.uri,
+        uri: image.uri.replace("file://", ""),
       };
       formData.append('images', file);
     });
     formData.append('post_id', postId);
-    fetch(URL, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data.message);
-      })
-      .catch(error => {
-        console.error('이미지 업로드 실패:', error);
+    const url = '/post/uploadimages';
+    try {
+      const SERVER_URL = getAPIHost();
+      await fetch(SERVER_URL+url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        body: formData,
       });
+    } catch (err) {
+      return Promise.reject(err.message ? err.message : data);
+    }
   };
   const onImageSelect = () => {
     const options = {

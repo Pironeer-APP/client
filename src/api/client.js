@@ -29,8 +29,7 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
 
   if (body) {
     if(!Object.keys(body).includes("userToken")) {
-      body.userToken = await 
-      getData('user_token');
+      body.userToken = await getData('user_token');
     }
     config.body = JSON.stringify(body);
   }

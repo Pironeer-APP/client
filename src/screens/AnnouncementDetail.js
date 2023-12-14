@@ -43,6 +43,7 @@ const AnnouncementDetail = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [post, setPost] = useState([]);
   const [images, setImages] = useState([]);
+  const [imagesUrl, setImagesUrl] = useState([]);
   const route = useRoute();
   const post_id = route.params.post_id;
 
@@ -65,9 +66,8 @@ const AnnouncementDetail = ({navigation}) => {
     getPost();
   }, [isFocused]);
 
-  let imagesUrl = [];
   useEffect(() => {
-    imagesUrl = images.map(img => convertToUrl(img));
+    setImagesUrl(images.map(img => convertToUrl(img)));
   }, [images])
 
   // delete fetch
@@ -103,7 +103,6 @@ const AnnouncementDetail = ({navigation}) => {
   return (
     <StyledContainer>
       <HeaderDetail title={'공지'} />
-      <View style={{paddingHorizontal: 20, flex: 1}}>
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -112,6 +111,7 @@ const AnnouncementDetail = ({navigation}) => {
               tintColor={COLORS.green}
             />
           }>
+            <View style={{paddingHorizontal: 20, flex: 1}}>
           <RowView>
             <RowView style={{gap: 10}}>
               <StyledSubText content={`${RenderDate}`} />
@@ -147,8 +147,8 @@ const AnnouncementDetail = ({navigation}) => {
             />
           ))}
           <Gap height={200} />
+          </View>
         </ScrollView>
-      </View>
     </StyledContainer>
   );
 };
