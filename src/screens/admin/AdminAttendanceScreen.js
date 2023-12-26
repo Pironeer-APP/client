@@ -279,8 +279,13 @@ const AdminAttendanceScreen = () => {
     const url = '/attend/generateCode';
     const body = {};
     setCodeLoading(true);
-    await client.post(url, body);
+    const result = await client.post(url, body);
 
+    if(result.code === 'excess') {
+      Alert.alert('출석 코드 생성 3회 초과', '한 세션에 출석은 3회만 진행 가능합니다.\n이전 출결을 일부 삭제 후 재시도 해보세요', [
+        {text: '확인'},
+      ]);
+    }
     await getTodayCode();
     setCodeLoading(false);
   };
