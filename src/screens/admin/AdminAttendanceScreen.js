@@ -212,7 +212,7 @@ const AdminAttendanceScreen = () => {
   // 현재 시간 대비 코드 남은 기간
   useEffect(() => {
     if (codeTimeOut) {
-      setTimeout(() => {
+      const intervalId = setInterval(() => {
         const now = new Date();
         const limit = new Date(codeTimeOut.getTime() - now.getTime());
         if (limit <= 0) {
@@ -225,6 +225,7 @@ const AdminAttendanceScreen = () => {
           setCodeTimeoutText(`${min}:${sec}`);
         }
       }, 1000);
+      return () => clearInterval(intervalId);
     }
   });
 
