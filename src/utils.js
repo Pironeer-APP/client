@@ -1,3 +1,4 @@
+import { getData } from "./api/asyncStorage";
 import { client } from "./api/client";
 // import messaging from '@react-native-firebase/messaging';
 
@@ -66,16 +67,12 @@ export const getLocal = (datetime) => {
 }
 
 // 다음 세션 찾기
-export const findNextSession = (sessions) => {
-  const now = new Date();
-  for (let i = sessions.length - 1; i >= 0; i--) {
-    // 세션은 날짜로 비교할 것
-    const standard = new Date(sessions[i].date);
-    if (
-      now.getFullYear() <= standard.getFullYear()
-      && now.getMonth() <= standard.getMonth()
-      && now.getDate() <= standard.getDate()
-    ) {
+export const findNextSession = async (sessions) => {
+  const userToken = await getData('user_token');
+  for (let i = 0; i < sessions.length; i++) {
+    const sessionAttendsLen = await client.post('/attend/getSessionAttend', {userToken: userToken, session_id: sessions[i].session_id});
+    if (sessionAttendsLen.len == 0) {
+      // 확정된 출결이 없는 경우
       return sessions[i];
     }
   }

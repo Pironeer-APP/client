@@ -79,10 +79,12 @@ const InProgressAttendBox = props => {
             alignItems: 'center',
             width: 50,
           }}>
-          {/*  {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />} */}
           <StatusLine />
-          <OnAirCircle />
-          {/*  {title === firstItem ? <View style={{flex: 1}} /> : <StatusLine />} */}
+          {
+          props.nextSession.cnt === props.cnt
+          ? <OnAirCircle />
+          : <StatusCircle />
+          }
           <StatusLine />
         </View>
       </View>
@@ -221,16 +223,6 @@ const AttendanceScreen = () => {
       setIsLoading(false);
       setRefreshing(false);
 
-      // 오늘 세션있는지 확인
-      const today = new Date();
-      const month = String(Number(today.getMonth()) + 1).padStart(2, '0');
-      const day = String(Number(today.getDate())).padStart(2, '0');
-      fetchAttendData.sessions.map(session => {
-        if (month == session.month && day == session.day) {
-          setIsTodaySession(true);
-        }
-      });
-
     } catch (error) {
       console.log('에러 발생: ', error);
     }
@@ -239,14 +231,38 @@ const AttendanceScreen = () => {
   useEffect(() => {
     userSessionInfo();
   }, []);
+  const findNextSessionFun = async () => {
+    const nextSessionInfo = await findNextSession(attendance);
+    setNextSession(nextSessionInfo);
+
+    const userToken = await getData('user_token');
+    for (let i = 0; i < attendance.length; i++) {
+      const sessionAttendsLen = await client.post('/attend/getSessionAttend', {userToken: userToken, session_id: attendance[i].session_id});
+      // console.log('------', sessionAttendsLen.len)
+      if (sessionAttendsLen.len == 0) {
+        // 확정된 출결이 없는 경우
+        const now = new Date();
+        const standard = new Date(attendance[i].date);
+        if (now >= standard) {
+          setIsTodaySession(true);
+        } else {
+          setIsTodaySession(false);
+        }
+        break;
+      }
+    }
+  }
   useEffect(() => {
-    setNextSession(findNextSession(attendance));
+    const intervalId = setInterval(() => {
+      findNextSessionFun();
+    }, 1000);
+    return () => clearInterval(intervalId);
   }, [attendance])
 
   const renderAttendItem = ({item}) => {
     return (
       <>
-      {nextSession?.cnt >= item.cnt ? (
+      {nextSession?.cnt <= item.cnt ? (
         <InProgressAttendBox
           status={item.attend_id}
           title={item.title}
@@ -254,6 +270,8 @@ const AttendanceScreen = () => {
           location={item.location}
           isFace={item.is_face}
           attenType={item.type}
+          cnt={item.cnt}
+          nextSession={nextSession}
         />
       ) : (
         <DoneAttendBox
@@ -350,16 +368,7 @@ const AttendanceScreen = () => {
             animationOut={'fadeOut'}
             style={styles.centeredView}>
             <View style={styles.modalView}>
-              {!!codeConfirmed ? (
-                <>
-                  <Image
-                    source={require('../assets/images/attend_success.png')}
-                    resizeMode="contain"
-                    style={{width: 120, height: 120}}
-                  />
-                  <StyledText content={'출석 성공'} fontSize={25} />
-                </>
-              ) : (
+              {codeConfirmed == false ? (
                 <>
                   <Image
                     source={require('../assets/images/attend_failed.png')}
@@ -367,6 +376,24 @@ const AttendanceScreen = () => {
                     style={{width: 120, height: 120}}
                   />
                   <StyledText content={'출석 실패'} fontSize={25} />
+                </>
+              ) : codeConfirmed == 'exist' ? (
+                <>
+                  <Image
+                    source={require('../assets/images/attend_success.png')}
+                    resizeMode="contain"
+                    style={{width: 120, height: 120}}
+                  />
+                  <StyledText content={'출석 정보 존재'} fontSize={25} />
+                </>
+              ) : (
+                <>
+                  <Image
+                    source={require('../assets/images/attend_success.png')}
+                    resizeMode="contain"
+                    style={{width: 120, height: 120}}
+                  />
+                  <StyledText content={'출석 성공'} fontSize={25} />
                 </>
               )}
             </View>
