@@ -21,11 +21,11 @@ const DepositScreen = () => {
   const accountStatus = useSelector(state => state.account.status);
   const account = useSelector(selectAccount);
 
-  const {depositHistory, couponInfo, getDepositHistory, getCouponInfo} =
-    useDepositDetail();
+  const {depositHistory, couponInfo, getDepositHistory, getCouponInfo} = useDepositDetail();
 
   useEffect(() => {
     getDepositHistory();
+    dispatch(fetchAccount());
   }, []);
   useEffect(() => {
     getCouponInfo();
