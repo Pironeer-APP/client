@@ -55,7 +55,11 @@ const InProgressAsgBox = props => {
             width: 50,
           }}>
           <StatusLine />
-          <OnAirCircle />
+          {
+          props.nextSession.cnt === props.item.cnt
+          ? <OnAirCircle />
+          : <StatusCircle />
+          }
           <StatusLine />
         </View>
       </View>
@@ -163,8 +167,8 @@ const AssignmentScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const sessions = useSelector(selectSessions);
 
-  const sessionConfig = () => {
-    const nextSession = findNextSession(sessions);
+  const sessionConfig = async () => {
+    const nextSession = await findNextSession(sessions);
     setNextSession(nextSession);
   }
   useEffect(() => {
@@ -208,9 +212,10 @@ const onLongPressDelete = session => {
 };
 
 const renderItem = ({item}) => {
+  console.log(nextSession, item)
   return (
     <>
-      {nextSession?.cnt >= item?.cnt ? (
+      {nextSession?.cnt <= item?.cnt ? (
         <InProgressAsgBox
           nextSession={nextSession}
           item={item}
