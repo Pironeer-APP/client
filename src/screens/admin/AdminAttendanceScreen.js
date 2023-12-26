@@ -276,16 +276,16 @@ const AdminAttendanceScreen = () => {
   const onPressGenerateCode = async () => {
     const url = '/attend/generateCode';
     const body = {};
-
     setCodeLoading(true);
     const result = await client.post(url, body);
-    if (result) {
-      await getTodayCode();
-      setCodeLoading(false);
-    } else {    // 출석 코드 생성 실패: 3회 초과 출석 시도
-      console.alert("출석 코드 생성에 실패하였습니다.");
-      setCodeLoading(false);
+
+    if(result.code === 'excess') {
+      Alert.alert('출석 코드 생성 3회 초과', '한 세션에 출석은 3회만 진행 가능합니다.\n이전 출결을 일부 삭제 후 재시도 해보세요', [
+        {text: '확인'},
+      ]);
     }
+    await getTodayCode();
+    setCodeLoading(false);
   };
 
   //모달 띄우고 접고
