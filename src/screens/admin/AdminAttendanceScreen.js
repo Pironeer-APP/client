@@ -26,6 +26,7 @@ import { client } from '../../api/client';
 import { getData } from '../../api/asyncStorage';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSessions, selectSessions } from '../../features/sessions/sessionsSlice';
+import { Text } from 'react-native-svg';
 
 const DateContainer = styled.View`
   border-radius: 12px;
@@ -285,7 +286,6 @@ const AdminAttendanceScreen = () => {
 
   //모달 띄우고 접고
   const toggleModal = () => {
-    setDeleteCode(null);
     setModalVisible(!isModalVisible);
   };
 
@@ -321,6 +321,7 @@ const AdminAttendanceScreen = () => {
     const res = await client.post(url, body);
     setLoading(false);
     setModalVisible(!isModalVisible);
+    setDeleteCode(null);
     if (res.result === '삭제 완료') {
       setTimeout(() => {
         setDeleteFinModalVisible(true);
@@ -540,7 +541,7 @@ const AdminAttendanceScreen = () => {
                   <ButtonContainer
                     onPress={() => {
                       toggleBottomModal();
-                      toggleModal();
+                      setTimeout(() => toggleModal(), 800);
                     }}>
                     <StyledText
                       fontSize={22}
@@ -635,6 +636,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     paddingHorizontal: 20,
     marginRight: 10,
+    paddingVertical: 10,
   },
   deleteBtn: {
     justifyContent: 'center',
