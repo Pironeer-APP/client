@@ -13,7 +13,6 @@ const NotiLayoutView = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: start;
-  width: 100%;
 `
 
 export default function PostBox({ title, sort, date, id, read }) {
@@ -32,15 +31,14 @@ export default function PostBox({ title, sort, date, id, read }) {
   return (
     <TouchableOpacity onPress={goToAncDet}>
       <PaddingBox>
-        <NotiLayoutView>
-          <View style={{flex: 1}}>
-            <StyledSubText content={formattedDate} />
-            <Gap height={10} />
-            <StyledText content={title} fontSize={24} />
-          </View>
-          <GapH width={5} />
+        <RowView>
+          <StyledSubText content={formattedDate} />
           <Badge sort={sort} />
-        </NotiLayoutView>
+        </RowView>
+        <Gap height={10} />
+        <View style={{width: '75%'}}>
+        <StyledText content={title} fontSize={24} />
+        </View>
       </PaddingBox>
     </TouchableOpacity>
   );
