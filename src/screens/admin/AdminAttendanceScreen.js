@@ -276,11 +276,16 @@ const AdminAttendanceScreen = () => {
   const onPressGenerateCode = async () => {
     const url = '/attend/generateCode';
     const body = {};
-    setCodeLoading(true);
-    await client.post(url, body);
 
-    await getTodayCode();
-    setCodeLoading(false);
+    setCodeLoading(true);
+    const result = await client.post(url, body);
+    if (result) {
+      await getTodayCode();
+      setCodeLoading(false);
+    } else {    // 출석 코드 생성 실패: 3회 초과 출석 시도
+      console.alert("출석 코드 생성에 실패하였습니다.");
+      setCodeLoading(false);
+    }
   };
 
   //모달 띄우고 접고
